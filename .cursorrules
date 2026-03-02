@@ -1,0 +1,179 @@
+# FestiApp — Reglas de Contexto para Agentes IA
+
+Eres un desarrollador trabajando en **FestiApp**, un MVP web para festivales de música.
+Lee y aplica TODO lo indicado aquí antes de generar código.
+
+## Stack Tecnológico
+
+- **Next.js 14** con App Router (NO Pages Router)
+- **React 18** con TypeScript estricto
+- **Tailwind CSS 3** para estilos
+- **shadcn/ui** para componentes base (instalados en `src/components/ui/`)
+- **Supabase** como backend (PostgreSQL + Realtime)
+- **Vercel** para despliegue
+
+## Idioma
+
+- TODO el código va en **español**: variables, funciones, componentes, comentarios, tipos y commits.
+- Excepciones: palabras reservadas del lenguaje (`export`, `import`, `const`, etc.) y nombres de librerías.
+
+## Estructura de Carpetas
+
+```
+src/
+├── app/           → Páginas (App Router). Grupos: (auth), (usuario), (admin)
+├── components/    → Componentes agrupados por feature (mapa/, billetera/, etc.)
+│   └── ui/        → Componentes shadcn/ui (NO modificar directamente)
+├── hooks/         → Custom hooks (useXxx.ts)
+├── servicios/     → Capa de acceso a datos (xxx.servicio.ts)
+└── lib/           → Utilidades, tipos, constantes, config Supabase
+    ├── supabase/  → cliente.ts, servidor.ts, middleware.ts
+    ├── tipos.ts   → Tipos TypeScript compartidos
+    ├── constantes.ts
+    └── utils.ts   → Función cn() y helpers
+```
+
+## Reglas Estrictas
+
+1. **NUNCA acceder a Supabase desde componentes**. Siempre pasar por `servicios/`.
+2. **NUNCA crear componentes sueltos** en la raíz de `components/`. Siempre en subcarpeta.
+3. **SIEMPRE usar `@/`** como alias para imports desde `src/`. Prohibidas las rutas relativas `../../`.
+4. **SIEMPRE tipar** las props, los retornos y los estados. No usar `any`.
+5. **SIEMPRE usar `'use client'`** solo cuando sea necesario (hooks, eventos, estado).
+6. **SIEMPRE usar la función `cn()`** de `lib/utils.ts` para clases condicionales.
+7. **NO usar estilos inline** (`style={{}}`).
+8. **Server Components** para carga inicial de datos. **Client Components** para interactividad.
+
+## Nomenclatura
+
+| Qué | Formato | Ejemplo |
+|---|---|---|
+| Componente React | PascalCase español | `TarjetaBarra`, `FormularioRecarga` |
+| Archivo componente | PascalCase.tsx | `TarjetaBarra.tsx` |
+| Hook | camelCase con `use` | `useBarrasEnTiempoReal` |
+| Servicio | camelCase.servicio.ts | `barras.servicio.ts` |
+| Variable/función | camelCase español | `obtenerSaldo`, `estadoCola` |
+| Constante | SCREAMING_SNAKE | `ESTADOS_COLA`, `COLOR_POR_ESTADO` |
+| Tipo/Interface | PascalCase | `Barra`, `Usuario`, `TransaccionWallet` |
+| Rama Git | kebab-case | `feature/mapa-barras` |
+| Commit | Conventional | `feat(mapa): añadir grid de barras` |
+
+## Esquema SQL (Contexto)
+
+Tablas: `barras`, `usuario`, `wallet`, `transacciones`.
+
+Los campos SQL usan snake_case → en TypeScript se mapean a camelCase:
+- `id_barra` → `idBarra`
+- `nombre_localizacion` → `nombreLocalizacion`
+- `estado_cola` → `estadoCola` (valores: `'baja'` | `'media'` | `'alta'`)
+- `token_pago` → `tokenPago` (código de pulsera, se usa como login)
+- `tipo_movimiento` → `tipoMovimiento` (valores: `'compra'` | `'recarga'`)
+
+Este mapeo se hace SOLO en la capa de `servicios/`.
+
+## Tipos Base (Referencia)
+
+```typescript
+type EstadoCola = 'baja' | 'media' | 'alta';
+type TipoMovimiento = 'compra' | 'recarga';
+
+interface Barra {
+  idBarra: number;
+  nombreLocalizacion: string;
+  estadoCola: EstadoCola;
+}
+
+interface Usuario {
+  idUsuario: number;
+  nombre: string;
+  apellidos: string;
+  edad: number;
+  correo: string;
+  telefono: string;
+  tokenPago: string;
+}
+
+interface Wallet {
+  idWallet: number;
+  idUsuario: number;
+  saldo: number;
+}
+
+interface Transaccion {
+  idTransaccion: number;
+  idWallet: number;
+  idBarra: number;
+  tipoMovimiento: TipoMovimiento;
+  monto: number;
+  fecha: string;
+}
+```
+
+## Patrones de Código
+
+### Servicio (acceso a datos)
+```typescript
+// servicios/barras.servicio.ts
+export async function obtenerBarras(): Promise<Barra[]> {
+  const supabase = crearClienteServidor();
+  const { data, error } = await supabase.from('barras').select('*');
+  if (error) throw new Error(`Error al obtener barras: ${error.message}`);
+  return data.map((fila) => ({
+    idBarra: fila.id_barra,
+    nombreLocalizacion: fila.nombre_localizacion,
+    estadoCola: fila.estado_cola as EstadoCola,
+  }));
+}
+```
+
+### Página (Server Component)
+```typescript
+// app/(usuario)/mapa/page.tsx
+import { obtenerBarras } from '@/servicios/barras.servicio';
+import { GridBarras } from '@/components/mapa/GridBarras';
+
+export default async function PaginaMapa() {
+  const barras = await obtenerBarras();
+  return <GridBarras barrasIniciales={barras} />;
+}
+```
+
+### Componente Interactivo (Client Component)
+```typescript
+// components/mapa/GridBarras.tsx
+'use client';
+import { useBarrasEnTiempoReal } from '@/hooks/useBarrasEnTiempoReal';
+
+export function GridBarras({ barrasIniciales }: { barrasIniciales: Barra[] }) {
+  const barras = useBarrasEnTiempoReal(barrasIniciales);
+  return (
+    <div className="grid grid-cols-2 gap-4 p-4">
+      {barras.map((b) => <TarjetaBarra key={b.idBarra} barra={b} />)}
+    </div>
+  );
+}
+```
+
+## Colores del Estado de Cola
+
+| Estado | Tailwind Class | Visual |
+|---|---|---|
+| `baja` | `bg-green-500` | 🟢 Verde |
+| `media` | `bg-yellow-500` | 🟡 Amarillo |
+| `alta` | `bg-red-500` | 🔴 Rojo |
+
+## Features del MVP
+
+1. **Mapa de Barras**: Grid de tarjetas con color por estado, actualización realtime.
+2. **Billetera**: Consulta saldo, recarga simulada, historial de transacciones.
+3. **Notificaciones**: Avisos in-app cuando barras pasan a estado `baja`.
+4. **Login por Pulsera**: Identificación vía `token_pago`, sin Supabase Auth.
+5. **Panel Admin**: Staff actualiza estado de colas, dashboard con métricas básicas.
+
+## Antes de Generar Código
+
+1. Revisa si ya existe un componente, hook o servicio similar → reutiliza.
+2. Coloca el archivo en la carpeta correcta según la estructura.
+3. Usa los tipos de `lib/tipos.ts`, no crees tipos duplicados.
+4. Sigue los patrones de servicio/hook/componente mostrados arriba.
+5. Genera commits con Conventional Commits en español.
