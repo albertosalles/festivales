@@ -557,7 +557,7 @@ export async function actualizarEstadoCola(
 ### Ramas
 
 ```mermaid
-gitgraph
+gitGraph
     commit id: "init"
     branch dev
     checkout dev
