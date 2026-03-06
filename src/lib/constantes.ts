@@ -43,6 +43,7 @@ export const RUTAS = {
     BILLETERA: '/billetera',
     NOTIFICACIONES: '/notificaciones',
     // Rutas de admin
+    ADMIN_MAPA: '/admin/mapa',
     ADMIN_BARRAS: '/admin/barras',
     ADMIN_DASHBOARD: '/admin/dashboard',
 } as const;

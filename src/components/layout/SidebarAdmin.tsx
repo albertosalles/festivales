@@ -6,6 +6,7 @@ import { RUTAS } from '@/lib/constantes';
 import { cn } from '@/lib/utils';
 
 const ENLACES_ADMIN = [
+    { href: RUTAS.ADMIN_MAPA, etiqueta: 'Mapa de Barras', icono: '🗺️' },
     { href: RUTAS.ADMIN_DASHBOARD, etiqueta: 'Dashboard', icono: '📊' },
     { href: RUTAS.ADMIN_BARRAS, etiqueta: 'Barras', icono: '🍺' },
 ];
