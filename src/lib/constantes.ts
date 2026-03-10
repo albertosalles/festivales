@@ -62,3 +62,11 @@ export const TIPOS_MOVIMIENTO = {
     COMPRA: 'compra',
     RECARGA: 'recarga',
 } as const;
+
+// === Configuración de billetera ===
+
+/** Monto mínimo de recarga en euros */
+export const MONTO_MINIMO_RECARGA = 1;
+
+/** Monto máximo de recarga en euros */
+export const MONTO_MAXIMO_RECARGA = 500;
