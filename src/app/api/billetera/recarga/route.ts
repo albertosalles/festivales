@@ -1,19 +1,11 @@
 import { NextResponse } from 'next/server';
-import { crearClienteServidor } from '@/lib/supabase/servidor';
+import { obtenerBilletera, recargarSaldo } from '@/servicios/billetera.servicio';
 import { MONTO_MINIMO_RECARGA, MONTO_MAXIMO_RECARGA } from '@/lib/constantes';
 
 /**
  * API Route para recargar saldo en la billetera.
  * POST /api/billetera/recarga
  * Body: { idUsuario: number, monto: number }
- *
- * Utiliza una función RPC de PostgreSQL (recarga_saldo) que ejecuta
- * la operación de forma atómica dentro de una transacción:
- *   1. Bloquea la fila del wallet (FOR UPDATE)
- *   2. Actualiza el saldo
- *   3. Registra la transacción en la tabla transacciones
- *
- * Si algo falla, PostgreSQL hace rollback automático.
  *
  * Respuesta exitosa (200):
  *   { mensaje: string, nuevoSaldo: number }
@@ -70,33 +62,22 @@ export async function POST(request: Request) {
             );
         }
 
-        // --- Ejecutar recarga transaccional via RPC ---
+        // --- Obtener wallet y ejecutar recarga ---
 
-        const supabase = await crearClienteServidor();
+        const wallet = await obtenerBilletera(idUsuario);
 
-        const { data, error } = await supabase.rpc('recarga_saldo', {
-            p_id_usuario: idUsuario,
-            p_monto: monto,
-        });
-
-        if (error) {
-            // Si el error viene de la función SQL (wallet no encontrada)
-            if (error.message.includes('Wallet no encontrada')) {
-                return NextResponse.json(
-                    { error: 'No se encontró billetera para este usuario' },
-                    { status: 404 }
-                );
-            }
-
-            throw new Error(`Error en recarga: ${error.message}`);
+        if (!wallet) {
+            return NextResponse.json(
+                { error: 'No se encontró billetera para este usuario' },
+                { status: 404 }
+            );
         }
 
-        // La RPC devuelve el nuevo saldo directamente
-        const nuevoSaldo = Number(data);
+        const walletActualizada = await recargarSaldo(wallet.idWallet, monto);
 
         return NextResponse.json({
             mensaje: 'Recarga exitosa',
-            nuevoSaldo,
+            nuevoSaldo: walletActualizada.saldo,
         });
     } catch {
         return NextResponse.json(

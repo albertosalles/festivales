@@ -1,8 +1,9 @@
 'use client';
 
+import { ListaNotificaciones } from '@/components/notificaciones/ListaNotificaciones';
+
 /**
- * Página de notificaciones — Placeholder inicial.
- * Se completará con el componente ListaNotificaciones.
+ * Página de notificaciones — Historial de alertas de cola baja.
  */
 export default function PaginaNotificaciones() {
     return (
@@ -14,13 +15,7 @@ export default function PaginaNotificaciones() {
                 </p>
             </div>
 
-            <div className="rounded-xl border bg-card p-8 text-center text-muted-foreground">
-                <p className="text-4xl">🔔</p>
-                <p className="mt-4 text-lg font-medium">Sin notificaciones</p>
-                <p className="text-sm">
-                    Te avisaremos cuando una barra tenga poca cola.
-                </p>
-            </div>
+            <ListaNotificaciones />
         </div>
     );
 }

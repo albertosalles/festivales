@@ -1,6 +1,13 @@
+import { ContenedorBilletera } from '@/components/billetera/ContenedorBilletera';
+
+export const metadata = {
+    title: 'Mi Billetera | FestiApp',
+    description: 'Consulta tu saldo disponible y recarga tu billetera del festival.',
+};
+
 /**
- * Página de la billetera — Placeholder inicial.
- * Se completará con componentes TarjetaSaldo y FormularioRecarga.
+ * Página de la billetera del usuario.
+ * Muestra el saldo disponible y permite recargar con importes predefinidos.
  */
 export default function PaginaBilletera() {
     return (
@@ -12,13 +19,7 @@ export default function PaginaBilletera() {
                 </p>
             </div>
 
-            <div className="rounded-xl border bg-card p-8 text-center text-muted-foreground">
-                <p className="text-4xl">💰</p>
-                <p className="mt-4 text-lg font-medium">Próximamente</p>
-                <p className="text-sm">
-                    Aquí podrás ver tu saldo y recargar tu billetera.
-                </p>
-            </div>
+            <ContenedorBilletera />
         </div>
     );
 }

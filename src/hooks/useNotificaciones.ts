@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 import { crearClienteNavegador } from '@/lib/supabase/cliente';
 
 /** Estructura de una notificación in-app */
@@ -15,13 +16,35 @@ export interface Notificacion {
 /**
  * Hook que escucha cambios en las barras y genera notificaciones
  * cuando una barra pasa a estado 'baja' (poca cola).
+ *
+ * Mantiene un registro interno del último estado conocido de cada barra
+ * para detectar transiciones sin depender de payload.old (que requiere
+ * REPLICA IDENTITY FULL en la tabla).
  */
 export function useNotificaciones() {
     const [notificaciones, setNotificaciones] = useState<Notificacion[]>([]);
     const [noLeidas, setNoLeidas] = useState(0);
 
+    // Registro del último estado conocido de cada barra (por id_barra)
+    const estadosAnteriores = useRef<Map<number, string>>(new Map());
+
     useEffect(() => {
         const supabase = crearClienteNavegador();
+
+        // Cargar estados iniciales de las barras para tener un punto de referencia
+        const cargarEstadosIniciales = async () => {
+            const { data } = await supabase
+                .from('barras')
+                .select('id_barra, estado_cola');
+
+            if (data) {
+                data.forEach((fila: { id_barra: number; estado_cola: string }) => {
+                    estadosAnteriores.current.set(fila.id_barra, fila.estado_cola);
+                });
+            }
+        };
+
+        cargarEstadosIniciales();
 
         const canal = supabase
             .channel('notificaciones-colas')
@@ -38,14 +61,17 @@ export function useNotificaciones() {
                         nombre_localizacion: string;
                         estado_cola: string;
                     };
-                    const anterior = payload.old as {
-                        estado_cola?: string;
-                    };
+
+                    const estadoAnterior = estadosAnteriores.current.get(nueva.id_barra);
+
+                    // Actualizar el registro con el nuevo estado
+                    estadosAnteriores.current.set(nueva.id_barra, nueva.estado_cola);
 
                     // Solo notificar cuando cambia a 'baja' desde otro estado
                     if (
                         nueva.estado_cola === 'baja' &&
-                        anterior.estado_cola !== 'baja'
+                        estadoAnterior !== undefined &&
+                        estadoAnterior !== 'baja'
                     ) {
                         const notificacion: Notificacion = {
                             id: `${nueva.id_barra}-${Date.now()}`,
@@ -57,6 +83,10 @@ export function useNotificaciones() {
 
                         setNotificaciones((prev) => [notificacion, ...prev]);
                         setNoLeidas((prev) => prev + 1);
+                        toast.success(
+                            `🟢 ${nueva.nombre_localizacion} tiene poca cola`,
+                            { description: '¡Buen momento para ir!' }
+                        );
                     }
                 }
             )
