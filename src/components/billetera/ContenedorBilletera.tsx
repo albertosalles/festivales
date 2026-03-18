@@ -94,6 +94,17 @@ export function ContenedorBilletera() {
         );
     }
 
+    // Si es el administrador (sesión ficticia con id 0)
+    if (sesion.rol === 'admin' && sesion.idUsuario === 0) {
+        return (
+            <div className="rounded-xl border bg-card p-8 text-center text-muted-foreground">
+                <p className="text-4xl">👑</p>
+                <p className="mt-4 text-lg font-medium">Cuenta de Administrador</p>
+                <p className="text-sm">Los administradores gestionan el sistema y no poseen una billetera personal.</p>
+            </div>
+        );
+    }
+
     // Si hay error al cargar el saldo
     if (error) {
         return (

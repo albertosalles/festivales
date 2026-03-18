@@ -7,6 +7,8 @@ import { useNotificaciones, type Notificacion } from '@/hooks/useNotificaciones'
 interface ContextoNotificaciones {
     notificaciones: Notificacion[];
     noLeidas: number;
+    activas: boolean;
+    alternarNotificaciones: () => void;
     marcarComoLeida: (idNotificacion: string) => void;
     marcarTodasComoLeidas: () => void;
 }

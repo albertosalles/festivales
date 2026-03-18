@@ -24,6 +24,25 @@ export interface Notificacion {
 export function useNotificaciones() {
     const [notificaciones, setNotificaciones] = useState<Notificacion[]>([]);
     const [noLeidas, setNoLeidas] = useState(0);
+    const [activas, setActivas] = useState(true);
+    const activasRef = useRef(true);
+
+    // Cargar preferencia guardada del usuario
+    useEffect(() => {
+        const guardado = localStorage.getItem('prefiereNotificaciones');
+        if (guardado !== null) {
+            const esActiva = guardado === 'true';
+            setActivas(esActiva);
+            activasRef.current = esActiva;
+        }
+    }, []);
+
+    const alternarNotificaciones = () => {
+        const nuevoEstado = !activas;
+        setActivas(nuevoEstado);
+        activasRef.current = nuevoEstado;
+        localStorage.setItem('prefiereNotificaciones', String(nuevoEstado));
+    };
 
     // Registro del último estado conocido de cada barra (por id_barra)
     const estadosAnteriores = useRef<Map<number, string>>(new Map());
@@ -67,8 +86,9 @@ export function useNotificaciones() {
                     // Actualizar el registro con el nuevo estado
                     estadosAnteriores.current.set(nueva.id_barra, nueva.estado_cola);
 
-                    // Solo notificar cuando cambia a 'baja' desde otro estado
+                    // Solo notificar cuando cambia a 'baja' desde otro estado y están activas
                     if (
+                        activasRef.current &&
                         nueva.estado_cola === 'baja' &&
                         estadoAnterior !== undefined &&
                         estadoAnterior !== 'baja'
@@ -116,6 +136,8 @@ export function useNotificaciones() {
     return {
         notificaciones,
         noLeidas,
+        activas,
+        alternarNotificaciones,
         marcarComoLeida,
         marcarTodasComoLeidas,
     };
