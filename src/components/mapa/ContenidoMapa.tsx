@@ -25,13 +25,15 @@ export function ContenidoMapa({ barrasIniciales }: ContenidoMapaProps) {
             {/* Hero Section */}
             <section>
                 <div className="relative w-full h-[300px] md:h-[409px] rounded-[2rem] overflow-hidden shadow-2xl group">
-                    {/* Festival aerial image */}
                     <img alt="Festival Map View" className="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 transition-all duration-700" data-alt="Aerial view of a large music festival with glowing stages" data-location="Music Festival Grounds" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnZyBDx7P_lf_SP3E2tOkjehTXJM0IPTHmsx0Zc7j2LAgdsl8TS-9X_t9KuImq9p6UDnS0rZAnBynf7P_lb0FBe_AH5-JHRAXt_3oJ0riy8Kjck8cE37h1hI7JzIMp7Y4LoNi2r4jBuyLrHJEAIwNI-uAn6VrXp_o84bRCcVGS9EC33QKD4QvLLYLfS8Luys640qq8QB17tmJ5WjLTimlpe1fo1bIS44rg9gLoYuHYthZmrGrdlz0tlZFI3ppT7fTSUC9QtSAnEMY" />
+                    <div className="w-full h-full bg-gradient-to-br from-surface-container-lowest via-surface-container to-surface-container-high opacity-80" />
                     <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+
 
                     {/* Map UI Elements */}
                     <div className="absolute inset-0 flex flex-col justify-between p-6">
                         <div className="flex justify-between items-start">
+
                             <div className="bg-surface-container/80 backdrop-blur-md px-4 py-2 rounded-full border border-white/5">
                                 <span className="text-xs font-bold uppercase tracking-widest text-neon-blue flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-neon-blue animate-pulse" />
