@@ -4,7 +4,7 @@ import { ProveedorNotificaciones } from '@/components/notificaciones/ProveedorNo
 
 /**
  * Layout compartido para todas las rutas de usuario.
- * Incluye cabecera superior, navbar inferior y proveedor de notificaciones.
+ * Incluye cabecera superior glassmórfica, navbar inferior neón y proveedor de notificaciones.
  */
 export default function LayoutUsuario({
     children,
@@ -13,9 +13,9 @@ export default function LayoutUsuario({
 }) {
     return (
         <ProveedorNotificaciones>
-            <div className="flex min-h-screen flex-col">
+            <div className="flex min-h-screen flex-col bg-mesh">
                 <CabeceraApp />
-                <main className="mx-auto w-full max-w-4xl flex-1 px-4 pb-20 pt-6">
+                <main className="mx-auto w-full max-w-7xl flex-1 px-5 pb-32 pt-24">
                     {children}
                 </main>
                 <NavbarUsuario />

@@ -2,7 +2,7 @@ import { SidebarAdmin } from '@/components/layout/SidebarAdmin';
 
 /**
  * Layout para el panel de administración.
- * Incluye sidebar lateral fijo.
+ * Sidebar lateral fijo + fondo oscuro con mesh gradient.
  */
 export default function LayoutAdmin({
     children,
@@ -10,7 +10,7 @@ export default function LayoutAdmin({
     children: React.ReactNode;
 }) {
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen bg-mesh">
             <SidebarAdmin />
             <main className="ml-64 min-h-screen p-8">
                 {children}

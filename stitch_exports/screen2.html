@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FESTIAPP - Live Map &amp; Bar Queue</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;800;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#2c2c30",
+              "on-tertiary-fixed-variant": "#692100",
+              "on-primary-fixed": "#344a00",
+              "secondary-dim": "#00d4ec",
+              "secondary": "#00e3fd",
+              "primary-dim": "#aeee00",
+              "on-primary-fixed-variant": "#4b6800",
+              "background": "#0e0e11",
+              "on-surface": "#f0edf1",
+              "tertiary": "#ff7439",
+              "primary-container": "#bafd00",
+              "tertiary-fixed-dim": "#ff7e49",
+              "surface-tint": "#e9ffba",
+              "surface-container-low": "#131316",
+              "on-surface-variant": "#acaaae",
+              "on-secondary-container": "#e8fbff",
+              "surface-container-lowest": "#000000",
+              "surface-container": "#19191d",
+              "on-background": "#f0edf1",
+              "on-primary": "#496600",
+              "primary-fixed": "#bafd00",
+              "inverse-surface": "#fcf8fd",
+              "on-secondary": "#004d57",
+              "surface-container-high": "#1f1f23",
+              "on-tertiary-fixed": "#310b00",
+              "secondary-container": "#006875",
+              "on-error": "#490013",
+              "inverse-primary": "#4a6800",
+              "on-secondary-fixed": "#003a42",
+              "primary": "#e9ffba",
+              "secondary-fixed-dim": "#00d7f0",
+              "on-secondary-fixed-variant": "#005964",
+              "outline-variant": "#48474b",
+              "primary-fixed-dim": "#aeee00",
+              "surface-variant": "#25252a",
+              "error-dim": "#d73357",
+              "surface-dim": "#0e0e11",
+              "on-tertiary": "#3f1100",
+              "tertiary-dim": "#ff7439",
+              "on-tertiary-container": "#220600",
+              "error-container": "#a70138",
+              "surface": "#0e0e11",
+              "error": "#ff6e84",
+              "on-error-container": "#ffb2b9",
+              "tertiary-container": "#fc5b00",
+              "secondary-fixed": "#26e6ff",
+              "inverse-on-surface": "#555458",
+              "tertiary-fixed": "#ff956b",
+              "on-primary-container": "#425d00",
+              "surface-container-highest": "#25252a",
+              "outline": "#767579"
+            },
+            fontFamily: {
+              "headline": ["Epilogue"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .bg-mesh {
+        background-color: #0e0e11;
+        background-image: 
+          radial-gradient(at 0% 0%, rgba(233, 255, 186, 0.05) 0px, transparent 50%),
+          radial-gradient(at 100% 100%, rgba(0, 227, 253, 0.05) 0px, transparent 50%);
+      }
+      .hide-scrollbar::-webkit-scrollbar { display: none; }
+      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-mesh text-on-surface font-body selection:bg-primary selection:text-on-primary min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-[#0e0e11]/60 backdrop-blur-xl fixed top-0 w-full z-50 bg-gradient-to-b from-[#19191d] to-transparent shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+<div class="flex justify-between items-center px-5 h-20 w-full">
+<div class="flex flex-col">
+<span class="text-2xl font-black text-[#e9ffba] tracking-tighter font-['Epilogue'] uppercase">FESTIAPP</span>
+<span class="text-[10px] font-['Inter'] font-bold uppercase tracking-[0.2em] text-on-surface-variant">Live Experience</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-end mr-2">
+<span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-widest">Balance</span>
+<span class="text-[#e9ffba] font-['Epilogue'] font-black text-lg leading-none">84.50€</span>
+</div>
+<div class="flex gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container active:scale-95 transition-transform text-[#acaaae] hover:text-[#00e3fd]">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container active:scale-95 transition-transform text-[#acaaae] hover:text-[#00e3fd]">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-10 h-10 rounded-full border-2 border-primary/20 p-0.5 overflow-hidden">
+<img alt="User profile avatar" class="w-full h-full object-cover rounded-full" data-alt="Close up portrait of a young festival attendee" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9OqHHw_PODDlg1CTUFvgEo6TfsEV7QBo93eU1eZeT4eeebQYFtGZeDE3Fg1zL5RBSJB9fN_2WkE1lm2iSZso3-8foQNIjzcUdWve1YaHkK7Uiad_5WGVv_6pOYQjrk4hL8-Kpvi7FPzvWotdjQL7DouXHUBt574buECjr1AWLR00F8hcfic5Y2lo-QPu8j9tpJXYAYA-cFWJE6n5Gq4SVxfqy-tSnmgO9ny5EJZ5GpyWyL63wphgxC_7onivT3ohUsTJkZvhX5WE"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-5 max-w-7xl mx-auto">
+<!-- Hero Section: Dynamic Map -->
+<section class="mb-10">
+<div class="relative w-full h-[409px] rounded-[2rem] overflow-hidden shadow-2xl group">
+<img alt="Festival Map View" class="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 transition-all duration-700" data-alt="Aerial view of a large music festival with glowing stages" data-location="Music Festival Grounds" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnZyBDx7P_lf_SP3E2tOkjehTXJM0IPTHmsx0Zc7j2LAgdsl8TS-9X_t9KuImq9p6UDnS0rZAnBynf7P_lb0FBe_AH5-JHRAXt_3oJ0riy8Kjck8cE37h1hI7JzIMp7Y4LoNi2r4jBuyLrHJEAIwNI-uAn6VrXp_o84bRCcVGS9EC33QKD4QvLLYLfS8Luys640qq8QB17tmJ5WjLTimlpe1fo1bIS44rg9gLoYuHYthZmrGrdlz0tlZFI3ppT7fTSUC9QtSAnEMY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<!-- Map UI Elements -->
+<div class="absolute inset-0 flex flex-col justify-between p-6">
+<div class="flex justify-between items-start">
+<div class="bg-surface-container/80 backdrop-blur-md px-4 py-2 rounded-full border border-white/5">
+<span class="text-xs font-bold uppercase tracking-widest text-secondary flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span> Live Map
+                            </span>
+</div>
+<button class="bg-primary text-on-primary w-12 h-12 rounded-full flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined" data-icon="my_location">my_location</span>
+</button>
+</div>
+<div class="space-y-4">
+<h1 class="font-headline text-4xl md:text-6xl font-black italic tracking-tighter uppercase leading-none text-on-surface">
+                            Navigate the <br/><span class="text-primary">Neon Pulse</span>
+</h1>
+<div class="flex gap-2 overflow-x-auto hide-scrollbar pb-2">
+<span class="px-4 py-2 bg-secondary/10 border border-secondary/20 rounded-full text-secondary text-xs font-bold uppercase whitespace-nowrap">Main Stage</span>
+<span class="px-4 py-2 bg-surface-container/60 border border-white/5 rounded-full text-on-surface-variant text-xs font-bold uppercase whitespace-nowrap">Techno Dome</span>
+<span class="px-4 py-2 bg-surface-container/60 border border-white/5 rounded-full text-on-surface-variant text-xs font-bold uppercase whitespace-nowrap">Food Court</span>
+<span class="px-4 py-2 bg-surface-container/60 border border-white/5 rounded-full text-on-surface-variant text-xs font-bold uppercase whitespace-nowrap">Restrooms</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bar Queue Grid -->
+<div class="flex justify-center mb-10">
+<div class="inline-flex p-1.5 bg-surface-container/40 backdrop-blur-md rounded-full border border-white/5 shadow-2xl">
+<button class="flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-on-primary shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all duration-300">
+<span class="material-symbols-outlined text-sm" data-icon="format_list_bulleted">format_list_bulleted</span>
+<span class="text-xs font-black uppercase tracking-widest font-headline">Lista</span>
+</button>
+<button class="flex items-center gap-2 px-6 py-2.5 rounded-full text-on-surface-variant hover:text-secondary transition-all duration-300">
+<span class="material-symbols-outlined text-sm" data-icon="map">map</span>
+<span class="text-xs font-black uppercase tracking-widest font-headline">Mapa</span>
+</button>
+</div>
+</div><section>
+<div class="flex items-end justify-between mb-8">
+<div>
+<h2 class="font-headline text-2xl font-black uppercase tracking-tight text-on-surface">Hydration Hubs</h2>
+<p class="text-on-surface-variant text-sm font-medium">Real-time queue status at all bars</p>
+</div>
+<div class="hidden md:flex gap-4">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary shadow-[0_0_8px_rgba(233,255,186,0.6)]"></div>
+<span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant">Low (Baja)</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-tertiary shadow-[0_0_8px_rgba(255,116,57,0.6)]"></div>
+<span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant">Med (Media)</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-error shadow-[0_0_8px_rgba(255,110,132,0.6)]"></div>
+<span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant">High (Alta)</span>
+</div>
+</div>
+</div>
+<!-- Bento Grid Layout for Bar Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Card 1: Baja -->
+<div class="bg-surface-container rounded-[2rem] p-6 flex flex-col justify-between border-b-4 border-primary shadow-xl hover:translate-y-[-4px] transition-all group">
+<div class="flex justify-between items-start mb-6">
+<div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl" data-icon="local_bar">local_bar</span>
+</div>
+<span class="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full">Fast Access</span>
+</div>
+<div>
+<h3 class="font-headline text-xl font-extrabold uppercase tracking-tighter text-on-surface mb-1">South Terrace Bar</h3>
+<p class="text-on-surface-variant text-sm mb-4">Craft beers &amp; signature cocktails</p>
+<div class="flex items-center gap-3">
+<span class="text-primary font-bold text-xs uppercase tracking-widest">Wait Time: &lt; 2 min</span>
+<div class="flex-1 h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-1/5 shadow-[0_0_10px_rgba(233,255,186,0.5)]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2: Alta -->
+<div class="bg-surface-container rounded-[2rem] p-6 flex flex-col justify-between border-b-4 border-error shadow-xl hover:translate-y-[-4px] transition-all group">
+<div class="flex justify-between items-start mb-6">
+<div class="w-14 h-14 bg-error/10 rounded-2xl flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-3xl" data-icon="liquor">liquor</span>
+</div>
+<span class="px-3 py-1 bg-error/10 text-error text-[10px] font-black uppercase tracking-widest rounded-full">Busy</span>
+</div>
+<div>
+<h3 class="font-headline text-xl font-extrabold uppercase tracking-tighter text-on-surface mb-1">Main Stage Lounge</h3>
+<p class="text-on-surface-variant text-sm mb-4">Premium VIP spirits only</p>
+<div class="flex items-center gap-3">
+<span class="text-error font-bold text-xs uppercase tracking-widest">Wait Time: 15+ min</span>
+<div class="flex-1 h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-error w-4/5 shadow-[0_0_10px_rgba(255,110,132,0.5)]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3: Media -->
+<div class="bg-surface-container rounded-[2rem] p-6 flex flex-col justify-between border-b-4 border-tertiary shadow-xl hover:translate-y-[-4px] transition-all group">
+<div class="flex justify-between items-start mb-6">
+<div class="w-14 h-14 bg-tertiary/10 rounded-2xl flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-3xl" data-icon="wine_bar">wine_bar</span>
+</div>
+<span class="px-3 py-1 bg-tertiary/10 text-tertiary text-[10px] font-black uppercase tracking-widest rounded-full">Moderate</span>
+</div>
+<div>
+<h3 class="font-headline text-xl font-extrabold uppercase tracking-tighter text-on-surface mb-1">Sunset Pavillion</h3>
+<p class="text-on-surface-variant text-sm mb-4">Wines &amp; organic juices</p>
+<div class="flex items-center gap-3">
+<span class="text-tertiary font-bold text-xs uppercase tracking-widest">Wait Time: 7 min</span>
+<div class="flex-1 h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-1/2 shadow-[0_0_10px_rgba(255,116,57,0.5)]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 4: Baja -->
+<div class="bg-surface-container rounded-[2rem] p-6 flex flex-col justify-between border-b-4 border-primary shadow-xl hover:translate-y-[-4px] transition-all group">
+<div class="flex justify-between items-start mb-6">
+<div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl" data-icon="water_drop">water_drop</span>
+</div>
+<span class="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full">No Queue</span>
+</div>
+<div>
+<h3 class="font-headline text-xl font-extrabold uppercase tracking-tighter text-on-surface mb-1">Eco Refill Station</h3>
+<p class="text-on-surface-variant text-sm mb-4">Hydration &amp; water stations</p>
+<div class="flex items-center gap-3">
+<span class="text-primary font-bold text-xs uppercase tracking-widest">Wait Time: Instant</span>
+<div class="flex-1 h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[5%] shadow-[0_0_10px_rgba(233,255,186,0.5)]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 5: Media -->
+<div class="bg-surface-container rounded-[2rem] p-6 flex flex-col justify-between border-b-4 border-tertiary shadow-xl hover:translate-y-[-4px] transition-all group">
+<div class="flex justify-between items-start mb-6">
+<div class="w-14 h-14 bg-tertiary/10 rounded-2xl flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-3xl" data-icon="sports_bar">sports_bar</span>
+</div>
+<span class="px-3 py-1 bg-tertiary/10 text-tertiary text-[10px] font-black uppercase tracking-widest rounded-full">Moving</span>
+</div>
+<div>
+<h3 class="font-headline text-xl font-extrabold uppercase tracking-tighter text-on-surface mb-1">Garden Bar East</h3>
+<p class="text-on-surface-variant text-sm mb-4">Full bar service</p>
+<div class="flex items-center gap-3">
+<span class="text-tertiary font-bold text-xs uppercase tracking-widest">Wait Time: 5 min</span>
+<div class="flex-1 h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[40%] shadow-[0_0_10px_rgba(255,116,57,0.5)]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 rounded-t-[2rem] bg-[#19191d]/80 backdrop-blur-2xl border-t border-[#ffffff]/10 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+<div class="flex justify-around items-center px-6 pb-6 pt-3">
+<a class="flex flex-col items-center justify-center text-[#acaaae] hover:text-[#00e3fd] active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="theater_comedy">theater_comedy</span>
+<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-widest mt-1">Stages</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#e9ffba] bg-[#e9ffba]/10 rounded-full px-4 py-1 shadow-[0_0_15px_rgba(233,255,186,0.3)] active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-widest mt-1">Map</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#acaaae] hover:text-[#00e3fd] active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-widest mt-1">Wallet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#acaaae] hover:text-[#00e3fd] active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-widest mt-1">Alerts</span>
+</a>
+</div>
+</nav>
+</body></html>

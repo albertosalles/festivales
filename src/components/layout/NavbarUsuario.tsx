@@ -6,23 +6,24 @@ import { RUTAS } from '@/lib/constantes';
 import { cn } from '@/lib/utils';
 import { useContextoNotificaciones } from '@/components/notificaciones/ProveedorNotificaciones';
 
+/** Enlaces de la barra de navegación inferior */
 const ENLACES_NAVEGACION = [
-    { href: RUTAS.MAPA, etiqueta: 'Mapa', icono: '🗺️' },
-    { href: RUTAS.BILLETERA, etiqueta: 'Billetera', icono: '💰' },
-    { href: RUTAS.NOTIFICACIONES, etiqueta: 'Avisos', icono: '🔔' },
+    { href: RUTAS.MAPA, etiqueta: 'Mapa', icono: 'map' },
+    { href: RUTAS.BILLETERA, etiqueta: 'Wallet', icono: 'payments' },
+    { href: RUTAS.NOTIFICACIONES, etiqueta: 'Alertas', icono: 'notifications' },
 ];
 
 /**
- * Barra de navegación inferior para la vista de usuario (mobile-first).
- * Muestra un badge con el contador de notificaciones no leídas.
+ * Barra de navegación inferior estilo Stitch "Electric Nocturne".
+ * Diseño glassmórfico con iconos Material Symbols y efecto de glow activo.
  */
 export function NavbarUsuario() {
     const rutaActual = usePathname();
     const { noLeidas } = useContextoNotificaciones();
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="mx-auto flex h-16 max-w-md items-center justify-around px-4">
+        <nav className="fixed bottom-0 left-0 w-full z-50 rounded-t-[2rem] bg-[#19191d]/80 backdrop-blur-2xl border-t border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+            <div className="flex justify-around items-center px-6 pb-6 pt-3 max-w-lg mx-auto">
                 {ENLACES_NAVEGACION.map((enlace) => {
                     const estaActivo = rutaActual === enlace.href;
                     const esNotificaciones = enlace.href === RUTAS.NOTIFICACIONES;
@@ -32,21 +33,31 @@ export function NavbarUsuario() {
                             key={enlace.href}
                             href={enlace.href}
                             className={cn(
-                                'relative flex flex-col items-center gap-1 rounded-lg px-3 py-2 text-xs font-medium transition-colors',
+                                'flex flex-col items-center justify-center active:scale-90 transition-all duration-200',
                                 estaActivo
-                                    ? 'text-primary'
-                                    : 'text-muted-foreground hover:text-foreground'
+                                    ? 'text-neon-green bg-neon-green/10 rounded-full px-4 py-1 shadow-[0_0_15px_rgba(233,255,186,0.3)]'
+                                    : 'text-on-surface-variant hover:text-neon-blue'
                             )}
                         >
-                            <span className="relative text-xl">
-                                {enlace.icono}
+                            <div className="relative">
+                                <span
+                                    className="material-symbols-outlined"
+                                    style={
+                                        estaActivo
+                                            ? { fontVariationSettings: "'FILL' 1" }
+                                            : undefined
+                                    }
+                                >
+                                    {enlace.icono}
+                                </span>
+                                {/* Badge de notificaciones no leídas */}
                                 {esNotificaciones && noLeidas > 0 && (
-                                    <span className="absolute -right-2 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
-                                        {noLeidas > 9 ? '9+' : noLeidas}
-                                    </span>
+                                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-error rounded-full" />
                                 )}
+                            </div>
+                            <span className="font-label-text text-[10px] font-bold uppercase tracking-widest mt-1">
+                                {enlace.etiqueta}
                             </span>
-                            <span>{enlace.etiqueta}</span>
                         </Link>
                     );
                 })}

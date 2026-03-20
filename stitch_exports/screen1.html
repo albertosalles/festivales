@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FESTIAPP - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@700;900&amp;family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-bright": "#2c2c30",
+                        "on-tertiary-fixed-variant": "#692100",
+                        "on-primary-fixed": "#344a00",
+                        "secondary-dim": "#00d4ec",
+                        "secondary": "#00e3fd",
+                        "primary-dim": "#aeee00",
+                        "on-primary-fixed-variant": "#4b6800",
+                        "background": "#0e0e11",
+                        "on-surface": "#f0edf1",
+                        "tertiary": "#ff7439",
+                        "primary-container": "#bafd00",
+                        "tertiary-fixed-dim": "#ff7e49",
+                        "surface-tint": "#e9ffba",
+                        "surface-container-low": "#131316",
+                        "on-surface-variant": "#acaaae",
+                        "on-secondary-container": "#e8fbff",
+                        "surface-container-lowest": "#000000",
+                        "surface-container": "#19191d",
+                        "on-background": "#f0edf1",
+                        "on-primary": "#496600",
+                        "primary-fixed": "#bafd00",
+                        "inverse-surface": "#fcf8fd",
+                        "on-secondary": "#004d57",
+                        "surface-container-high": "#1f1f23",
+                        "on-tertiary-fixed": "#310b00",
+                        "secondary-container": "#006875",
+                        "on-error": "#490013",
+                        "inverse-primary": "#4a6800",
+                        "on-secondary-fixed": "#003a42",
+                        "primary": "#e9ffba",
+                        "secondary-fixed-dim": "#00d7f0",
+                        "on-secondary-fixed-variant": "#005964",
+                        "outline-variant": "#48474b",
+                        "primary-fixed-dim": "#aeee00",
+                        "surface-variant": "#25252a",
+                        "error-dim": "#d73357",
+                        "surface-dim": "#0e0e11",
+                        "on-tertiary": "#3f1100",
+                        "tertiary-dim": "#ff7439",
+                        "on-tertiary-container": "#220600",
+                        "error-container": "#a70138",
+                        "surface": "#0e0e11",
+                        "error": "#ff6e84",
+                        "on-error-container": "#ffb2b9",
+                        "tertiary-container": "#fc5b00",
+                        "secondary-fixed": "#26e6ff",
+                        "inverse-on-surface": "#555458",
+                        "tertiary-fixed": "#ff956b",
+                        "on-primary-container": "#425d00",
+                        "surface-container-highest": "#25252a",
+                        "outline": "#767579"
+                    },
+                    fontFamily: {
+                        "headline": ["Epilogue"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.75rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+.bg-noise {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuAxLyDIv6x0qxx9qgiINQteF6SLfMcl8w4aSlyP5UJr4YRLR0O8bcxMgCdoutaoHXA6vrWFKy25lgasH2zxjJWpWz9ONfQyS1ehs5iSbuQLXuMCjch7i16ZvL05zPbl6IhIwtWRiGcv7OQnfx7_4PqGiceAkItrvP2HEGtIvyUJKUtrTOF6fWPS5GW5IFsDDKKLVwEYhIX_czaZphHKqq8HD6ODyLbdGWodMk1Hk0Y59HbTGuQPgmuW23eJvSTyaTlByFmIRtnNInY);
+    opacity: 0.03
+    }
+.glow-effect {
+    box-shadow: 0 0 20px rgba(233, 255, 186, 0.15)
+    }
+input:focus {
+    box-shadow: 0 0 15px rgba(0, 227, 253, 0.2)
+    }</style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary selection:text-on-primary min-h-screen overflow-hidden flex flex-col items-center justify-center p-5">
+<!-- Background Layers -->
+<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+<div class="absolute inset-0 bg-noise"></div>
+<div class="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] bg-primary/10 rounded-full blur-[120px]"></div>
+<div class="absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] bg-secondary/10 rounded-full blur-[120px]"></div>
+</div>
+<!-- Login Container -->
+<main class="relative z-10 w-full max-w-md flex flex-col items-center">
+<!-- Logo Section -->
+<header class="mb-16 text-center">
+<div class="inline-flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-6xl" style="font-variation-settings: 'FILL' 1;">confirmation_number</span>
+</div>
+<h1 class="font-headline text-5xl font-black tracking-tighter uppercase text-primary leading-none">
+                FESTIAPP
+            </h1>
+<p class="font-label text-on-surface-variant text-[10px] uppercase tracking-[0.3em] mt-2 font-bold">
+                Access Portal • 2024 Edition
+            </p>
+</header>
+<!-- Form Section -->
+<div class="w-full space-y-8">
+<div class="space-y-2">
+<label class="block font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant px-1" for="token_pago">
+                    Código de Pulsera
+                </label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-on-surface-variant group-focus-within:text-secondary transition-colors">token</span>
+</div>
+<input class="w-full h-16 bg-surface-container border-none rounded-xl pl-12 pr-4 text-on-surface font-headline font-bold text-lg tracking-widest placeholder:text-outline/40 focus:ring-2 focus:ring-secondary/50 transition-all outline-none" id="token_pago" name="token_pago" placeholder="E.G. BRAC-99-X2" type="text"/>
+</div>
+</div>
+<button class="w-full group relative overflow-hidden h-16 bg-primary rounded-xl flex items-center justify-center transition-all active:scale-95 shadow-[0_10px_30px_rgba(233,255,186,0.2)]">
+<div class="absolute inset-0 bg-gradient-to-r from-primary to-primary-container opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="relative z-10 font-headline font-black text-on-primary text-xl uppercase tracking-tighter">
+                    Entrar
+                </span>
+<span class="material-symbols-outlined relative z-10 ml-2 text-on-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<div class="text-center pt-4">
+<a class="inline-block text-on-surface-variant hover:text-secondary transition-colors text-sm font-medium border-b border-transparent hover:border-secondary/30 pb-1" href="#">
+                    ¿Tienes problemas con tu pulsera?
+                </a>
+</div>
+</div>
+<!-- Decorative Info Cards (Bento style hint) -->
+<div class="mt-20 grid grid-cols-2 gap-4 w-full">
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col gap-3 border border-outline-variant/10">
+<span class="material-symbols-outlined text-secondary text-xl">verified_user</span>
+<p class="text-[10px] uppercase font-bold tracking-wider text-on-surface-variant leading-tight">Acceso Seguro Biométrico</p>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col gap-3 border border-outline-variant/10">
+<span class="material-symbols-outlined text-tertiary text-xl">contactless</span>
+<p class="text-[10px] uppercase font-bold tracking-wider text-on-surface-variant leading-tight">Validación NFC Instantánea</p>
+</div>
+</div>
+</main>
+<!-- Footer Aesthetic -->
+<footer class="fixed bottom-10 z-10 flex items-center gap-6 opacity-40">
+<div class="h-px w-8 bg-outline-variant"></div>
+<span class="text-[10px] font-headline font-bold uppercase tracking-[0.2em] text-on-surface-variant">Powered by FestiCore OS</span>
+<div class="h-px w-8 bg-outline-variant"></div>
+</footer>
+<!-- Abstract Art Element -->
+<div class="fixed top-1/2 -right-20 -translate-y-1/2 hidden lg:block rotate-90 opacity-20 pointer-events-none">
+<span class="font-headline text-[120px] font-black text-outline uppercase tracking-tighter leading-none select-none">LOGIN_PORTAL_SYSTEM</span>
+</div>
+</body></html>

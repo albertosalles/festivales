@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;800;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#2c2c30",
+              "on-tertiary-fixed-variant": "#692100",
+              "on-primary-fixed": "#344a00",
+              "secondary-dim": "#00d4ec",
+              "secondary": "#00e3fd",
+              "primary-dim": "#aeee00",
+              "on-primary-fixed-variant": "#4b6800",
+              "background": "#0e0e11",
+              "on-surface": "#f0edf1",
+              "tertiary": "#ff7439",
+              "primary-container": "#bafd00",
+              "tertiary-fixed-dim": "#ff7e49",
+              "surface-tint": "#e9ffba",
+              "surface-container-low": "#131316",
+              "on-surface-variant": "#acaaae",
+              "on-secondary-container": "#e8fbff",
+              "surface-container-lowest": "#000000",
+              "surface-container": "#19191d",
+              "on-background": "#f0edf1",
+              "on-primary": "#496600",
+              "primary-fixed": "#bafd00",
+              "inverse-surface": "#fcf8fd",
+              "on-secondary": "#004d57",
+              "surface-container-high": "#1f1f23",
+              "on-tertiary-fixed": "#310b00",
+              "secondary-container": "#006875",
+              "on-error": "#490013",
+              "inverse-primary": "#4a6800",
+              "on-secondary-fixed": "#003a42",
+              "primary": "#e9ffba",
+              "secondary-fixed-dim": "#00d7f0",
+              "on-secondary-fixed-variant": "#005964",
+              "outline-variant": "#48474b",
+              "primary-fixed-dim": "#aeee00",
+              "surface-variant": "#25252a",
+              "error-dim": "#d73357",
+              "surface-dim": "#0e0e11",
+              "on-tertiary": "#3f1100",
+              "tertiary-dim": "#ff7439",
+              "on-tertiary-container": "#220600",
+              "error-container": "#a70138",
+              "surface": "#0e0e11",
+              "error": "#ff6e84",
+              "on-error-container": "#ffb2b9",
+              "tertiary-container": "#fc5b00",
+              "secondary-fixed": "#26e6ff",
+              "inverse-on-surface": "#555458",
+              "tertiary-fixed": "#ff956b",
+              "on-primary-container": "#425d00",
+              "surface-container-highest": "#25252a",
+              "outline": "#767579"
+            },
+            fontFamily: {
+              "headline": ["Epilogue"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glow-primary {
+            box-shadow: 0 0 15px rgba(233, 255, 186, 0.2);
+        }
+        .glass-card {
+            background: rgba(25, 25, 29, 0.6);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary selection:text-on-primary">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#0e0e11]/60 backdrop-blur-xl flex justify-between items-center px-5 h-20 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+<div class="flex items-center gap-4">
+<span class="text-2xl font-black text-[#e9ffba] tracking-tighter font-['Epilogue'] uppercase">FESTIAPP</span>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-[#acaaae] hover:text-[#00e3fd] transition-colors duration-300 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+</button>
+<button class="text-[#e9ffba] transition-colors duration-300 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="notifications" style="font-variation-settings: 'FILL' 1;">notifications</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden border border-outline-variant/20">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="Close up portrait of a young male festival attendee" src="https://lh3.googleusercontent.com/aida-public/AB6AXuALX_upbZBducBAD1CfFu7-V26rKW0CIfLO8pMY9-86HyqYoLXZs-oBJEpKQkzPAOaR1YzEtikr6tYEEsAYTJutl7-vOfXW8oqntalTrEo7T3CIKzqzfiICBbEfwXoOkqL1PPyVjIu9whCg1kIfksdeKtm2O2OirsNB8oM9QYjRffrQoNxfdlZ1JqDtYthPvGq-vtvimOlf11LHFWMMp3WSApllG4Qh1muH5zCHKL6lnn-5qONkQgXx4sARX-T4qeHwfMfF8u32SdU"/>
+</div>
+</div>
+</nav>
+<main class="pt-28 pb-32 px-5 max-w-2xl mx-auto">
+<!-- Header Section -->
+<header class="mb-10">
+<div class="flex items-baseline gap-2 mb-2">
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold tracking-[0.2em] uppercase rounded">Live Updates</span>
+</div>
+<h1 class="text-5xl font-black font-headline tracking-tighter text-on-surface uppercase mb-2">Alerts</h1>
+<p class="text-on-surface-variant font-medium">Real-time pulses from the festival floor.</p>
+</header>
+<!-- Notification List -->
+<div class="space-y-4">
+<!-- Low Queue Alert (Primary Highlight) -->
+<div class="glass-card p-5 rounded-xl border-l-4 border-primary relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-primary text-6xl" data-icon="local_bar">local_bar</span>
+</div>
+<div class="flex gap-4 items-start relative z-10">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary" data-icon="speed">speed</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline font-bold text-lg text-primary uppercase tracking-tight">Barra Norte: Sin Espera</h3>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mt-1">AHORA</span>
+</div>
+<p class="text-on-surface font-medium leading-snug">¡La Barra Norte tiene poca cola! Aprovecha el set de Techno para hidratarte sin esperas.</p>
+<div class="mt-4 flex gap-2">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider active:scale-95 transition-transform">Ver en Mapa</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Artist Alert -->
+<div class="bg-surface-container/40 p-5 rounded-xl border border-outline-variant/10 group">
+<div class="flex gap-4 items-start">
+<div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary" data-icon="theater_comedy">theater_comedy</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline font-bold text-lg text-on-surface uppercase tracking-tight">Main Stage: 15 MIN</h3>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mt-1">12:45 PM</span>
+</div>
+<p class="text-on-surface-variant font-medium leading-snug">El set de <span class="text-secondary">Neon Pulse</span> está a punto de comenzar. Dirígete a la zona A para mejor visibilidad.</p>
+</div>
+</div>
+</div>
+<!-- Another Low Queue Alert -->
+<div class="glass-card p-5 rounded-xl border-l-4 border-primary relative overflow-hidden">
+<div class="flex gap-4 items-start relative z-10">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary" data-icon="restaurant">restaurant</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline font-bold text-lg text-primary uppercase tracking-tight">Food Court: Eco-Bites</h3>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mt-1">12:20 PM</span>
+</div>
+<p class="text-on-surface font-medium leading-snug">La zona de restauración Eco-Bites reporta tiempos de espera menores a 5 minutos.</p>
+</div>
+</div>
+</div>
+<!-- Transaction Alert -->
+<div class="bg-surface-container/40 p-5 rounded-xl border border-outline-variant/10">
+<div class="flex gap-4 items-start">
+<div class="w-12 h-12 rounded-full bg-tertiary/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-tertiary" data-icon="payments">payments</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline font-bold text-lg text-on-surface uppercase tracking-tight">Recarga Exitosa</h3>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mt-1">11:05 AM</span>
+</div>
+<p class="text-on-surface-variant font-medium leading-snug">Se han añadido 50.00€ a tu pulsera. ¡Disfruta del festival!</p>
+</div>
+</div>
+</div>
+<!-- System Alert -->
+<div class="bg-surface-container-low p-5 rounded-xl border border-outline-variant/5 opacity-60">
+<div class="flex gap-4 items-start">
+<div class="w-12 h-12 rounded-full bg-outline-variant/20 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="info">info</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-headline font-bold text-lg text-on-surface-variant uppercase tracking-tight">Puertas Abiertas</h3>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mt-1">10:00 AM</span>
+</div>
+<p class="text-on-surface-variant font-medium leading-snug">Bienvenidos a FestiApp. Los accesos ya están operativos.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-6 pb-6 pt-3 bg-[#19191d]/80 backdrop-blur-2xl z-50 rounded-t-[2rem] border-t border-[#ffffff]/10 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+<a class="flex flex-col items-center justify-center text-[#acaaae] hover:text-[#00e3fd] active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="theater_comedy">theater_comedy</span>
+<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-widest">Stages</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#acaaae] hover:text-[#00e3fd] active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="map">map</span>
+<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-widest">Map</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#acaaae] hover:text-[#00e3fd] active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="payments">payments</span>
+<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-widest">Wallet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#e9ffba] bg-[#e9ffba]/10 rounded-full px-4 py-1 shadow-[0_0_15px_rgba(233,255,186,0.3)] active:scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="notifications" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-widest">Alerts</span>
+</a>
+</nav>
+<!-- SideNavBar (Hidden on Mobile) -->
+<aside class="hidden lg:flex flex-col h-screen sticky top-0 w-72 bg-[#000000] border-r border-[#ffffff]/5 divide-y divide-[#ffffff]/5 shadow-2xl z-50">
+<div class="p-8">
+<div class="text-[#e9ffba] font-black italic text-2xl tracking-tighter mb-1">FESTIAPP</div>
+<div class="text-[#00e3fd] font-['Epilogue'] font-bold text-xs uppercase tracking-widest">Admin Portal</div>
+</div>
+<nav class="flex-1 py-4">
+<a class="flex items-center gap-4 text-[#acaaae] py-4 px-6 hover:bg-[#19191d] hover:text-[#e9ffba] transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-['Epilogue'] font-bold text-sm uppercase tracking-tight">Analytics</span>
+</a>
+<a class="flex items-center gap-4 text-[#acaaae] py-4 px-6 hover:bg-[#19191d] hover:text-[#e9ffba] transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-['Epilogue'] font-bold text-sm uppercase tracking-tight">Crowd Control</span>
+</a>
+<a class="flex items-center gap-4 text-[#acaaae] py-4 px-6 hover:bg-[#19191d] hover:text-[#e9ffba] transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+<span class="font-['Epilogue'] font-bold text-sm uppercase tracking-tight">Stage Tech</span>
+</a>
+<a class="flex items-center gap-4 text-[#00e3fd] bg-[#00e3fd]/5 border-l-4 border-[#00e3fd] py-4 px-6 hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-['Epilogue'] font-bold text-sm uppercase tracking-tight">Alerts</span>
+</a>
+</nav>
+<div class="p-6">
+<button class="w-full py-4 bg-error text-on-error font-headline font-black uppercase tracking-tighter rounded-xl active:scale-95 transition-transform">
+                Emergency Broadcast
+            </button>
+</div>
+</aside>
+</body></html>

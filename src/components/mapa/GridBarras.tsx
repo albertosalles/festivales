@@ -9,7 +9,7 @@ interface GridBarrasProps {
 }
 
 /**
- * Grid responsivo que muestra todas las barras del recinto.
+ * Grid responsivo Bento de tarjetas de barras.
  * Se actualiza en tiempo real gracias al hook useBarrasEnTiempoReal.
  */
 export function GridBarras({ barrasIniciales }: GridBarrasProps) {
@@ -17,10 +17,14 @@ export function GridBarras({ barrasIniciales }: GridBarrasProps) {
 
     if (barras.length === 0) {
         return (
-            <div className="rounded-xl border bg-card p-8 text-center text-muted-foreground">
-                <p className="text-4xl">🍺</p>
-                <p className="mt-4 text-lg font-medium">No hay barras registradas</p>
-                <p className="text-sm">
+            <div className="glass-card rounded-[2rem] p-12 text-center border border-outline-variant/10">
+                <span className="material-symbols-outlined text-on-surface-variant text-6xl mb-4">
+                    local_bar
+                </span>
+                <p className="mt-4 text-lg font-headline font-bold text-on-surface uppercase tracking-tight">
+                    No hay barras registradas
+                </p>
+                <p className="text-sm text-on-surface-variant mt-2">
                     Las barras aparecerán aquí cuando la organización las configure.
                 </p>
             </div>
@@ -28,7 +32,7 @@ export function GridBarras({ barrasIniciales }: GridBarrasProps) {
     }
 
     return (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {barras.map((barra) => (
                 <TarjetaBarra key={barra.idBarra} barra={barra} />
             ))}

@@ -7,7 +7,7 @@ import { SelectorRecarga } from '@/components/billetera/SelectorRecarga';
 import { useSesion } from '@/hooks/useSesion';
 
 /**
- * Contenedor principal de la billetera del usuario.
+ * Contenedor principal de la billetera — Diseño Stitch "Electric Nocturne".
  * Carga el saldo desde la API y gestiona las recargas.
  */
 export function ContenedorBilletera() {
@@ -77,9 +77,9 @@ export function ContenedorBilletera() {
     // Mientras carga la sesión
     if (cargandoSesion) {
         return (
-            <div className="space-y-4">
-                <div className="h-32 animate-pulse rounded-xl bg-muted" />
-                <div className="h-48 animate-pulse rounded-xl bg-muted" />
+            <div className="space-y-6">
+                <div className="h-48 animate-pulse rounded-[2rem] bg-surface-container" />
+                <div className="h-16 animate-pulse rounded-xl bg-surface-container" />
             </div>
         );
     }
@@ -87,9 +87,13 @@ export function ContenedorBilletera() {
     // Si no hay sesión
     if (!sesion) {
         return (
-            <div className="rounded-xl border bg-card p-8 text-center text-muted-foreground">
-                <p className="text-4xl">🔒</p>
-                <p className="mt-4 text-lg font-medium">Inicia sesión para ver tu billetera</p>
+            <div className="glass-card rounded-[2rem] p-12 text-center border border-outline-variant/10">
+                <span className="material-symbols-outlined text-on-surface-variant text-6xl">
+                    lock
+                </span>
+                <p className="mt-4 text-lg font-headline font-bold text-on-surface uppercase tracking-tight">
+                    Inicia sesión para ver tu billetera
+                </p>
             </div>
         );
     }
@@ -97,10 +101,14 @@ export function ContenedorBilletera() {
     // Si hay error al cargar el saldo
     if (error) {
         return (
-            <div className="rounded-xl border bg-card p-8 text-center text-muted-foreground">
-                <p className="text-4xl">⚠️</p>
-                <p className="mt-4 text-lg font-medium">{error}</p>
-                <p className="text-sm">
+            <div className="glass-card rounded-[2rem] p-12 text-center border border-outline-variant/10">
+                <span className="material-symbols-outlined text-neon-orange text-6xl">
+                    warning
+                </span>
+                <p className="mt-4 text-lg font-headline font-bold text-on-surface uppercase tracking-tight">
+                    {error}
+                </p>
+                <p className="text-sm text-on-surface-variant mt-2">
                     Es posible que tu usuario no tenga una billetera asociada.
                 </p>
             </div>
@@ -108,7 +116,7 @@ export function ContenedorBilletera() {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8">
             <TarjetaSaldo saldo={saldo} cargando={cargandoSaldo} />
             <SelectorRecarga
                 alRecargar={ejecutarRecarga}
