@@ -243,3 +243,71 @@
     opacity: 1;
   }
 }
+
+/* === PWA Standalone Mode & iOS Safe Areas === */
+
+/* Prevent iOS text selection and callout on interactive areas */
+@layer utilities {
+  .pwa-touch-safe {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Safe area support for standalone mode */
+@supports (padding-top: env(safe-area-inset-top)) {
+  /* Header: respect notch / Dynamic Island */
+  .cabecera-pwa {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  /* Navbar: respect home indicator */
+  .navbar-pwa {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Main content: adjust for safe areas */
+  .contenido-pwa {
+    padding-top: calc(5rem + env(safe-area-inset-top));
+    padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* Standalone display mode adjustments */
+@media (display-mode: standalone) {
+  body {
+    /* Prevent overscroll bounce in iOS */
+    overscroll-behavior-y: contain;
+  }
+
+  /* Slightly taller header in standalone to accommodate status bar area */
+  .cabecera-pwa {
+    min-height: calc(5rem + env(safe-area-inset-top, 0px));
+  }
+}
+
+/* Smooth scroll for iOS */
+@layer base {
+  html {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+}
+
+/* Banner slide-up animation */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

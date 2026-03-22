@@ -36,7 +36,7 @@ export function CabeceraApp() {
     }, [cargandoSesion, sesion, cargarSaldo]);
 
     return (
-        <header className="bg-[#0e0e11]/60 backdrop-blur-xl fixed top-0 w-full z-50 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+        <header className="cabecera-pwa pwa-touch-safe bg-[#0e0e11]/60 backdrop-blur-xl fixed top-0 w-full z-50 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
             <div className="flex justify-between items-center px-5 h-20 max-w-7xl mx-auto w-full">
                 {/* Logo */}
                 <div className="flex flex-col">
@@ -50,8 +50,8 @@ export function CabeceraApp() {
 
                 {/* Right side: balance + icons + avatar */}
                 <div className="flex items-center gap-4">
-                    {/* Balance display */}
-                    <div className="hidden sm:flex flex-col items-end mr-2">
+                    {/* Balance display — always visible for mobile PWA */}
+                    <div className="flex flex-col items-end mr-2">
                         <span className="text-on-surface-variant text-[10px] uppercase font-bold tracking-widest">
                             Balance
                         </span>

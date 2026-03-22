@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { NOMBRE_FESTIVAL, RUTAS } from '@/lib/constantes';
 import { useSesion } from '@/hooks/useSesion';
+import { BannerInstalacionPWA } from '@/components/layout/BannerInstalacionPWA';
 
 /**
  * Página de login — Identificación por código de pulsera o acceso admin.
@@ -275,6 +276,8 @@ export default function PaginaLogin() {
                     LOGIN_PORTAL_SYSTEM
                 </span>
             </div>
+
+            <BannerInstalacionPWA />
         </div>
     );
 }

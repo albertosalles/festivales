@@ -22,7 +22,7 @@ export function NavbarUsuario() {
     const { noLeidas } = useContextoNotificaciones();
 
     return (
-        <nav className="fixed bottom-0 left-0 w-full z-50 rounded-t-[2rem] bg-[#19191d]/80 backdrop-blur-2xl border-t border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
+        <nav className="navbar-pwa pwa-touch-safe fixed bottom-0 left-0 w-full z-50 rounded-t-[2rem] bg-[#19191d]/80 backdrop-blur-2xl border-t border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.5)]">
             <div className="flex justify-around items-center px-6 pb-6 pt-3 max-w-lg mx-auto">
                 {ENLACES_NAVEGACION.map((enlace) => {
                     const estaActivo = rutaActual === enlace.href;
