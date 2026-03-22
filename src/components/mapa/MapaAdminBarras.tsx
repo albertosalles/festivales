@@ -10,7 +10,6 @@ import {
     ETIQUETA_ESTADO,
     EMOJI_ESTADO,
     COLOR_FONDO_POR_ESTADO,
-    COLOR_TEXTO_POR_ESTADO,
 } from '@/lib/constantes';
 import { cn } from '@/lib/utils';
 import type { Barra, EstadoCola } from '@/lib/tipos';
@@ -73,10 +72,7 @@ export function MapaAdminBarras({ barrasIniciales }: MapaAdminBarrasProps) {
                     <CardHeader className="pb-2">
                         <div className="flex items-center justify-between">
                             <CardTitle
-                                className={cn(
-                                    'text-lg font-bold',
-                                    COLOR_TEXTO_POR_ESTADO[barra.estadoCola]
-                                )}
+                                className='text-lg font-bold text-gray-900'
                             >
                                 {barra.nombreLocalizacion}
                             </CardTitle>
@@ -87,10 +83,7 @@ export function MapaAdminBarras({ barrasIniciales }: MapaAdminBarrasProps) {
                     </CardHeader>
                     <CardContent>
                         <p
-                            className={cn(
-                                'mb-3 text-xs font-medium',
-                                COLOR_TEXTO_POR_ESTADO[barra.estadoCola]
-                            )}
+                            className='mb-3 text-xs font-medium text-gray-800'
                         >
                             Cambiar estado:
                         </p>
