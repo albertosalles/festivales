@@ -1,8 +1,9 @@
 import { SidebarAdmin } from '@/components/layout/SidebarAdmin';
+import { CabeceraAdmin } from '@/components/layout/CabeceraAdmin';
 
 /**
  * Layout para el panel de administración.
- * Incluye sidebar lateral fijo.
+ * Sidebar lateral fijo + header con blur.
  */
 export default function LayoutAdmin({
     children,
@@ -10,9 +11,10 @@ export default function LayoutAdmin({
     children: React.ReactNode;
 }) {
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen bg-[#0e0e11]">
             <SidebarAdmin />
-            <main className="ml-64 min-h-screen p-8">
+            <CabeceraAdmin />
+            <main className="ml-64 pt-24 px-10 pb-12 min-h-screen">
                 {children}
             </main>
         </div>

@@ -96,6 +96,7 @@ export const RUTAS = {
     ADMIN_MAPA: '/admin/mapa',
     ADMIN_BARRAS: '/admin/barras',
     ADMIN_DASHBOARD: '/admin/dashboard',
+    ADMIN_CAMAREROS: '/admin/camareros',
 } as const;
 
 // === Configuración general ===
