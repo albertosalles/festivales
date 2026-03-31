@@ -84,7 +84,7 @@ export function ListaNotificaciones() {
                                         esNoLeida ? 'text-neon-green' : 'text-on-surface-variant'
                                     )}
                                 >
-                                    {esNoLeida ? 'speed' : 'notifications'}
+                                    {notificacion.icono ?? (esNoLeida ? 'speed' : 'notifications')}
                                 </span>
                             </div>
 
@@ -97,9 +97,9 @@ export function ListaNotificaciones() {
                                             esNoLeida ? 'text-neon-green' : 'text-on-surface-variant'
                                         )}
                                     >
-                                        {esNoLeida
+                                        {notificacion.nombreBarra || (esNoLeida
                                             ? '¡Cola baja disponible!'
-                                            : 'Alerta leída'}
+                                            : 'Alerta leída')}
                                     </h3>
                                     <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mt-1">
                                         {formatearFecha(notificacion.fecha)}

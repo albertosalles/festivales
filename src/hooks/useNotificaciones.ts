@@ -11,6 +11,7 @@ export interface Notificacion {
     nombreBarra: string;
     fecha: Date;
     leida: boolean;
+    icono?: string;
 }
 
 /**
@@ -133,6 +134,22 @@ export function useNotificaciones() {
         setNoLeidas(0);
     };
 
+    /** Agrega una notificación personalizada (ej. pedido en preparación) */
+    const agregarNotificacion = (mensaje: string, nombreBarra: string, icono?: string) => {
+        const notificacion: Notificacion = {
+            id: `custom-${Date.now()}-${Math.random().toString(36).substring(7)}`,
+            mensaje,
+            nombreBarra,
+            fecha: new Date(),
+            leida: false,
+            icono,
+        };
+
+        setNotificaciones((prev) => [notificacion, ...prev]);
+        setNoLeidas((prev) => prev + 1);
+        toast.success(mensaje);
+    };
+
     return {
         notificaciones,
         noLeidas,
@@ -140,5 +157,7 @@ export function useNotificaciones() {
         alternarNotificaciones,
         marcarComoLeida,
         marcarTodasComoLeidas,
+        agregarNotificacion,
     };
 }
+

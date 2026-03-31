@@ -11,6 +11,7 @@ interface ContextoNotificaciones {
     alternarNotificaciones: () => void;
     marcarComoLeida: (idNotificacion: string) => void;
     marcarTodasComoLeidas: () => void;
+    agregarNotificacion: (mensaje: string, nombreBarra: string, icono?: string) => void;
 }
 
 const ContextoNotificacionesReact = createContext<ContextoNotificaciones | null>(null);
