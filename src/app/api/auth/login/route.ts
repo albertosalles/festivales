@@ -49,7 +49,10 @@ export async function POST(request: Request) {
             rol,
         };
 
-        return NextResponse.json({ sesion });
+        // Comprobar si el usuario ya tiene preferencias guardadas
+        const tienePreferencias = !!(usuario.preferencia_musica && usuario.preferencia_comida);
+
+        return NextResponse.json({ sesion, tienePreferencias });
     } catch {
         return NextResponse.json(
             { error: 'Error interno del servidor' },

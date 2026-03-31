@@ -80,8 +80,11 @@ export function CabeceraApp() {
                         </Link>
                     </div>
 
-                    {/* Avatar */}
-                    <div className="w-10 h-10 rounded-full border-2 border-neon-green/20 p-0.5 overflow-hidden bg-surface-container flex items-center justify-center">
+                    {/* Avatar → enlace a preferencias */}
+                    <Link
+                        href="/preferencias"
+                        className="w-10 h-10 rounded-full border-2 border-neon-green/20 p-0.5 overflow-hidden bg-surface-container flex items-center justify-center active:scale-95 transition-transform hover:border-neon-green/50"
+                    >
                         {sesion ? (
                             <span className="text-neon-green font-headline font-bold text-sm">
                                 {sesion.nombre.charAt(0).toUpperCase()}
@@ -91,7 +94,7 @@ export function CabeceraApp() {
                                 person
                             </span>
                         )}
-                    </div>
+                    </Link>
                 </div>
             </div>
         </header>

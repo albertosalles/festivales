@@ -45,7 +45,13 @@ export default function PaginaLogin() {
             }
 
             iniciarSesion(datos.sesion);
-            router.push(RUTAS.MAPA);
+
+            // Si el usuario no tiene preferencias guardadas, redirigir al formulario
+            if (!datos.tienePreferencias) {
+                router.push(RUTAS.PREFERENCIAS);
+            } else {
+                router.push(RUTAS.MAPA);
+            }
         } catch {
             setError('Error de conexión. Inténtalo de nuevo.');
         } finally {

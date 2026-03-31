@@ -87,6 +87,7 @@ export const TIEMPO_ESPERA_POR_ESTADO: Record<EstadoCola, string> = {
 export const RUTAS = {
     INICIO: '/',
     LOGIN: '/login',
+    PREFERENCIAS: '/preferencias',
     // Rutas de usuario
     MAPA: '/mapa',
     BILLETERA: '/billetera',

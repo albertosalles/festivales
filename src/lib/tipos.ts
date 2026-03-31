@@ -18,7 +18,7 @@ export interface Barra {
   estadoCola: EstadoCola;
 }
 
-/** Usuario registrado en el festival */
+/** Usuario registrado en el festival Sprint 2 */
 export interface Usuario {
   idUsuario: number;
   nombre: string;
@@ -27,6 +27,8 @@ export interface Usuario {
   correo: string;
   telefono: string;
   tokenPago: string;
+  preferenciaMusica?: string; // NUEVO
+  preferenciaComida?: string; // NUEVO
 }
 
 /** Billetera digital del usuario */
@@ -75,6 +77,8 @@ export interface FilaUsuario {
   correo: string;
   telefono: string;
   token_pago: string;
+  preferencia_musica?: string; // NUEVO
+  preferencia_comida?: string; // NUEVO
 }
 
 /** Fila cruda de la tabla wallet (snake_case) */
@@ -92,4 +96,81 @@ export interface FilaTransaccion {
   tipo_movimiento: string;
   monto: number;
   fecha: string;
+}
+
+// --- Tipos de productos (Sprint 2) ---
+export interface Producto {
+  idProducto: number;
+  idBarra: number;
+  nombre: string;
+  precio: number;
+  categoria?: string;
+}
+
+export interface LineaTransaccion {
+  idLinea: number;
+  idTransaccion: number;
+  idProducto: number;
+  cantidad: number;
+  precioUnitario: number;
+}
+
+export interface Camarero {
+  idCamarero: number;
+  nombre: string;
+  apellidos?: string;
+  activo: boolean;
+  idBarraActual?: number;
+}
+
+export interface AsignacionCamarero {
+  idAsignacion: number;
+  idCamarero: number;
+  idBarra: number;
+  fechaInicio: string;
+  fechaFin?: string;
+  horasImputadas: number;
+}
+
+export interface ConfiguracionFestival {
+  clave: string;
+  valor: string;
+}
+
+export interface FilaProducto {
+  id_producto: number;
+  id_barra: number;
+  nombre: string;
+  precio: number;
+  categoria?: string;
+}
+
+export interface FilaLineaTransaccion {
+  id_linea: number;
+  id_transaccion: number;
+  id_producto: number;
+  cantidad: number;
+  precio_unitario: number;
+}
+
+export interface FilaCamarero {
+  id_camarero: number;
+  nombre: string;
+  apellidos?: string;
+  activo: boolean;
+  id_barra_actual?: number;
+}
+
+export interface FilaAsignacionCamarero {
+  id_asignacion: number;
+  id_camarero: number;
+  id_barra: number;
+  fecha_inicio: string;
+  fecha_fin?: string;
+  horas_imputadas: number;
+}
+
+export interface FilaConfiguracionFestival {
+  clave: string;
+  valor: string;
 }

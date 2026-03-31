@@ -13,6 +13,8 @@ function transformarFila(fila: FilaUsuario): Usuario {
         correo: fila.correo,
         telefono: fila.telefono,
         tokenPago: fila.token_pago,
+        preferenciaMusica: fila.preferencia_musica,
+        preferenciaComida: fila.preferencia_comida,
     };
 }
 
@@ -59,4 +61,27 @@ export async function obtenerUsuarioPorId(
     }
 
     return transformarFila(data as FilaUsuario);
+}
+
+/**
+ * Actualiza las preferencias de música y comida de un usuario.
+ */
+export async function actualizarPreferencias(
+    idUsuario: number,
+    musica: string,
+    comida: string
+): Promise<void> {
+    const supabase = await crearClienteServidor();
+
+    const { error } = await supabase
+        .from('usuario')
+        .update({
+            preferencia_musica: musica,
+            preferencia_comida: comida,
+        })
+        .eq('id_usuario', idUsuario);
+
+    if (error) {
+        throw new Error(`Error al actualizar preferencias: ${error.message}`);
+    }
 }
