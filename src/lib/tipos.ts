@@ -121,6 +121,7 @@ export interface Camarero {
   apellidos?: string;
   activo: boolean;
   idBarraActual?: number;
+  horasTotales?: number;
 }
 
 export interface AsignacionCamarero {

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { obtenerBarraPorId } from '@/servicios/barras.servicio';
 import { obtenerMetricasBarra } from '@/servicios/metricas.servicio';
-import { obtenerCamarerosPorBarra } from '@/servicios/camareros.servicio';
+import { obtenerCamarerosPorBarra, obtenerHistorialCamarerosPorBarra } from '@/servicios/camareros.servicio';
 import { obtenerProductosPorBarra } from '@/servicios/productos.servicio';
 import { RUTAS } from '@/lib/constantes';
 import { cn } from '@/lib/utils';
@@ -26,11 +26,12 @@ export default async function PaginaDetalleBarra({
 
     if (!idBarra || isNaN(idBarra)) return notFound();
 
-    const [barra, metricas, camareros, productos] = await Promise.all([
+    const [barra, metricas, camarerosActivos, productos, historialCamareros] = await Promise.all([
         obtenerBarraPorId(idBarra),
         obtenerMetricasBarra(idBarra),
         obtenerCamarerosPorBarra(idBarra),
         obtenerProductosPorBarra(idBarra),
+        obtenerHistorialCamarerosPorBarra(idBarra),
     ]);
 
     if (!barra) return notFound();
@@ -123,7 +124,7 @@ export default async function PaginaDetalleBarra({
                         </span>
                     </div>
                     <h3 className="font-headline text-3xl font-bold text-on-surface">
-                        {camareros.length}
+                        {camarerosActivos.length}
                     </h3>
                 </div>
             </section>
@@ -142,7 +143,7 @@ export default async function PaginaDetalleBarra({
                                 Ingresos por camarero
                             </p>
                             <h3 className="font-headline text-2xl font-bold text-on-surface">
-                                €{camareros.length > 0 ? (metricas.ingresosTotales / camareros.length).toFixed(2) : '0.00'}
+                                €{camarerosActivos.length > 0 ? (metricas.ingresosTotales / camarerosActivos.length).toFixed(2) : '0.00'}
                                 <span className="text-sm text-on-surface-variant font-normal"> /persona</span>
                             </h3>
                         </div>
@@ -152,12 +153,12 @@ export default async function PaginaDetalleBarra({
                             <p className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold">
                                 Personal asignado
                             </p>
-                            {camareros.length === 0 ? (
+                            {camarerosActivos.length === 0 ? (
                                 <p className="text-on-surface-variant text-sm italic">
                                     No hay camareros asignados a esta barra
                                 </p>
                             ) : (
-                                camareros.map((c) => (
+                                camarerosActivos.map((c) => (
                                     <div
                                         key={c.idCamarero}
                                         className="flex items-center gap-3 p-3 bg-surface-container-low rounded-lg"
@@ -182,6 +183,41 @@ export default async function PaginaDetalleBarra({
                                     </div>
                                 ))
                             )}
+
+                        {/* Historial de Personal */}
+                        <div className="space-y-3 pt-6 border-t border-white/5">
+                            <p className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold">
+                                Historial de Personal
+                            </p>
+                            {historialCamareros.length === 0 ? (
+                                <p className="text-on-surface-variant text-sm italic">
+                                    Ningún camarero ha trabajado aquí aún
+                                </p>
+                            ) : (
+                                historialCamareros.map(({ camarero: c, horasEnEstaBarra }) => (
+                                    <div
+                                        key={c.idCamarero}
+                                        className="flex items-center gap-3 p-3 bg-surface-container-low rounded-lg border border-white/5"
+                                    >
+                                        <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                                            <span className="text-xs font-bold text-on-surface">
+                                                {c.nombre.charAt(0)}
+                                            </span>
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-sm font-bold text-on-surface">{c.nombre}</p>
+                                            {c.apellidos && (
+                                                <p className="text-[10px] text-on-surface-variant">{c.apellidos}</p>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center gap-1.5 bg-neon-blue/10 px-2 py-1 rounded">
+                                            <span className="material-symbols-outlined text-[12px] text-neon-blue">schedule</span>
+                                            <span className="text-xs font-bold font-headline text-neon-blue">{horasEnEstaBarra.toFixed(1)}h</span>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
                         </div>
                     </div>
                 </div>

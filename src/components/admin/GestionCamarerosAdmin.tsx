@@ -178,8 +178,9 @@ export function GestionCamarerosAdmin({ camarerosIniciales, barras }: GestionCam
                 <div className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-white/5 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
                     <div className="col-span-3">Nombre del camarero</div>
                     <div className="col-span-2">Estado</div>
-                    <div className="col-span-4">Barra asignada</div>
-                    <div className="col-span-3 text-right">Acciones</div>
+                    <div className="col-span-2">Horas Tot.</div>
+                    <div className="col-span-3">Barra asignada</div>
+                    <div className="col-span-2 text-right">Acciones</div>
                 </div>
 
                 {/* Rows */}
@@ -221,8 +222,14 @@ export function GestionCamarerosAdmin({ camarerosIniciales, barras }: GestionCam
                             </button>
                         </div>
 
+                        {/* Horas Totales */}
+                        <div className="col-span-2 flex items-center gap-1.5 text-on-surface-variant">
+                            <span className="material-symbols-outlined text-[14px]">schedule</span>
+                            <span className="text-xs font-bold font-headline text-on-surface">{camarero.horasTotales ? camarero.horasTotales.toFixed(1) : '0.0'}h</span>
+                        </div>
+
                         {/* Barra asignada */}
-                        <div className="col-span-4">
+                        <div className="col-span-3">
                             <select
                                 value={camarero.idBarraActual ?? ''}
                                 onChange={(e) => {
@@ -242,7 +249,7 @@ export function GestionCamarerosAdmin({ camarerosIniciales, barras }: GestionCam
                         </div>
 
                         {/* Acciones */}
-                        <div className="col-span-3 flex justify-end">
+                        <div className="col-span-2 flex justify-end">
                             {cargando === camarero.idCamarero && (
                                 <span className="material-symbols-outlined text-on-surface-variant animate-spin text-sm">
                                     progress_activity

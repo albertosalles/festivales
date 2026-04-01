@@ -146,23 +146,73 @@ export async function obtenerCamarerosPorBarra(idBarra: number): Promise<Camarer
     return (data as FilaCamarero[]).map(transformarFilaCamarero);
 }
 
-/** Obtener total de horas de un camarero (suma de asignaciones cerradas) */
-export async function obtenerTotalHorasCamarero(idCamarero: number): Promise<number> {
+/** Obtener total de horas de un camarero (incluye activas y finalizadas) */
+export async function obtenerHorasTotalesCamarero(idCamarero: number): Promise<number> {
     const supabase = await crearClienteServidor();
 
     const { data, error } = await supabase
         .from('asignaciones_camareros')
         .select('fecha_inicio, fecha_fin')
-        .eq('id_camarero', idCamarero)
-        .not('fecha_fin', 'is', null);
+        .eq('id_camarero', idCamarero);
 
     if (error) return 0;
 
-    let totalMinutos = 0;
+    let totalMilisegundos = 0;
+    const ahora = new Date().getTime();
+
     for (const fila of data ?? []) {
         const inicio = new Date(fila.fecha_inicio).getTime();
-        const fin = new Date(fila.fecha_fin).getTime();
-        totalMinutos += (fin - inicio) / 60000;
+        const fin = fila.fecha_fin ? new Date(fila.fecha_fin).getTime() : ahora;
+        totalMilisegundos += (fin - inicio);
     }
-    return totalMinutos;
+    
+    return totalMilisegundos / (1000 * 60 * 60);
+}
+
+/**
+ * Obtener historial de camareros que han trabajado en una barra,
+ * indicando cuántas horas totales han estado asignados a la misma.
+ */
+export async function obtenerHistorialCamarerosPorBarra(idBarra: number): Promise<{ camarero: Camarero, horasEnEstaBarra: number }[]> {
+    const supabase = await crearClienteServidor();
+
+    const { data: asignaciones, error: errorAsig } = await supabase
+        .from('asignaciones_camareros')
+        .select('id_camarero, fecha_inicio, fecha_fin')
+        .eq('id_barra', idBarra);
+
+    if (errorAsig || !asignaciones) return [];
+
+    const tiempoPorCamarero: Record<number, number> = {};
+    const ahora = new Date().getTime();
+
+    for (const asig of asignaciones) {
+        const idCam = asig.id_camarero;
+        const inicio = new Date(asig.fecha_inicio).getTime();
+        const fin = asig.fecha_fin ? new Date(asig.fecha_fin).getTime() : ahora;
+        
+        tiempoPorCamarero[idCam] = (tiempoPorCamarero[idCam] || 0) + (fin - inicio);
+    }
+
+    const idsCamareros = Object.keys(tiempoPorCamarero).map(Number);
+    if (idsCamareros.length === 0) return [];
+
+    const { data: camarerosData, error: errorCam } = await supabase
+        .from('camareros')
+        .select('*')
+        .in('id_camarero', idsCamareros);
+
+    if (errorCam || !camarerosData) return [];
+
+    const resultados = camarerosData.map((fila) => {
+        const f = fila as FilaCamarero;
+        const c = transformarFilaCamarero(f);
+        const ms = tiempoPorCamarero[c.idCamarero] || 0;
+        return {
+            camarero: c,
+            horasEnEstaBarra: ms / (1000 * 60 * 60)
+        };
+    });
+
+    return resultados.sort((a, b) => b.horasEnEstaBarra - a.horasEnEstaBarra);
 }

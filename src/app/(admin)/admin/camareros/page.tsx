@@ -1,4 +1,4 @@
-import { obtenerCamareros } from '@/servicios/camareros.servicio';
+import { obtenerCamareros, obtenerHorasTotalesCamarero } from '@/servicios/camareros.servicio';
 import { obtenerBarras } from '@/servicios/barras.servicio';
 import { GestionCamarerosAdmin } from '@/components/admin/GestionCamarerosAdmin';
 
@@ -7,10 +7,20 @@ import { GestionCamarerosAdmin } from '@/components/admin/GestionCamarerosAdmin'
  * Lista, crea, activa/desactiva y asigna camareros a barras.
  */
 export default async function PaginaCamareros() {
-    const [camareros, barras] = await Promise.all([
+    const [camarerosBase, barras] = await Promise.all([
         obtenerCamareros(),
         obtenerBarras(),
     ]);
+
+    const camarerosInfo = await Promise.all(
+        camarerosBase.map(async (c) => {
+            const horasTotales = await obtenerHorasTotalesCamarero(c.idCamarero);
+            return {
+                ...c,
+                horasTotales,
+            };
+        })
+    );
 
     return (
         <div>
@@ -26,7 +36,7 @@ export default async function PaginaCamareros() {
                 </div>
             </section>
 
-            <GestionCamarerosAdmin camarerosIniciales={camareros} barras={barras} />
+            <GestionCamarerosAdmin camarerosIniciales={camarerosInfo} barras={barras} />
         </div>
     );
 }
