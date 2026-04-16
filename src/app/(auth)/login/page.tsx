@@ -85,7 +85,7 @@ export default function PaginaLogin() {
             }
 
             iniciarSesion(datos.sesion);
-            router.push(RUTAS.ADMIN_MAPA);
+            router.push(RUTAS.ADMIN_DASHBOARD);
         } catch {
             setError('Error de conexión. Inténtalo de nuevo.');
         } finally {
