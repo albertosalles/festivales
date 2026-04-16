@@ -79,7 +79,7 @@ export default async function PaginaDetalleBarra({
             </section>
 
             {/* KPI Row */}
-            <section className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            <section className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-10">
                 <div className="bg-surface-container p-6 rounded-xl shadow-[0_0_20px_rgba(233,255,186,0.1)] group">
                     <div className="flex items-center gap-2 mb-2">
                         <span className="material-symbols-outlined text-neon-green text-sm">payments</span>
@@ -118,9 +118,38 @@ export default async function PaginaDetalleBarra({
 
                 <div className="bg-surface-container p-6 rounded-xl group">
                     <div className="flex items-center gap-2 mb-2">
+                        <span className="material-symbols-outlined text-neon-green text-sm">inventory_2</span>
+                        <span className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold">
+                            Uds. Vendidas
+                        </span>
+                    </div>
+                    <h3 className="font-headline text-3xl font-bold text-on-surface">
+                        {metricas.unidadesTotalesVendidas}
+                    </h3>
+                </div>
+
+                <div className="bg-surface-container p-6 rounded-xl group">
+                    <div className="flex items-center gap-2 mb-2">
+                        <span className="material-symbols-outlined text-neon-blue text-sm">schedule</span>
+                        <span className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold">
+                            Hora Pico
+                        </span>
+                    </div>
+                    <h3 className="font-headline text-3xl font-bold text-on-surface">
+                        {metricas.horaPico ?? '—'}
+                    </h3>
+                    {metricas.horaPico && (
+                        <p className="text-[10px] text-on-surface-variant mt-1">
+                            {metricas.horaPicoVolumen} pedidos en esa franja
+                        </p>
+                    )}
+                </div>
+
+                <div className="bg-surface-container p-6 rounded-xl group">
+                    <div className="flex items-center gap-2 mb-2">
                         <span className="material-symbols-outlined text-on-surface text-sm">group</span>
                         <span className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold">
-                            Camareros asignados
+                            Camareros
                         </span>
                     </div>
                     <h3 className="font-headline text-3xl font-bold text-on-surface">
@@ -147,6 +176,49 @@ export default async function PaginaDetalleBarra({
                                 <span className="text-sm text-on-surface-variant font-normal"> /persona</span>
                             </h3>
                         </div>
+
+                        {/* Última actividad */}
+                        <div className="bg-surface-container-low rounded-xl p-5 border-l-4 border-neon-blue">
+                            <p className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold mb-1">
+                                Última actividad
+                            </p>
+                            <h3 className="font-headline text-lg font-bold text-on-surface">
+                                {metricas.ultimaTransaccion
+                                    ? new Date(metricas.ultimaTransaccion).toLocaleString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+                                    : 'Sin actividad'}
+                            </h3>
+                        </div>
+
+                        {/* Tiempo medio entre pedidos */}
+                        <div className="bg-surface-container-low rounded-xl p-5 border-l-4 border-neon-orange">
+                            <p className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold mb-1">
+                                Ritmo servicio
+                            </p>
+                            <h3 className="font-headline text-2xl font-bold text-on-surface">
+                                {metricas.tiempoMedioEntrePedidosMin !== null
+                                    ? (metricas.tiempoMedioEntrePedidosMin < 60
+                                        ? `${metricas.tiempoMedioEntrePedidosMin.toFixed(1)} min`
+                                        : `${(metricas.tiempoMedioEntrePedidosMin / 60).toFixed(1)} h`)
+                                    : '—'}
+                                <span className="text-sm text-on-surface-variant font-normal"> entre pedidos</span>
+                            </h3>
+                        </div>
+
+                        {/* Categoría más vendida */}
+                        {metricas.categoriaMasVendida && (
+                            <div className="flex items-center gap-4 p-4 bg-surface-container-low rounded-xl">
+                                <span className="material-symbols-outlined text-neon-green">category</span>
+                                <div>
+                                    <p className="text-[10px] text-neon-green font-bold uppercase tracking-widest mb-0.5">
+                                        Categoría líder
+                                    </p>
+                                    <p className="text-sm font-bold text-on-surface">{metricas.categoriaMasVendida.categoria}</p>
+                                    <p className="text-[10px] text-on-surface-variant">
+                                        {metricas.categoriaMasVendida.cantidad} unidades vendidas
+                                    </p>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Camareros asignados */}
                         <div className="space-y-3">

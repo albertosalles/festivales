@@ -1,17 +1,37 @@
-import { obtenerMetricasGlobales, obtenerIngresosPorBarra } from '@/servicios/metricas.servicio';
+import {
+    obtenerMetricasGlobales,
+    obtenerIngresosPorBarra,
+    obtenerSaldoRetenido,
+    obtenerRecargaMedia,
+    obtenerMapaCalorHorario,
+    obtenerEficienciaBarras,
+} from '@/servicios/metricas.servicio';
 import { obtenerBarras } from '@/servicios/barras.servicio';
 import { obtenerCamareros } from '@/servicios/camareros.servicio';
 
 /**
  * Dashboard Global — Panel Admin.
- * Diseño Stitch "Pulse Live" con KPIs reales.
+ * Diseño Stitch "Pulse Live" con KPIs reales y métricas avanzadas.
  */
 export default async function PaginaDashboard() {
-    const [metricas, ingresosPorBarra, barras, camareros] = await Promise.all([
+    const [
+        metricas,
+        ingresosPorBarra,
+        barras,
+        camareros,
+        saldoRetenido,
+        recargaMedia,
+        mapaCalor,
+        eficiencia,
+    ] = await Promise.all([
         obtenerMetricasGlobales(),
         obtenerIngresosPorBarra(),
         obtenerBarras(),
         obtenerCamareros(),
+        obtenerSaldoRetenido(),
+        obtenerRecargaMedia(),
+        obtenerMapaCalorHorario(),
+        obtenerEficienciaBarras(),
     ]);
 
     const barrasAlta = barras.filter((b) => b.estadoCola === 'alta').length;
@@ -19,6 +39,8 @@ export default async function PaginaDashboard() {
     const barrasBaja = barras.filter((b) => b.estadoCola === 'baja').length;
     const maxIngreso = Math.max(...ingresosPorBarra.map((b) => b.ingresos), 1);
     const camarerosActivos = camareros.filter((c) => c.activo).length;
+    const maxVolumen = Math.max(...mapaCalor.map((m) => m.total), 1);
+    const maxEficiencia = Math.max(...eficiencia.map((e) => e.pedidosPorHora), 1);
 
     return (
         <div>
@@ -44,8 +66,8 @@ export default async function PaginaDashboard() {
                 </div>
             </section>
 
-            {/* KPI Bento Grid */}
-            <section className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            {/* KPI Bento Grid — 6 columnas */}
+            <section className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-10">
                 {/* Recaudación */}
                 <div className="bg-surface-container p-6 rounded-xl shadow-[0_0_20px_rgba(233,255,186,0.15)] group">
                     <div className="flex justify-between items-start mb-4">
@@ -62,6 +84,21 @@ export default async function PaginaDashboard() {
                     <div className="mt-4 h-1 w-full bg-surface-container-high rounded-full overflow-hidden">
                         <div className="h-full bg-neon-green w-[75%] rounded-full" />
                     </div>
+                </div>
+
+                {/* Saldo Retenido */}
+                <div className="bg-surface-container p-6 rounded-xl group">
+                    <div className="flex justify-between items-start mb-4">
+                        <span className="material-symbols-outlined text-neon-blue group-hover:scale-110 transition-transform">
+                            account_balance_wallet
+                        </span>
+                    </div>
+                    <p className="text-on-surface-variant text-xs font-medium uppercase tracking-widest mb-1">
+                        Saldo Retenido
+                    </p>
+                    <h3 className="font-headline text-3xl font-bold text-on-surface">
+                        €{saldoRetenido.toFixed(2)}
+                    </h3>
                 </div>
 
                 {/* Transacciones */}
@@ -97,6 +134,21 @@ export default async function PaginaDashboard() {
                     </h3>
                 </div>
 
+                {/* Recarga Media */}
+                <div className="bg-surface-container p-6 rounded-xl group">
+                    <div className="flex justify-between items-start mb-4">
+                        <span className="material-symbols-outlined text-neon-green group-hover:scale-110 transition-transform">
+                            add_card
+                        </span>
+                    </div>
+                    <p className="text-on-surface-variant text-xs font-medium uppercase tracking-widest mb-1">
+                        Recarga Media
+                    </p>
+                    <h3 className="font-headline text-3xl font-bold text-on-surface">
+                        €{recargaMedia.toFixed(2)}
+                    </h3>
+                </div>
+
                 {/* Estado Colas */}
                 <div className="bg-surface-container p-6 rounded-xl group">
                     <div className="flex justify-between items-start mb-4">
@@ -124,7 +176,7 @@ export default async function PaginaDashboard() {
                 </div>
             </section>
 
-            {/* Rendimiento de Barras */}
+            {/* Rendimiento de Barras + Personal */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                 <div className="lg:col-span-7 bg-surface-container rounded-xl p-8 relative overflow-hidden">
                     <div className="relative z-10">
@@ -206,6 +258,88 @@ export default async function PaginaDashboard() {
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* Métricas Avanzadas — Eficiencia + Mapa de Calor */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mt-10">
+                {/* Eficiencia Operativa */}
+                <div className="lg:col-span-5 bg-surface-container rounded-xl p-8">
+                    <h4 className="font-headline text-xl font-bold text-on-surface mb-6 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-neon-orange">bolt</span>
+                        Eficiencia Operativa
+                        <span className="text-[10px] font-normal tracking-widest uppercase bg-surface-container-high px-2 py-1 rounded ml-auto">
+                            Pedidos/H
+                        </span>
+                    </h4>
+                    <div className="space-y-3">
+                        {eficiencia.length === 0 ? (
+                            <p className="text-on-surface-variant text-sm text-center py-8 italic">
+                                Aún no hay datos de eficiencia
+                            </p>
+                        ) : (
+                            eficiencia.map((e) => (
+                                <div key={e.idBarra}>
+                                    <div className="flex justify-between text-xs mb-1.5 px-1">
+                                        <span className="font-bold text-on-surface">{e.nombre}</span>
+                                        <span className="text-neon-orange font-headline font-bold">
+                                            {e.pedidosPorHora.toFixed(1)} p/h
+                                        </span>
+                                    </div>
+                                    <div className="h-2.5 w-full bg-surface-container-high rounded-full relative overflow-hidden">
+                                        <div
+                                            className="absolute h-full bg-gradient-to-r from-neon-orange/60 to-neon-orange rounded-full"
+                                            style={{ width: `${Math.max((e.pedidosPorHora / maxEficiencia) * 100, 3)}%` }}
+                                        />
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+
+                {/* Mapa de Calor Horario */}
+                <div className="lg:col-span-7 bg-surface-container rounded-xl p-8 relative overflow-hidden">
+                    <h4 className="font-headline text-xl font-bold text-on-surface mb-6 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-neon-blue">local_fire_department</span>
+                        Mapa de Calor Horario
+                        <span className="text-[10px] font-normal tracking-widest uppercase bg-surface-container-high px-2 py-1 rounded ml-auto">
+                            Volumen compras
+                        </span>
+                    </h4>
+
+                    {mapaCalor.length === 0 ? (
+                        <p className="text-on-surface-variant text-sm text-center py-12 italic">
+                            Sin datos de transacciones todavía
+                        </p>
+                    ) : (
+                        <div className="flex items-end gap-1.5 h-44 pt-4">
+                            {mapaCalor.map((m) => {
+                                const pct = Math.max((m.total / maxVolumen) * 100, 6);
+                                return (
+                                    <div
+                                        key={m.hora}
+                                        className="flex-1 flex flex-col items-center justify-end h-full group"
+                                    >
+                                        {/* Tooltip on hover */}
+                                        <span className="text-[10px] text-neon-blue font-bold mb-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            {m.total}
+                                        </span>
+                                        {/* Bar */}
+                                        <div
+                                            className="w-full rounded-t-sm bg-gradient-to-t from-neon-blue/20 to-neon-blue group-hover:brightness-125 transition-all"
+                                            style={{ height: `${pct}%` }}
+                                        />
+                                        {/* Hour label */}
+                                        <span className="text-[9px] text-on-surface-variant mt-2 font-medium">
+                                            {m.hora.replace(':00', 'h')}
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                    <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-neon-blue/5 rounded-full blur-[60px]" />
                 </div>
             </div>
         </div>
