@@ -2,6 +2,7 @@
 
 import { createContext, useContext, type ReactNode } from 'react';
 import { useNotificaciones, type Notificacion } from '@/hooks/useNotificaciones';
+import { useConciertoActual } from '@/hooks/useConciertoActual';
 
 /** Tipo del contexto de notificaciones */
 interface ContextoNotificaciones {
@@ -18,11 +19,14 @@ const ContextoNotificacionesReact = createContext<ContextoNotificaciones | null>
 
 /**
  * Proveedor de notificaciones que envuelve las rutas de usuario.
- * Mantiene la suscripción Realtime activa y comparte el estado
- * entre la navbar (badge) y la página de notificaciones.
+ * Mantiene la suscripción Realtime activa para barras y el polling
+ * periódico del concierto actual para notificaciones de música.
  */
 export function ProveedorNotificaciones({ children }: { children: ReactNode }) {
     const valor = useNotificaciones();
+
+    // Polling del concierto actual — notifica si el género favorito del usuario está sonando
+    useConciertoActual(valor.agregarNotificacion);
 
     return (
         <ContextoNotificacionesReact.Provider value={valor}>
@@ -30,6 +34,7 @@ export function ProveedorNotificaciones({ children }: { children: ReactNode }) {
         </ContextoNotificacionesReact.Provider>
     );
 }
+
 
 /**
  * Hook para acceder al contexto de notificaciones.

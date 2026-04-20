@@ -66,7 +66,8 @@ export function useNotificaciones() {
 
         cargarEstadosIniciales();
 
-        const canal = supabase
+        // Canal 1: Notificaciones de barras con poca cola
+        const canalBarras = supabase
             .channel('notificaciones-colas')
             .on(
                 'postgres_changes',
@@ -114,7 +115,7 @@ export function useNotificaciones() {
             .subscribe();
 
         return () => {
-            supabase.removeChannel(canal);
+            supabase.removeChannel(canalBarras);
         };
     }, []);
 
