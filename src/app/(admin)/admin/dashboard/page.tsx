@@ -8,6 +8,8 @@ import {
 } from '@/servicios/metricas.servicio';
 import { obtenerBarras } from '@/servicios/barras.servicio';
 import { obtenerCamareros } from '@/servicios/camareros.servicio';
+import { obtenerMusicaSonando, obtenerGenerosDisponibles } from '@/servicios/conciertos.servicio';
+import { ControlConcierto } from '@/components/admin/ControlConcierto';
 
 /**
  * Dashboard Global — Panel Admin.
@@ -23,6 +25,7 @@ export default async function PaginaDashboard() {
         recargaMedia,
         mapaCalor,
         eficiencia,
+        musicaSonando,
     ] = await Promise.all([
         obtenerMetricasGlobales(),
         obtenerIngresosPorBarra(),
@@ -32,7 +35,10 @@ export default async function PaginaDashboard() {
         obtenerRecargaMedia(),
         obtenerMapaCalorHorario(),
         obtenerEficienciaBarras(),
+        obtenerMusicaSonando(),
     ]);
+
+    const generosDisponibles = obtenerGenerosDisponibles();
 
     const barrasAlta = barras.filter((b) => b.estadoCola === 'alta').length;
     const barrasMedia = barras.filter((b) => b.estadoCola === 'media').length;
@@ -64,6 +70,14 @@ export default async function PaginaDashboard() {
                         </div>
                     </div>
                 </div>
+            </section>
+
+            {/* Control de Concierto */}
+            <section className="mb-10">
+                <ControlConcierto
+                    generosDisponibles={generosDisponibles}
+                    generoActual={musicaSonando}
+                />
             </section>
 
             {/* KPI Bento Grid — 6 columnas */}
