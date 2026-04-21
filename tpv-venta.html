@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>SONIC PULSE TPV - Venta</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#0e0e11",
+                        "surface": "#0e0e11",
+                        "surface-container-lowest": "#000000",
+                        "surface-container-low": "#19191d",
+                        "surface-container": "#19191d",
+                        "surface-container-high": "#2c2c30",
+                        "surface-container-highest": "#dedce2",
+                        "surface-bright": "#2c2c30",
+                        "surface-dim": "#19191d",
+                        "on-surface": "#ffffff",
+                        "on-surface-variant": "#acaaae",
+                        "primary": "#e9ffba",
+                        "on-primary": "#496600",
+                        "primary-container": "#bafd00",
+                        "on-primary-container": "#425d00",
+                        "secondary": "#00e3fd",
+                        "on-secondary": "#003a42",
+                        "secondary-container": "#005964",
+                        "on-secondary-container": "#d8f8ff",
+                        "tertiary": "#ff7439",
+                        "on-tertiary": "#310b00",
+                        "tertiary-container": "#a33800",
+                        "on-tertiary-container": "#ffefeb",
+                        "error": "#ff6e84",
+                        "on-error": "#510017",
+                        "error-container": "#f74b6d",
+                        "on-error-container": "#ffefef",
+                        "outline": "#78767a",
+                        "outline-variant": "rgba(255, 255, 255, 0.15)",
+                        "inverse-surface": "#ffffff",
+                        "inverse-on-surface": "#000000",
+                        "inverse-primary": "#486400"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Epilogue", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #0e0e11; color: #ffffff; }
+        h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Epilogue', sans-serif; }
+        .glass-panel { background: rgba(25, 25, 29, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined.filled { font-variation-settings: 'FILL' 1; }
+        
+        /* Hide scrollbar for clean look */
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col antialiased pb-32">
+<!-- TopAppBar -->
+<header class="bg-[#0e0e11]/80 backdrop-blur-lg font-['Epilogue'] font-bold tracking-tight uppercase text-2xl docked full-width top-0 bg-[#19191d] shadow-[0_10px_30px_rgba(233,255,186,0.05)] flex items-center justify-between px-5 py-4 w-full sticky z-50">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-primary text-xl">person</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] font-body text-on-surface-variant tracking-widest uppercase">Staff Member</span>
+<h1 class="font-['Epilogue'] font-black text-[#e9ffba] tracking-tighter text-lg leading-none">MAIN BAR 01</h1>
+</div>
+</div>
+<button class="w-10 h-10 rounded-xl bg-surface-container-high/50 hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-all flex items-center justify-center border border-outline-variant/30 active:scale-95">
+<span class="material-symbols-outlined text-xl">logout</span>
+</button><button class="bg-error/10 hover:bg-error/20 active:scale-95 duration-200 transition-colors border border-error/30 rounded-xl px-4 py-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-sm filled">report</span>
+<span class="text-error font-body text-xs font-bold tracking-wider">INCIDENT</span>
+</button>
+</header>
+<!-- Secondary Navigation Tabs -->
+<div class="bg-surface-container-low border-b border-outline-variant/30 sticky top-[72px] z-40">
+<div class="flex px-5 pt-3 gap-6">
+<button class="pb-3 border-b-2 border-primary text-primary font-body text-sm font-bold tracking-wider uppercase">Venta</button>
+<button class="pb-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors font-body text-sm font-bold tracking-wider uppercase">Historial</button>
+</div>
+</div>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-5 pt-6 pb-6 flex flex-col gap-6">
+<!-- Category Filter (Optional, adds to realistic TPV feel) -->
+<div class="flex gap-3 overflow-x-auto pb-2 -mx-5 px-5">
+<button class="bg-primary text-on-primary rounded-full px-5 py-2 font-body text-xs font-bold tracking-wider whitespace-nowrap">BEBIDAS</button>
+<button class="bg-surface-container-high text-on-surface hover:bg-surface-bright transition-colors rounded-full px-5 py-2 font-body text-xs font-bold tracking-wider whitespace-nowrap">COMIDA</button>
+<button class="bg-surface-container-high text-on-surface hover:bg-surface-bright transition-colors rounded-full px-5 py-2 font-body text-xs font-bold tracking-wider whitespace-nowrap">MERCH</button>
+<button class="bg-surface-container-high text-on-surface hover:bg-surface-bright transition-colors rounded-full px-5 py-2 font-body text-xs font-bold tracking-wider whitespace-nowrap">EXTRAS</button>
+</div>
+<!-- Product Grid -->
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+<!-- Product Card: Cerveza -->
+<button class="bg-surface-container-low hover:bg-surface-bright active:scale-[0.98] transition-all rounded-xl p-4 flex flex-col gap-3 text-left border border-outline-variant relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start w-full">
+<span class="material-symbols-outlined text-primary text-3xl opacity-80">sports_bar</span>
+<span class="text-primary font-headline font-bold text-lg">3.50€</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-lg text-on-surface leading-tight">Cerveza</h3>
+<p class="text-xs text-on-surface-variant mt-1">Rubia 33cl</p>
+</div>
+<div class="w-full mt-auto pt-2">
+<div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[80%] rounded-full shadow-[0_0_10px_rgba(233,255,186,0.5)]"></div>
+</div>
+</div>
+</button>
+<!-- Product Card: Cocacola -->
+<button class="bg-surface-container-low hover:bg-surface-bright active:scale-[0.98] transition-all rounded-xl p-4 flex flex-col gap-3 text-left border border-outline-variant relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start w-full">
+<span class="material-symbols-outlined text-secondary text-3xl opacity-80">local_drink</span>
+<span class="text-secondary font-headline font-bold text-lg">2.50€</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-lg text-on-surface leading-tight">Cocacola</h3>
+<p class="text-xs text-on-surface-variant mt-1">Lata 33cl</p>
+</div>
+<div class="w-full mt-auto pt-2">
+<div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[40%] rounded-full shadow-[0_0_10px_rgba(255,116,57,0.5)]"></div>
+</div>
+</div>
+</button>
+<!-- Product Card: Agua -->
+<button class="bg-surface-container-low hover:bg-surface-bright active:scale-[0.98] transition-all rounded-xl p-4 flex flex-col gap-3 text-left border border-outline-variant relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start w-full">
+<span class="material-symbols-outlined text-secondary text-3xl opacity-80">water_drop</span>
+<span class="text-secondary font-headline font-bold text-lg">1.50€</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-lg text-on-surface leading-tight">Agua</h3>
+<p class="text-xs text-on-surface-variant mt-1">Botella 50cl</p>
+</div>
+<div class="w-full mt-auto pt-2">
+<div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[90%] rounded-full shadow-[0_0_10px_rgba(233,255,186,0.5)]"></div>
+</div>
+</div>
+</button>
+<!-- Product Card: Bocadillo -->
+<button class="bg-surface-container-low hover:bg-surface-bright active:scale-[0.98] transition-all rounded-xl p-4 flex flex-col gap-3 text-left border border-outline-variant relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-tertiary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start w-full">
+<span class="material-symbols-outlined text-tertiary text-3xl opacity-80">lunch_dining</span>
+<span class="text-tertiary font-headline font-bold text-lg">5.50€</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-lg text-on-surface leading-tight">Bocadillo</h3>
+<p class="text-xs text-on-surface-variant mt-1">Jamón y Queso</p>
+</div>
+<div class="w-full mt-auto pt-2">
+<div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-error w-[15%] rounded-full shadow-[0_0_10px_rgba(255,110,132,0.5)]"></div>
+</div>
+</div>
+</button>
+<!-- Product Card: Red Bull -->
+<button class="bg-surface-container-low hover:bg-surface-bright active:scale-[0.98] transition-all rounded-xl p-4 flex flex-col gap-3 text-left border border-outline-variant relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex justify-between items-start w-full">
+<span class="material-symbols-outlined text-secondary text-3xl opacity-80">battery_charging_full</span>
+<span class="text-secondary font-headline font-bold text-lg">4.00€</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-lg text-on-surface leading-tight">Energy</h3>
+<p class="text-xs text-on-surface-variant mt-1">Lata 25cl</p>
+</div>
+<div class="w-full mt-auto pt-2">
+<div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[60%] rounded-full shadow-[0_0_10px_rgba(233,255,186,0.5)]"></div>
+</div>
+</div>
+</button>
+</div>
+</main>
+<!-- Floating Order Summary Card -->
+<div class="fixed bottom-6 left-5 right-5 z-50">
+<div class="glass-panel border border-outline-variant rounded-[1.5rem] p-5 flex flex-col gap-4 shadow-[0_20px_40px_rgba(0,0,0,0.6)]">
+<div class="flex justify-between items-center">
+<div class="flex flex-col">
+<span class="text-xs font-body text-on-surface-variant uppercase tracking-widest">Current Order (3)</span>
+<span class="font-headline font-bold text-3xl text-on-surface tracking-tight">15.50€</span>
+</div>
+<button class="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center text-on-surface-variant hover:text-error hover:border-error/50 transition-colors bg-surface-container-lowest/50">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+<button class="w-full bg-secondary hover:bg-[#00d7f0] active:scale-[0.98] transition-all rounded-full py-4 px-6 flex justify-between items-center group shadow-[0_0_20px_rgba(0,227,253,0.3)]">
+<span class="font-headline font-bold text-on-secondary uppercase tracking-wider text-lg">PAY NOW</span>
+<span class="material-symbols-outlined text-on-secondary text-2xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</body></html>

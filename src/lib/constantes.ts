@@ -98,6 +98,11 @@ export const RUTAS = {
     ADMIN_DASHBOARD: '/admin/dashboard',
     ADMIN_CAMAREROS: '/admin/camareros',
     ADMIN_CONCIERTOS: '/admin/conciertos',
+    // Rutas de camareros
+    CAMARERO_LOGIN: '/login-camarero', // O '/camarero/ingreso' si vamos a usar otra. Mejor '/camarero' directo pero las rutas son con grupo (camareros)
+    CAMARERO_TPV: '/tpv',
+    CAMARERO_HISTORIAL: '/historial',
+    CAMARERO_INCIDENCIAS: '/incidencias',
 } as const;
 
 // === Configuración general ===

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Historial - MAIN BAR 01</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;900&amp;family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#0e0e11",
+                        "surface-container-highest": "#dedce2",
+                        "on-tertiary-fixed": "#310b00",
+                        "tertiary-dim": "#8f3000",
+                        "secondary-fixed": "#26e6ff",
+                        "error-container": "#f74b6d",
+                        "on-error": "#ffefef",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#d6d3da",
+                        "tertiary-fixed-dim": "#ff7e49",
+                        "on-tertiary-fixed-variant": "#692100",
+                        "error-dim": "#a70138",
+                        "outline-variant": "#aeacb0",
+                        "on-tertiary-container": "#5b1b00",
+                        "on-secondary-fixed-variant": "#005964",
+                        "surface-tint": "#486400",
+                        "background": "#0e0e11", // Forced dark for festival theme
+                        "inverse-on-surface": "#9e9ca0",
+                        "surface-container-high": "#e4e1e7",
+                        "tertiary": "#ff7439", // Sunset Orange
+                        "secondary-container": "#26e6ff",
+                        "on-tertiary": "#ffefeb",
+                        "on-surface-variant": "#acaaae",
+                        "on-secondary-container": "#004f59",
+                        "on-surface": "#ffffff", // Forced light text
+                        "on-primary-container": "#bafd00",
+                        "surface": "#0e0e11", // Forced dark
+                        "outline": "#78767a",
+                        "on-primary": "#496600", // Dark text on neon
+                        "on-error-container": "#510017",
+                        "surface-variant": "#19191d",
+                        "primary-fixed-dim": "#aeee00",
+                        "on-secondary-fixed": "#003a42",
+                        "secondary": "#00e3fd", // Electric Blue
+                        "secondary-fixed-dim": "#00d7f0",
+                        "tertiary-fixed": "#ff956b",
+                        "error": "#ff6e84", // Vivid Red
+                        "primary-dim": "#3e5700",
+                        "primary": "#e9ffba", // Neon Green
+                        "tertiary-container": "#ff956b",
+                        "surface-container": "#19191d", // Level 1
+                        "surface-container-low": "#111114",
+                        "on-primary-fixed-variant": "#4b6800",
+                        "primary-container": "#bafd00",
+                        "on-primary-fixed": "#344a00",
+                        "surface-bright": "#2c2c30", // Level 2
+                        "inverse-primary": "#bafd00",
+                        "on-background": "#ffffff",
+                        "secondary-dim": "#005863",
+                        "primary-fixed": "#bafd00",
+                        "on-secondary": "#d8f8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": ["Epilogue", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0e0e11;
+            color: #ffffff;
+        }
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="font-body antialiased bg-background text-on-surface pb-6 md:pb-0">
+<!-- TopAppBar -->
+<header class="bg-[#0e0e11]/80 backdrop-blur-lg font-['Epilogue'] font-bold tracking-tight uppercase text-2xl docked full-width top-0 bg-[#19191d] shadow-[0_10px_30px_rgba(233,255,186,0.05)] flex items-center justify-between px-5 py-4 w-full sticky z-50">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-primary text-xl">person</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] font-body text-on-surface-variant tracking-widest uppercase">Staff Member</span>
+<h1 class="font-['Epilogue'] font-black text-[#e9ffba] tracking-tighter text-lg leading-none">MAIN BAR 01</h1>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="bg-error/10 hover:bg-error/20 active:scale-95 duration-200 transition-colors border border-error/30 rounded-xl px-4 py-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-sm filled">report</span>
+<span class="text-error font-body text-xs font-bold tracking-wider uppercase">Incident</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-variant hover:bg-surface-bright border border-outline-variant/30 text-on-surface-variant hover:text-on-surface active:scale-95 transition-all duration-200">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+</button>
+</div>
+</header>
+<!-- Secondary Navigation Tabs -->
+<div class="bg-surface-container-low border-b border-outline-variant/30 sticky top-[72px] z-40">
+<div class="flex px-5 pt-3 gap-6">
+<button class="pb-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors font-body text-sm font-bold tracking-wider uppercase">Venta</button>
+<button class="pb-3 border-b-2 border-primary text-primary font-body text-sm font-bold tracking-wider uppercase">Historial</button>
+</div>
+</div>
+<main class="pt-6 px-5 max-w-lg mx-auto">
+<!-- History List -->
+<div class="space-y-4">
+<!-- Transaction Card 1 -->
+<div class="bg-surface-container rounded-xl p-4 flex justify-between items-center group relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-r from-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+<div class="flex gap-4 items-center z-10">
+<div class="text-on-surface-variant font-body font-medium text-sm">22:45</div>
+<div>
+<div class="font-body font-bold text-on-surface">2x Cerveza, 1x Agua</div>
+<div class="font-label text-xs text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]">credit_card</span>
+                            Tarjeta
+                        </div>
+</div>
+</div>
+<div class="font-headline font-black text-xl text-primary z-10">
+                    €14.00
+                </div>
+</div>
+<!-- Transaction Card 2 -->
+<div class="bg-surface-container rounded-xl p-4 flex justify-between items-center group relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-r from-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+<div class="flex gap-4 items-center z-10">
+<div class="text-on-surface-variant font-body font-medium text-sm">22:42</div>
+<div>
+<div class="font-body font-bold text-on-surface">1x Mojito</div>
+<div class="font-label text-xs text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]">credit_card</span>
+                            Tarjeta
+                        </div>
+</div>
+</div>
+<div class="font-headline font-black text-xl text-primary z-10">
+                    €12.00
+                </div>
+</div>
+<!-- Transaction Card 3 -->
+<div class="bg-surface-container rounded-xl p-4 flex justify-between items-center group relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-r from-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+<div class="flex gap-4 items-center z-10">
+<div class="text-on-surface-variant font-body font-medium text-sm">22:38</div>
+<div>
+<div class="font-body font-bold text-on-surface">3x Chupito Tequila</div>
+<div class="font-label text-xs text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]">credit_card</span>
+                            Tarjeta
+                        </div>
+</div>
+</div>
+<div class="font-headline font-black text-xl text-primary z-10">
+                    €15.00
+                </div>
+</div>
+<!-- Transaction Card 4 -->
+<div class="bg-surface-container rounded-xl p-4 flex justify-between items-center group relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-r from-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+<div class="flex gap-4 items-center z-10">
+<div class="text-on-surface-variant font-body font-medium text-sm">22:30</div>
+<div>
+<div class="font-body font-bold text-on-surface">1x Cerveza, 1x Red Bull</div>
+<div class="font-label text-xs text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]">credit_card</span>
+                            Tarjeta
+                        </div>
+</div>
+</div>
+<div class="font-headline font-black text-xl text-primary z-10">
+                    €11.00
+                </div>
+</div>
+<!-- Transaction Card 5 -->
+<div class="bg-surface-container rounded-xl p-4 flex justify-between items-center group relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-r from-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+<div class="flex gap-4 items-center z-10">
+<div class="text-on-surface-variant font-body font-medium text-sm">22:15</div>
+<div>
+<div class="font-body font-bold text-on-surface">4x Cerveza</div>
+<div class="font-label text-xs text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]">credit_card</span>
+                            Tarjeta
+                        </div>
+</div>
+</div>
+<div class="font-headline font-black text-xl text-primary z-10">
+                    €20.00
+                </div>
+</div>
+</div>
+</main>
+</body></html>

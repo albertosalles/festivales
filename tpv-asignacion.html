@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Asignación de Camarero a Barra</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#5c5b5f",
+                        "surface-bright": "#f9f5fa",
+                        "error-container": "#f74b6d",
+                        "surface-variant": "#dedce2",
+                        "surface-container-high": "#e4e1e7",
+                        "on-tertiary-fixed-variant": "#692100",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f9f5fa",
+                        "inverse-surface": "#0e0e11",
+                        "primary": "#486400",
+                        "tertiary-container": "#ff956b",
+                        "primary-container": "#bafd00",
+                        "on-tertiary": "#ffefeb",
+                        "on-secondary-container": "#004f59",
+                        "secondary": "#006571",
+                        "on-secondary-fixed-variant": "#005964",
+                        "error": "#b41340",
+                        "surface-container-highest": "#dedce2",
+                        "on-primary": "#ddff99",
+                        "inverse-on-surface": "#9e9ca0",
+                        "on-primary-fixed-variant": "#4b6800",
+                        "on-error": "#ffefef",
+                        "on-tertiary-fixed": "#310b00",
+                        "error-dim": "#a70138",
+                        "tertiary": "#a33800",
+                        "on-secondary": "#d8f8ff",
+                        "on-primary-container": "#425d00",
+                        "secondary-fixed": "#26e6ff",
+                        "tertiary-fixed-dim": "#ff7e49",
+                        "primary-fixed-dim": "#aeee00",
+                        "surface-tint": "#486400",
+                        "outline-variant": "#aeacb0",
+                        "tertiary-fixed": "#ff956b",
+                        "surface-container-low": "#f3f0f4",
+                        "on-tertiary-container": "#5b1b00",
+                        "background": "#f9f5fa",
+                        "outline": "#78767a",
+                        "inverse-primary": "#bafd00",
+                        "primary-dim": "#3e5700",
+                        "secondary-dim": "#005863",
+                        "surface-container": "#eae7ec",
+                        "on-error-container": "#510017",
+                        "on-primary-fixed": "#344a00",
+                        "secondary-container": "#26e6ff",
+                        "tertiary-dim": "#8f3000",
+                        "primary-fixed": "#bafd00",
+                        "secondary-fixed-dim": "#00d7f0",
+                        "surface-dim": "#d6d3da",
+                        "on-surface": "#2f2e32",
+                        "on-secondary-fixed": "#003a42",
+                        "on-background": "#2f2e32"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": [
+                            "Epilogue"
+                        ],
+                        "body": [
+                            "Inter"
+                        ],
+                        "label": [
+                            "Inter"
+                        ]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0e0e11; /* Electric Nocturne strict requirement override from light theme */
+            color: #f9f5fa;
+            font-family: 'Inter', sans-serif;
+        }
+        .font-headline {
+            font-family: 'Epilogue', sans-serif;
+        }
+        .bg-glass {
+            background: rgba(25, 25, 29, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-5 relative overflow-hidden">
+<!-- Ambient Glow Effects -->
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#e9ffba] opacity-10 blur-[120px] pointer-events-none"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#00e3fd] opacity-10 blur-[120px] pointer-events-none"></div>
+<!-- Main Content Container -->
+<main class="w-full max-w-md bg-glass rounded-xl p-8 border border-outline-variant/15 relative z-10 flex flex-col gap-8 shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+<!-- Header & Success Message -->
+<header class="flex flex-col items-center text-center gap-4">
+<div class="w-16 h-16 rounded-full bg-[#e9ffba]/20 flex items-center justify-center text-[#e9ffba] mb-2 ring-2 ring-[#e9ffba]/40">
+<span class="material-symbols-outlined text-4xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div>
+<h1 class="font-headline text-3xl font-bold text-[#e9ffba] tracking-tight leading-none mb-2">QR Escaneado Correctamente</h1>
+<p class="text-surface-bright font-medium text-lg">Barra Principal 01</p>
+</div>
+</header>
+<!-- Location Info Card -->
+<div class="bg-surface-container-lowest/5 rounded-xl p-5 border border-outline-variant/10 flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-[#00e3fd]/10 flex items-center justify-center text-[#00e3fd]">
+<span class="material-symbols-outlined text-2xl">local_bar</span>
+</div>
+<div>
+<p class="text-sm text-outline-variant uppercase tracking-wider font-semibold mb-1">Barra Detectada</p>
+<p class="font-headline font-bold text-xl text-surface-bright tracking-tight">Main Stage Bar</p>
+</div>
+</div>
+<!-- Input Section -->
+<section class="flex flex-col gap-4 mt-2">
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold text-outline-variant uppercase tracking-widest" for="staff-id">ID de Camarero</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant material-symbols-outlined">badge</span>
+<input class="w-full bg-surface-container-lowest/10 border border-outline-variant/20 rounded-xl py-4 pl-12 pr-4 text-2xl text-surface-bright font-headline font-bold text-center placeholder:text-outline-variant/30 focus:outline-none focus:ring-2 focus:ring-[#e9ffba] focus:border-transparent transition-all appearance-none" id="staff-id" placeholder="0000" style="-moz-appearance: textfield;" type="number"/>
+</div>
+</div>
+<button class="w-full bg-[#e9ffba] text-[#496600] rounded-xl py-4 font-headline font-bold text-lg flex items-center justify-center gap-2 hover:shadow-[0_0_15px_rgba(233,255,186,0.3)] transition-all active:scale-95 mt-4">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">link</span>
+                Vincular a Barra
+            </button>
+</section>
+</main>
+<!-- Close Button - Task Focused Page -->
+<div class="absolute top-6 right-6 z-20">
+<button class="w-12 h-12 rounded-full bg-surface-container-lowest/10 flex items-center justify-center text-surface-bright hover:bg-surface-container-lowest/20 transition-colors border border-outline-variant/15">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</body></html>

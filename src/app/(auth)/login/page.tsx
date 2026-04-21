@@ -265,6 +265,22 @@ export default function PaginaLogin() {
                         </p>
                     </button>
                 </div>
+
+                {/* Botón Acceso Camareros */}
+                <div className="mt-6 w-full">
+                    <button
+                        type="button"
+                        onClick={() => router.push(RUTAS.CAMARERO_LOGIN)}
+                        className="w-full group bg-surface-container border border-outline-variant/10 h-14 rounded-xl flex items-center justify-center transition-all hover:border-neon-orange/30 hover:bg-surface-container-high active:scale-95 cursor-pointer"
+                    >
+                        <span className="material-symbols-outlined text-neon-orange mr-3">
+                            qr_code_scanner
+                        </span>
+                        <span className="font-headline font-bold text-on-surface uppercase tracking-wider text-sm">
+                            Escanea QR de Barra
+                        </span>
+                    </button>
+                </div>
             </main>
 
             {/* Footer Aesthetic */}

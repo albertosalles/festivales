@@ -1,36 +1,129 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎶 FestiApp — Plataforma de Experiencia en Festivales
 
-## Getting Started
+FestiApp es un MVP (Producto Mínimo Viable) diseñado para mejorar la experiencia de los asistentes a festivales de música y optimizar la gestión de recursos por parte de la organización. Evita las largas colas en las barras, permite pagos sin efectivo (cashless) y proporciona datos en tiempo real al equipo administrativo.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🎯 Visión del Proyecto y Funcionalidades (MVP)
+
+### Para el Asistente:
+- **Mapa de Barras (Realtime)**: Visualización en tiempo real del estado de las colas de cada barra (Baja 🟢, Media 🟡, Alta 🔴).
+- **Billetera Digital (Wallet)**: Consulta de saldo, historial de transacciones y recarga de saldo vinculada al código de pulsera (`token_pago`).
+- **Notificaciones**: Avisos in-app (push-like) con sugerencias cuando las barras cambian a estado de cola "baja".
+- **Identificación sin contraseña**: Acceso usando únicamente el código de la pulsera, sin sistema tradicional de login.
+
+### Para la Organización (Staff / Admin):
+- **Control de Barras**: Actualización manual del estado de afluencia de cada barra del recinto.
+- **Dashboard y Métricas**: Visualización en tiempo real del volumen de ventas, saldo promedio y transacciones globales.
+- **Gestión de Camareros**: Analíticas de rendimiento y horas trabajadas por el personal de barras.
+
+---
+
+## 🛠️ Stack Tecnológico
+
+- **Framework**: Next.js 14+ (App Router, Server & Client Components)
+- **UI & Estilos**: React 18, Tailwind CSS v4, shadcn/ui (Radix UI)
+- **Backend & Base de Datos**: Supabase (PostgreSQL), Supabase Realtime
+- **Despliegue**: Vercel
+- **Herramientas de Calidad**: TypeScript estricto, ESLint
+
+---
+
+## 🏗️ Arquitectura y Patrones de Diseño
+
+La arquitectura de la aplicación separa claramente la responsabilidad de la UI, el estado y el acceso a datos.
+
+```mermaid
+flowchart TD
+    A["Página (Server Component)"] --> B["Componente (Client Component)"]
+    B --> C["Hook (Estado/Realtime)"]
+    C --> D["Servicio (Acceso a Datos)"]
+    D --> E["Supabase (PostgreSQL)"]
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **Páginas (`app/`)**: Preferiblemente *Server Components* para realizar fetching inicial de datos de manera eficiente.
+2. **Componentes (`components/`)**: *Client Components* (`'use client'`) solo cuando se necesita interactividad, manejo de estado o eventos del lado del cliente.
+3. **Hooks (`hooks/`)**: Encapsulan lógica de estado, efectos y suscripciones en tiempo real a Supabase (ej. `useBarrasEnTiempoReal.ts`).
+4. **Servicios (`servicios/`)**: Capa exclusiva para consultas a la base de datos (Supabase). **Los componentes NUNCA interactúan directamente con Supabase**.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📂 Estructura de Directorios
 
-## Learn More
+```text
+src/
+├── app/                  # Rutas principales (Next.js App Router)
+│   ├── (auth)/           # Pantalla de login/acceso con código de pulsera
+│   ├── (usuario)/        # Rutas públicas/asistente: mapa, billetera, notificaciones
+│   └── (admin)/          # Rutas privadas/staff: control de barras, dashboard, camareros
+├── components/           # Componentes agrupados lógicamente
+│   ├── ui/               # Componentes base (shadcn/ui)
+│   ├── mapa/             # Tarjetas, grid de barras
+│   └── billetera/        # Tarjeta de saldo, formulario de recarga
+├── hooks/                # Custom hooks (estado local y realtime con Supabase)
+├── servicios/            # Peticiones y mutaciones hacia Supabase (.servicio.ts)
+└── lib/                  # Configuración central
+    ├── supabase/         # Clientes de supabase (navegador, servidor, middleware)
+    ├── tipos.ts          # Interfaces globales en TypeScript
+    └── utils.ts          # Utilidades (cn, formateo de fechas/monedas)
+supabase/
+└── migrations/           # Migraciones y esquema SQL de la base de datos
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🗄️ Esquema de Base de Datos y Tipos
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+La persistencia de datos se gestiona en Supabase (PostgreSQL). Las tablas SQL (snake_case) se mapean consistentemente a interfaces TypeScript (camelCase) a nivel de *Servicios*.
 
-## Deploy on Vercel
+* Tablas principales:
+  * `usuario` (`id_usuario`, `token_pago`, `correo`, etc.)
+  * `barras` (`id_barra`, `nombre_localizacion`, `estado_cola`)
+  * `wallet` (`id_wallet`, `id_usuario`, `saldo`)
+  * `transacciones` (`id_transaccion`, `id_wallet`, `id_barra`, `tipo_movimiento`, `monto`, `fecha`)
+  * `camareros` y `asignaciones_camareros` (Gestión de personal)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Convención estricta**: Los tipos base se definen centralizadamente en `src/lib/tipos.ts`. Evita duplicar declaraciones de interfaces a lo largo de los componentes.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🤖 Reglas y Convenciones para Agentes IA (Contexto Crítico)
+
+Si eres un LLM o agente analizando este repositorio para continuar su desarrollo, **aplica siempre estas reglas**:
+
+1. **Idioma**: Todo el código, comentarios, variables, interfaces y commits deben redactarse en **ESPAÑOL**. Las únicas excepciones son palabras reservadas del lenguaje o librerías externas.
+2. **Reglas Estructurales**:
+   * **JAMÁS** llames a Supabase desde un componente. Usa funciones ubicadas en la carpeta `servicios/`.
+   * **JAMÁS** crees un componente en el directorio raíz de `components/`. Clasifícalo en una subcarpeta funcional (ej. `components/mapa/MiComponente.tsx`).
+   * **SIEMPRE** usa el alias de ruta `@/` para importaciones dentro de `src/`. No recurrir a rutas relativas como `../../`.
+3. **Estilos**:
+   * Usa Tailwind CSS directamente en el código de JSX.
+   * Utiliza la función envoltorio `cn()` de `lib/utils.ts` para mezclar o procesar clases dinámicas.
+   * **NUNCA** utilices estilos *inline* (la prop `style={{}}`).
+4. **Nomenclatura**:
+   * Archivos de Componentes React: `PascalCase.tsx`
+   * Componentes Funcionales: `PascalCase`
+   * Funciones, Hooks y Variables: `camelCase`
+   * Constantes: `SCREAMING_SNAKE_CASE` (ej. `ESTADOS_COLA`)
+   * Servicios: `nombreEntidad.servicio.ts`
+5. **Git Workflow**:
+   * Usar Conventional Commits redactados en español: `feat(dashboard): añadir metricas`, `fix(billetera): reparar error de recarga`.
+   * Ramas: Usar `feature/nombre-de-rama`, `fix/nombre-de-rama`, y apuntar siempre el Pull Request contra la rama `dev`.
+
+---
+
+## 🚀 Guía de Inicio Local
+
+1. Copia el archivo de entorno y llénalo con las credenciales de Supabase del proyecto:
+   ```bash
+   cp .env.example .env.local
+   ```
+2. Instala las dependencias necesarias:
+   ```bash
+   npm install
+   ```
+3. Ejecuta el servidor local de desarrollo:
+   ```bash
+   npm run dev
+   ```
+   *Accede a la aplicación a través de: [http://localhost:3000](http://localhost:3000)*
