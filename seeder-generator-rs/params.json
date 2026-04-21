@@ -1,0 +1,107 @@
+{
+  "festival": {
+    "start_day": "2026-04-02",
+    "opening_hour": "16:00:00",
+    "closing_hour": "04:00:00",
+    "current_day": "2026-04-04",
+    "current_time": "22:00:00",
+    "full_personal_hour": "20:00:00"
+  },
+  "generation_params": {
+    "users_count": 75,
+    "waiters_count": 20,
+    "transactions_per_user_min": 1,
+    "transactions_per_user_max": 8,
+    "transactions_skew": 0.75,
+    "chance_transaction_is_recharge": 0.10,
+    "lines_per_transaction_min": 1,
+    "lines_per_transaction_max": 3,
+    "chance_double_product": 0.20,
+    "chance_triple_product": 0.05,
+    "wallet_balance_min": 20.00,
+    "wallet_balance_max": 200.00,
+    "wallet_zero_chance": 0.15,
+    "waiter_chance_to_move": 0.30,
+    "starting_personal": 0.60
+  },
+  "dictionaries": {
+    "names": [
+      "Alejandro", "Lucía", "Carlos", "Marta", "Javier", "Sofía", "David", "Laura", "Daniel", "Paula",
+      "Hugo", "Carmen", "Diego", "Alba", "Álvaro", "Noelia", "Pablo", "Elena", "Mario", "Claudia",
+      "Marcos", "Ana", "Iván", "Sara", "Sergio", "Julia", "Jorge", "María", "Raúl", "Irene"
+    ],
+    "surnames": [
+      "García", "Martínez", "López", "Sánchez", "Pérez", "Gómez", "Martín", "Ruiz", "Fernández", "Díaz",
+      "Moreno", "Muñoz", "Álvarez", "Romero", "Alonso", "Gutiérrez", "Navarro", "Torres", "Domínguez", "Vázquez",
+      "Ramos", "Gil", "Ramírez", "Serrano", "Blanco", "Molina", "Morales", "Suárez", "Ortega", "Delgado"
+    ],
+    "email_domains": ["gmail.com", "hotmail.com", "yahoo.es", "outlook.com", "icloud.com"]
+  },
+  "bars": [
+    {
+      "location_name": "Barra Escenario Principal",
+      "queue_state": "alta",
+      "popularity": 0.70,
+      "products": [
+        {"name": "Cerveza (Caña)", "price": 4.00, "category": "bebida", "popularity": 0.95},
+        {"name": "Cerveza (Litro)", "price": 9.00, "category": "bebida", "popularity": 0.85},
+        {"name": "Agua", "price": 2.50, "category": "bebida", "popularity": 0.90},
+        {"name": "Refresco", "price": 3.50, "category": "bebida", "popularity": 0.60},
+        {"name": "Copa Nacional", "price": 8.00, "category": "bebida", "popularity": 0.75},
+        {"name": "Copa Premium", "price": 12.00, "category": "bebida", "popularity": 0.30},
+        {"name": "Bebida Energética", "price": 4.50, "category": "bebida", "popularity": 0.50},
+        {"name": "Snack Salado", "price": 2.00, "category": "comida", "popularity": 0.20}
+      ]
+    },
+    {
+      "location_name": "Barra Escenario Indie",
+      "queue_state": "baja",
+      "popularity": 0.15,
+      "products": [
+        {"name": "Cerveza (Caña)", "price": 4.00, "category": "bebida", "popularity": 0.90},
+        {"name": "Agua", "price": 2.50, "category": "bebida", "popularity": 0.80},
+        {"name": "Tinto de Verano", "price": 5.00, "category": "bebida", "popularity": 0.70},
+        {"name": "Refresco", "price": 3.50, "category": "bebida", "popularity": 0.50},
+        {"name": "Copa Nacional", "price": 8.00, "category": "bebida", "popularity": 0.60}
+      ]
+    },
+    {
+      "location_name": "Food Truck Hamburguesas",
+      "queue_state": "media",
+      "popularity": 0.45,
+      "products": [
+        {"name": "Doble Smash", "price": 9.50, "category": "comida", "popularity": 0.95},
+        {"name": "Burger Pollo Crujiente", "price": 8.50, "category": "comida", "popularity": 0.70},
+        {"name": "Patatas Fritas", "price": 4.00, "category": "comida", "popularity": 0.85},
+        {"name": "Cerveza (Caña)", "price": 4.00, "category": "bebida", "popularity": 0.80},
+        {"name": "Agua", "price": 2.50, "category": "bebida", "popularity": 0.60},
+        {"name": "Refresco", "price": 3.50, "category": "bebida", "popularity": 0.75}
+      ]
+    },
+    {
+      "location_name": "Food Truck Vegano",
+      "queue_state": "baja",
+      "popularity": 0.25,
+      "products": [
+        {"name": "Wrap de Heura", "price": 9.00, "category": "comida", "popularity": 0.80},
+        {"name": "Hummus con Nachos", "price": 6.00, "category": "comida", "popularity": 0.65},
+        {"name": "Poke de Verduras", "price": 8.50, "category": "comida", "popularity": 0.50},
+        {"name": "Kombucha", "price": 4.50, "category": "bebida", "popularity": 0.75},
+        {"name": "Cerveza Artesanal", "price": 5.50, "category": "bebida", "popularity": 0.60},
+        {"name": "Agua", "price": 2.50, "category": "bebida", "popularity": 0.85}
+      ]
+    },
+    {
+      "location_name": "Barra Zona VIP",
+      "queue_state": "baja",
+      "popularity": 0.20,
+      "products": [
+        {"name": "Copa Premium", "price": 12.00, "category": "bebida", "popularity": 0.90},
+        {"name": "Cocktail de Autor", "price": 10.00, "category": "bebida", "popularity": 0.85},
+        {"name": "Botella Champagne", "price": 90.00, "category": "bebida", "popularity": 0.15},
+        {"name": "Cerveza Artesanal", "price": 6.00, "category": "bebida", "popularity": 0.60},
+        {"name": "Agua Premium", "price": 3.50, "category": "bebida", "popularity": 0.70}
+      ]
+    }
+  ]
+}
