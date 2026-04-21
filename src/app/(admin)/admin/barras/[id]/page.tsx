@@ -290,12 +290,9 @@ export default async function PaginaDetalleBarra({
                                                     <span className="material-symbols-outlined text-[12px] text-neon-blue">schedule</span>
                                                     <span className="text-xs font-bold font-headline text-neon-blue">{horasEnEstaBarra.toFixed(1)}h</span>
                                                 </div>
-
-                                                <div className="flex flex-col items-end gap-1">
-                                                    <div className="flex items-center gap-1 bg-neon-green/10 px-2 py-0.5 rounded">
-                                                        <span className="material-symbols-outlined text-[10px] text-neon-green">trending_up</span>
-                                                        <span className="text-[10px] font-bold text-neon-green">{ingresoPorHora.toFixed(2)}€/h</span>
-                                                    </div>
+                                                <div className="flex items-center gap-1.5 bg-green-300/10 px-2 py-1 rounded">
+                                                    <span className="material-symbols-outlined text-[12px] text-green-300">trending_up</span>
+                                                    <span className="text-xs font-bold font-headline text-green-300">{ingresoPorHora.toFixed(2)}€/h</span>
                                                 </div>
                                             </div>
                                         )
@@ -417,12 +414,12 @@ export default async function PaginaDetalleBarra({
                                     className="flex-1 flex flex-col items-center justify-end h-full group"
                                 >
                                     {/* Tooltip on hover */}
-                                    <span className="text-[10px] text-neon-green font-bold mb-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span className="text-[10px] text-green-300 font-bold mb-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                         €{m.ingresos.toFixed(2)}
                                     </span>
                                     {/* Bar */}
                                     <div
-                                        className="w-full rounded-t-sm bg-linear-to-t from-neon-green/20 to-neon-green group-hover:brightness-125 transition-all"
+                                        className="w-full rounded-t-sm bg-linear-to-t from-green-300/20 to-green-300 group-hover:brightness-125 transition-all"
                                         style={{ height: `${pct}%` }}
                                     />
                                     {/* Hour label */}
@@ -435,7 +432,7 @@ export default async function PaginaDetalleBarra({
                     </div>
                 )}
                 {/* Glow effect at the bottom left to match your aesthetic */}
-                <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-neon-green/5 rounded-full blur-[60px]" />
+                <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-green-300/5 rounded-full blur-[60px]" />
             </div>
         </div>
     );
