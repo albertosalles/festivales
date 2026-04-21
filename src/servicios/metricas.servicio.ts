@@ -35,7 +35,7 @@ export async function obtenerMetricasGlobales(): Promise<MetricasGlobales> {
     const { data, error } = await supabase
         .from('transacciones')
         .select('monto')
-        .eq('tipo_movimiento', 'compra');
+        .neq('tipo_movimiento', 'recarga');
 
     if (error) throw new Error(`Error al obtener métricas: ${error.message}`);
 
@@ -63,8 +63,9 @@ export async function obtenerMetricasBarra(idBarra: number): Promise<MetricasBar
         .from('transacciones')
         .select('id_transaccion, monto, fecha')
         .eq('id_barra', idBarra)
-        .eq('tipo_movimiento', 'compra');
+        .neq('tipo_movimiento', 'recarga');
 
+    console.log(`id barra: ${idBarra}, transacciones obtenidas:`, txs);
     if (errorTx) throw new Error(`Error métricas barra: ${errorTx.message}`);
 
     const registros = txs ?? [];
@@ -260,8 +261,9 @@ export async function obtenerIngresosPorBarra(): Promise<{ idBarra: number; nomb
     const { data: txs } = await supabase
         .from('transacciones')
         .select('id_barra, monto')
-        .eq('tipo_movimiento', 'compra');
+        .neq('tipo_movimiento', 'recarga');
 
+    // console.log('Transacciones para ingresos por barra:', txs);
     const ingresosPorBarra = new Map<number, number>();
     for (const tx of txs ?? []) {
         ingresosPorBarra.set(tx.id_barra, (ingresosPorBarra.get(tx.id_barra) ?? 0) + Number(tx.monto));
@@ -310,7 +312,7 @@ export async function obtenerMapaCalorHorario(): Promise<{ hora: string; total: 
     const { data, error } = await supabase
         .from('transacciones')
         .select('fecha')
-        .eq('tipo_movimiento', 'compra');
+        .neq('tipo_movimiento', 'recarga');
 
     if (error || !data) return [];
 
@@ -337,7 +339,7 @@ export async function obtenerEficienciaBarras(): Promise<{ idBarra: number; nomb
     const { data: txs, error: errTxs } = await supabase
         .from('transacciones')
         .select('id_barra, fecha')
-        .eq('tipo_movimiento', 'compra');
+        .neq('tipo_movimiento', 'recarga');
     if (errTxs || !txs) return [];
 
     // Construir mapa nombre por id

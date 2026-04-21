@@ -74,6 +74,21 @@ impl Serializer {
     }
 
     pub fn serialize(&mut self, db: DB) -> Result<(), Box<dyn Error>> {
+        for table_name in &[
+            "lineas_transaccion",
+            "transacciones",
+            "wallet",
+            "usuario",
+            "asignaciones_camareros",
+            "camareros",
+            "productos",
+            "barras",
+        ] {
+            writeln!(self.file, "DELETE FROM \"public\".\"{}\";", table_name)?;
+        }
+
+        writeln!(self.file)?;
+
         self.insert(
             "barras",
             &["id_barra", "nombre_localizacion", "estado_cola"],
@@ -147,7 +162,7 @@ impl Serializer {
         )?;
 
         self.insert(
-            "usuarios",
+            "usuario",
             &[
                 "id_usuario",
                 "nombre",
@@ -214,7 +229,7 @@ impl Serializer {
         self.insert(
             "lineas_transaccion",
             &[
-                "id_linea_transaccion",
+                "id_linea",
                 "id_transaccion",
                 "id_producto",
                 "cantidad",
@@ -252,7 +267,6 @@ impl Serializer {
             .join(", ");
 
         writeln!(self.file, "-- TABLA {}", table_name.to_uppercase())?;
-        writeln!(self.file, "DELETE FROM \"public\".\"{}\";\n", table_name)?;
         writeln!(
             self.file,
             "INSERT INTO \"public\".\"{}\" ({}) VALUES",

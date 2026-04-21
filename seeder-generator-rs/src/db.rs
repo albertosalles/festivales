@@ -318,7 +318,7 @@ impl DB {
             chrono::NaiveDateTime::new(start_day, start_hour)
         };
 
-        let hours = if finish_hour < opening_hour {
+        let hours = if start_hour > finish_hour {
             (3600 * 24 - (start_hour - midnight_hour).num_seconds()) as f32 / 3600.
                 + (finish_hour - midnight_hour).num_seconds() as f32 / 3600.
         } else {
@@ -350,7 +350,18 @@ impl DB {
         let dicts = &mut self.config.dictionaries;
         let name = dicts.names.choose(&mut self.rng).unwrap().clone();
         let surname = dicts.surnames.choose(&mut self.rng).unwrap().clone();
-        let email = dicts.email_domains.choose(&mut self.rng).unwrap().clone();
+        let mut email = dicts.email_domains.choose(&mut self.rng).unwrap().clone();
+        let mut number = String::new();
+        for _ in 0..4 {
+            number.push(('0'..='9').choose(&mut self.rng).unwrap());
+        }
+        email = format!(
+            "{}.{}_{}@{}",
+            name.to_lowercase(),
+            surname.to_lowercase(),
+            number,
+            email
+        );
 
         (name, surname, email)
     }

@@ -165,7 +165,7 @@ export async function obtenerHorasTotalesCamarero(idCamarero: number): Promise<n
         const fin = fila.fecha_fin ? new Date(fila.fecha_fin).getTime() : ahora;
         totalMilisegundos += (fin - inicio);
     }
-    
+
     return totalMilisegundos / (1000 * 60 * 60);
 }
 
@@ -186,13 +186,20 @@ export async function obtenerHistorialCamarerosPorBarra(idBarra: number): Promis
     const tiempoPorCamarero: Record<number, number> = {};
     const ahora = new Date().getTime();
 
+    console.log('asignaciones:', asignaciones);
     for (const asig of asignaciones) {
         const idCam = asig.id_camarero;
         const inicio = new Date(asig.fecha_inicio).getTime();
         const fin = asig.fecha_fin ? new Date(asig.fecha_fin).getTime() : ahora;
-        
+
         tiempoPorCamarero[idCam] = (tiempoPorCamarero[idCam] || 0) + (fin - inicio);
+        if (idCam == 4) {
+            console.log(`Asignación camarero ${idCam} - inicio: ${new Date(inicio).toISOString()} - fin: ${asig.fecha_fin ? new Date(asig.fecha_fin).toISOString() : 'ACTIVO (ahora)'}`);
+            console.log(`fin: ${new Date(fin).toISOString()} - inicio: ${new Date(inicio).toISOString()}`);
+            console.log(`Camarero ${idCam}: +${(fin - inicio) / (1000 * 60 * 60)} horas (total: ${tiempoPorCamarero[idCam] / (1000 * 60 * 60)} horas)`);
+        }
     }
+
 
     const idsCamareros = Object.keys(tiempoPorCamarero).map(Number);
     if (idsCamareros.length === 0) return [];
