@@ -58,7 +58,7 @@ export function ContenidoMapa({ barrasIniciales }: ContenidoMapaProps) {
                     <button
                         onClick={() => setVista('lista')}
                         className={cn(
-                            'flex items-center gap-2 px-6 py-2.5 rounded-full transition-all duration-300',
+                            'flex items-center gap-2 px-6 py-2.5 rounded-full transition-all duration-300 cursor-pointer',
                             vista === 'lista'
                                 ? 'bg-neon-green text-[#496600] shadow-[0_0_20px_rgba(233,255,186,0.3)]'
                                 : 'text-on-surface-variant hover:text-neon-blue'
@@ -70,7 +70,7 @@ export function ContenidoMapa({ barrasIniciales }: ContenidoMapaProps) {
                     <button
                         onClick={() => setVista('mapa')}
                         className={cn(
-                            'flex items-center gap-2 px-6 py-2.5 rounded-full transition-all duration-300',
+                            'flex items-center gap-2 px-6 py-2.5 rounded-full transition-all duration-300 cursor-pointer',
                             vista === 'mapa'
                                 ? 'bg-neon-green text-[#496600] shadow-[0_0_20px_rgba(233,255,186,0.3)]'
                                 : 'text-on-surface-variant hover:text-neon-blue'

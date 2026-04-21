@@ -21,6 +21,9 @@ export interface MetricasBarra {
     ultimaTransaccion: string | null;
     categoriaMasVendida: { categoria: string; cantidad: number } | null;
     tiempoMedioEntrePedidosMin: number | null;
+    ingresosHorarios: { hora: string; ingresos: number }[];
+    rendimientoPorCamarero: Map<number, number>;
+    ingresosPorCamareroPonderado: number;
 }
 
 /**
@@ -50,6 +53,11 @@ export async function obtenerMetricasGlobales(): Promise<MetricasGlobales> {
 export async function obtenerMetricasBarra(idBarra: number): Promise<MetricasBarra> {
     const supabase = await crearClienteServidor();
 
+    const { data: asignaciones } = await supabase
+        .from('asignaciones_camareros')
+        .select('id_camarero, fecha_inicio, fecha_fin')
+        .eq('id_barra', idBarra);
+
     // Transacciones de esta barra (ahora incluimos fecha para métricas temporales)
     const { data: txs, error: errorTx } = await supabase
         .from('transacciones')
@@ -69,10 +77,12 @@ export async function obtenerMetricasBarra(idBarra: number): Promise<MetricasBar
     let horaPicoVolumen = 0;
     let ultimaTransaccion: string | null = null;
     let tiempoMedioEntrePedidosMin: number | null = null;
+    let ingresosHorarios: { hora: string; ingresos: number }[] = [];
 
     if (registros.length > 0) {
         // Hora pico: agrupar por hora
         const conteoPorHora = new Map<string, number>();
+        const dineroPorHora = new Map<string, number>();
         const timestamps: number[] = [];
 
         for (const r of registros) {
@@ -80,6 +90,7 @@ export async function obtenerMetricasBarra(idBarra: number): Promise<MetricasBar
             timestamps.push(fecha.getTime());
             const h = fecha.getHours().toString().padStart(2, '0') + ':00';
             conteoPorHora.set(h, (conteoPorHora.get(h) ?? 0) + 1);
+            dineroPorHora.set(h, (dineroPorHora.get(h) ?? 0) + Number(r.monto));
         }
 
         let maxVol = 0;
@@ -90,6 +101,10 @@ export async function obtenerMetricasBarra(idBarra: number): Promise<MetricasBar
                 horaPicoVolumen = vol;
             }
         }
+
+        ingresosHorarios = Array.from(dineroPorHora.entries())
+            .map(([hora, ingresos]) => ({ hora, ingresos }))
+            .sort((a, b) => a.hora.localeCompare(b.hora));
 
         // Última transacción
         timestamps.sort((a, b) => a - b);
@@ -170,6 +185,47 @@ export async function obtenerMetricasBarra(idBarra: number): Promise<MetricasBar
         }
     }
 
+
+
+    const historial = asignaciones ?? [];
+
+    let totalManHours = 0;
+    let inicioBarra = Infinity;
+    let finBarra = -Infinity;
+
+    historial.forEach(a => {
+        const inicio = new Date(a.fecha_inicio).getTime();
+        const fin = a.fecha_fin ? new Date(a.fecha_fin).getTime() : Date.now();
+        totalManHours += (fin - inicio) / 3600000; // Horas decimales
+        if (inicio < inicioBarra) inicioBarra = inicio;
+        if (fin > finBarra) finBarra = fin;
+    });
+
+    const duracionOperativaBarra = (finBarra - inicioBarra) / 3600000;
+    // Camareros promedio (FTE) = Horas hombre totales / Horas reales de apertura
+    const camarerosPromedioFTE = duracionOperativaBarra > 0 ? totalManHours / duracionOperativaBarra : 0;
+    const ingresosPorCamareroPonderado = camarerosPromedioFTE > 0 ? ingresosTotales / camarerosPromedioFTE : 0;
+
+    const rendimientoPorCamarero = new Map<number, number>();
+
+    registros.forEach(tx => {
+        const fechaTx = new Date(tx.fecha).getTime();
+        // ¿Quiénes estaban trabajando en este momento exacto?
+        const camarerosEnEseMomento = historial.filter(a => {
+            const inicio = new Date(a.fecha_inicio).getTime();
+            const fin = a.fecha_fin ? new Date(a.fecha_fin).getTime() : Date.now();
+            return fechaTx >= inicio && fechaTx <= fin;
+        });
+
+        if (camarerosEnEseMomento.length > 0) {
+            const cuotaIndividual = Number(tx.monto) / camarerosEnEseMomento.length;
+            camarerosEnEseMomento.forEach(a => {
+                const actual = rendimientoPorCamarero.get(a.id_camarero) ?? 0;
+                rendimientoPorCamarero.set(a.id_camarero, actual + cuotaIndividual);
+            });
+        }
+    });
+
     return {
         totalTransacciones,
         ingresosTotales,
@@ -182,6 +238,9 @@ export async function obtenerMetricasBarra(idBarra: number): Promise<MetricasBar
         ultimaTransaccion,
         categoriaMasVendida,
         tiempoMedioEntrePedidosMin,
+        ingresosHorarios,
+        rendimientoPorCamarero,
+        ingresosPorCamareroPonderado,
     };
 }
 

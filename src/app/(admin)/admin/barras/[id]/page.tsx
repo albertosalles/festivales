@@ -172,7 +172,7 @@ export default async function PaginaDetalleBarra({
                                 Ingresos por camarero
                             </p>
                             <h3 className="font-headline text-2xl font-bold text-on-surface">
-                                €{camarerosActivos.length > 0 ? (metricas.ingresosTotales / camarerosActivos.length).toFixed(2) : '0.00'}
+                                €{metricas.ingresosPorCamareroPonderado ? metricas.ingresosPorCamareroPonderado.toFixed(2) : '0.00'}
                                 <span className="text-sm text-on-surface-variant font-normal"> /persona</span>
                             </h3>
                         </div>
@@ -256,40 +256,52 @@ export default async function PaginaDetalleBarra({
                                 ))
                             )}
 
-                        {/* Historial de Personal */}
-                        <div className="space-y-3 pt-6 border-t border-white/5">
-                            <p className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold">
-                                Historial de Personal
-                            </p>
-                            {historialCamareros.length === 0 ? (
-                                <p className="text-on-surface-variant text-sm italic">
-                                    Ningún camarero ha trabajado aquí aún
+                            {/* Historial de Personal */}
+                            <div className="space-y-3 pt-6 border-t border-white/5">
+                                <p className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold">
+                                    Historial de Personal
                                 </p>
-                            ) : (
-                                historialCamareros.map(({ camarero: c, horasEnEstaBarra }) => (
-                                    <div
-                                        key={c.idCamarero}
-                                        className="flex items-center gap-3 p-3 bg-surface-container-low rounded-lg border border-white/5"
-                                    >
-                                        <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
-                                            <span className="text-xs font-bold text-on-surface">
-                                                {c.nombre.charAt(0)}
-                                            </span>
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="text-sm font-bold text-on-surface">{c.nombre}</p>
-                                            {c.apellidos && (
-                                                <p className="text-[10px] text-on-surface-variant">{c.apellidos}</p>
-                                            )}
-                                        </div>
-                                        <div className="flex items-center gap-1.5 bg-neon-blue/10 px-2 py-1 rounded">
-                                            <span className="material-symbols-outlined text-[12px] text-neon-blue">schedule</span>
-                                            <span className="text-xs font-bold font-headline text-neon-blue">{horasEnEstaBarra.toFixed(1)}h</span>
-                                        </div>
-                                    </div>
-                                ))
-                            )}
-                        </div>
+                                {historialCamareros.length === 0 ? (
+                                    <p className="text-on-surface-variant text-sm italic">
+                                        Ningún camarero ha trabajado aquí aún
+                                    </p>
+                                ) : (
+                                    historialCamareros.map(({ camarero: c, horasEnEstaBarra }) => {
+                                        const ingresosTotalesCamarero = metricas.rendimientoPorCamarero.get(c.idCamarero) ?? 0;
+                                        const ingresoPorHora = horasEnEstaBarra > 0 ? ingresosTotalesCamarero / horasEnEstaBarra : 0;
+
+                                        return (
+                                            <div
+                                                key={c.idCamarero}
+                                                className="flex items-center gap-3 p-3 bg-surface-container-low rounded-lg border border-white/5"
+                                            >
+                                                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                                                    <span className="text-xs font-bold text-on-surface">
+                                                        {c.nombre.charAt(0)}
+                                                    </span>
+                                                </div>
+                                                <div className="flex-1">
+                                                    <p className="text-sm font-bold text-on-surface">{c.nombre}</p>
+                                                    {c.apellidos && (
+                                                        <p className="text-[10px] text-on-surface-variant">{c.apellidos}</p>
+                                                    )}
+                                                </div>
+                                                <div className="flex items-center gap-1.5 bg-neon-blue/10 px-2 py-1 rounded">
+                                                    <span className="material-symbols-outlined text-[12px] text-neon-blue">schedule</span>
+                                                    <span className="text-xs font-bold font-headline text-neon-blue">{horasEnEstaBarra.toFixed(1)}h</span>
+                                                </div>
+
+                                                <div className="flex flex-col items-end gap-1">
+                                                    <div className="flex items-center gap-1 bg-neon-green/10 px-2 py-0.5 rounded">
+                                                        <span className="material-symbols-outlined text-[10px] text-neon-green">trending_up</span>
+                                                        <span className="text-[10px] font-bold text-neon-green">{ingresoPorHora.toFixed(2)}€/h</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -373,6 +385,57 @@ export default async function PaginaDetalleBarra({
                         )}
                     </div>
                 </div>
+            </div>
+
+            {/* Gráfico de Ingresos por Hora */}
+            <div className="bg-surface-container rounded-xl p-8 relative overflow-hidden mt-10">
+                <h4 className="font-headline text-xl font-bold text-on-surface mb-6 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-neon-green">bar_chart</span>
+                    Ingresos por Hora
+                    <span className="text-[10px] font-normal tracking-widest uppercase bg-surface-container-high px-2 py-1 rounded ml-auto">
+                        Últimas horas
+                    </span>
+                </h4>
+
+                {metricas.ingresosHorarios.length === 0 ? (
+                    <p className="text-on-surface-variant text-sm text-center py-12 italic">
+                        Sin datos de ingresos recientes
+                    </p>
+                ) : (
+                    <div className="flex items-end gap-1.5 h-44 pt-4 relative z-10">
+                        {metricas.ingresosHorarios.map((m) => {
+                            let maxIngreso = 0;
+                            for (const ingreso of metricas.ingresosHorarios) {
+                                if (ingreso.ingresos > maxIngreso) {
+                                    maxIngreso = ingreso.ingresos;
+                                }
+                            }
+                            const pct = Math.max((m.ingresos / maxIngreso) * 100, 6);
+                            return (
+                                <div
+                                    key={m.hora}
+                                    className="flex-1 flex flex-col items-center justify-end h-full group"
+                                >
+                                    {/* Tooltip on hover */}
+                                    <span className="text-[10px] text-neon-green font-bold mb-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        €{m.ingresos.toFixed(2)}
+                                    </span>
+                                    {/* Bar */}
+                                    <div
+                                        className="w-full rounded-t-sm bg-linear-to-t from-neon-green/20 to-neon-green group-hover:brightness-125 transition-all"
+                                        style={{ height: `${pct}%` }}
+                                    />
+                                    {/* Hour label */}
+                                    <span className="text-[9px] text-on-surface-variant mt-2 font-medium">
+                                        {m.hora.replace(':00', 'h')}
+                                    </span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+                {/* Glow effect at the bottom left to match your aesthetic */}
+                <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-neon-green/5 rounded-full blur-[60px]" />
             </div>
         </div>
     );

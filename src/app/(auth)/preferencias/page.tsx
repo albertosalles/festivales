@@ -136,10 +136,9 @@ export default function PaginaPreferencias() {
                 px-5 py-2.5 rounded-full text-sm tracking-tight cursor-pointer
                 transition-all duration-200 flex items-center gap-2 select-none
                 active:scale-95
-                ${
-                    seleccionado
-                        ? 'border border-neon-green-container text-neon-green-container bg-neon-green-container/10 font-bold shadow-[0_0_10px_rgba(186,253,0,0.15)]'
-                        : 'border border-outline-variant/20 text-on-surface-variant bg-surface-container font-medium hover:border-neon-blue hover:text-neon-blue'
+                ${seleccionado
+                    ? 'border border-neon-green-container text-neon-green-container bg-neon-green-container/10 font-bold shadow-[0_0_10px_rgba(186,253,0,0.15)]'
+                    : 'border border-outline-variant/20 text-on-surface-variant bg-surface-container font-medium hover:border-neon-blue hover:text-neon-blue'
                 }
             `}
         >
@@ -191,7 +190,7 @@ export default function PaginaPreferencias() {
                                     onClick={() => router.back()}
                                     className="text-on-surface-variant hover:text-white transition-colors"
                                 >
-                                    <span className="material-symbols-outlined text-3xl">close</span>
+                                    <span className="cursor-pointer material-symbols-outlined text-3xl">close</span>
                                 </button>
                             )}
                         </div>
@@ -261,7 +260,7 @@ export default function PaginaPreferencias() {
                                 <button
                                     type="submit"
                                     disabled={cargando}
-                                    className="w-full py-5 rounded-2xl bg-neon-green-container text-[#425d00] font-black font-headline text-lg tracking-tighter uppercase shadow-[0_10px_30px_rgba(233,255,186,0.3)] active:scale-95 transition-all hover:brightness-110 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="cursor-pointer w-full py-5 rounded-2xl bg-neon-green-container text-[#425d00] font-black font-headline text-lg tracking-tighter uppercase shadow-[0_10px_30px_rgba(233,255,186,0.3)] active:scale-95 transition-all hover:brightness-110 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {cargando
                                         ? 'Guardando...'
