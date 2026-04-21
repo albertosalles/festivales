@@ -1,12 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { RUTAS } from '@/lib/constantes';
 import { LectorQR } from '@/components/camareros/LectorQR';
 import { tpvServicio } from '@/servicios/tpv.servicio';
 
 export default function CamareroLogin() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-background">
+                <span className="material-symbols-outlined animate-spin text-primary text-4xl">progress_activity</span>
+            </div>
+        }>
+            <CamareroLoginContent />
+        </Suspense>
+    );
+}
+
+function CamareroLoginContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     
