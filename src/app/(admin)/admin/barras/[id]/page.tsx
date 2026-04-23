@@ -11,6 +11,7 @@ import {
     BADGE_ESTADO,
 } from '@/lib/constantes';
 import { notFound } from 'next/navigation';
+import { TarjetaQRBarra } from '@/components/admin/TarjetaQRBarra';
 
 /**
  * Detalle de una barra — Panel Admin.
@@ -434,6 +435,8 @@ export default async function PaginaDetalleBarra({
                 {/* Glow effect at the bottom left to match your aesthetic */}
                 <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-green-300/5 rounded-full blur-[60px]" />
             </div>
+            {/* QR de acceso para camareros */}
+            <TarjetaQRBarra idBarra={idBarra} nombreBarra={barra.nombreLocalizacion} />
         </div>
     );
 }
