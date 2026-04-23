@@ -72,6 +72,12 @@ function CamareroLoginContent() {
             const idBarraNum = Number(idBarra);
             const idCamareroNum = Number(idCamarero);
 
+            // Obtener el nombre del camarero antes de iniciar el turno
+            const datosCamarero = await tpvServicio.obtenerNombreCamarero(idCamareroNum);
+            const nombreCamarero = datosCamarero
+                ? `${datosCamarero.nombre}${datosCamarero.apellidos ? ' ' + datosCamarero.apellidos : ''}`
+                : `Camarero #${idCamareroNum}`;
+
             // Inicia el turno en Supabase: cierra cualquier turno previo abierto
             // y crea una nueva asignación con fecha_inicio = ahora
             const asignacion = await tpvServicio.iniciarTurno(idCamareroNum, idBarraNum);
@@ -80,11 +86,12 @@ function CamareroLoginContent() {
             localStorage.setItem('tpv_barra', idBarra);
             localStorage.setItem('tpv_nombre_barra', nombreBarra);
             localStorage.setItem('tpv_camarero', idCamarero);
+            localStorage.setItem('tpv_nombre_camarero', nombreCamarero);
             localStorage.setItem('tpv_asignacion', String(asignacion.id_asignacion));
 
             router.push(RUTAS.CAMARERO_TPV);
-        } catch (e: any) {
-            setError(e.message || 'Error al vincular con la barra.');
+        } catch (e: unknown) {
+            setError((e as Error).message || 'Error al vincular con la barra.');
             setCargando(false);
         }
     };

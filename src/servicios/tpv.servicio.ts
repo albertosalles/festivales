@@ -218,6 +218,18 @@ export const tpvServicio = {
 
         if (error) throw error;
         return data;
+    },
+
+    async obtenerNombreCamarero(idCamarero: number): Promise<{ nombre: string; apellidos?: string } | null> {
+        const supabase = crearClienteNavegador();
+        const { data, error } = await supabase
+            .from('camareros')
+            .select('nombre, apellidos')
+            .eq('id_camarero', idCamarero)
+            .single();
+
+        if (error || !data) return null;
+        return { nombre: data.nombre, apellidos: data.apellidos ?? undefined };
     }
 }
 

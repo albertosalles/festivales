@@ -20,12 +20,15 @@ export default function CamareroTPV() {
     const router = useRouter();
     const [idBarra, setIdBarra] = useState<number>(0);
     const [nombreBarra, setNombreBarra] = useState<string>('');
+    const [nombreCamarero, setNombreCamarero] = useState<string>('Staff Member');
     const [cargandoGlobal, setCargandoGlobal] = useState(true);
     
     const [productos, setProductos] = useState<Producto[]>([]);
     const [lineas, setLineas] = useState<LineaTransaccion[]>([]);
     const [procesandoCobro, setProcesandoCobro] = useState(false);
     const [modalCobroAbierto, setModalCobroAbierto] = useState(false);
+    // Total fijado al abrir el modal, para que no se resetee a 0 al limpiar lineas
+    const [totalModal, setTotalModal] = useState(0);
     
     // UI states
     const [categoriaFiltro, setCategoriaFiltro] = useState<string>('todos');
@@ -33,6 +36,7 @@ export default function CamareroTPV() {
     useEffect(() => {
         const _idBarra = Number(localStorage.getItem('tpv_barra'));
         const _nombreBarra = localStorage.getItem('tpv_nombre_barra') || `Barra #${_idBarra}`;
+        const _nombreCamarero = localStorage.getItem('tpv_nombre_camarero') || 'Staff Member';
         
         if (!_idBarra) {
             router.push(RUTAS.CAMARERO_LOGIN);
@@ -41,6 +45,7 @@ export default function CamareroTPV() {
         
         setIdBarra(_idBarra);
         setNombreBarra(_nombreBarra);
+        setNombreCamarero(_nombreCamarero);
 
         // Fetch productos
         tpvServicio.obtenerProductosBarra(_idBarra)
@@ -80,6 +85,10 @@ export default function CamareroTPV() {
 
     const abrirModalCobro = () => {
         if (lineas.length === 0) return;
+        // Fijar el total en el momento de abrir el modal para que limpiar
+        // el carrito tras el cobro no lo resetee a 0€ en la pantalla de éxito
+        const totalActual = lineas.reduce((acc, l) => acc + (l.cantidad * l.precioUnitario), 0);
+        setTotalModal(totalActual);
         setModalCobroAbierto(true);
     };
 
@@ -110,6 +119,7 @@ export default function CamareroTPV() {
          localStorage.removeItem('tpv_barra');
          localStorage.removeItem('tpv_nombre_barra');
          localStorage.removeItem('tpv_camarero');
+         localStorage.removeItem('tpv_nombre_camarero');
          localStorage.removeItem('tpv_asignacion');
          router.push(RUTAS.CAMARERO_LOGIN);
     };
@@ -127,7 +137,7 @@ export default function CamareroTPV() {
                         <span className="material-symbols-outlined text-primary text-xl">person</span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-body text-on-surface-variant tracking-widest uppercase">Staff Member</span>
+                        <span className="text-[10px] font-body text-on-surface-variant tracking-widest uppercase">{nombreCamarero}</span>
                         <h1 className="font-headline font-black text-[#e9ffba] tracking-tighter text-lg leading-none">{nombreBarra}</h1>
                     </div>
                 </div>
@@ -249,7 +259,7 @@ export default function CamareroTPV() {
             {/* Modal de cobro con QR pulsera */}
             {modalCobroAbierto && (
                 <ModalCobroPulsera
-                    total={lineas.reduce((acc, l) => acc + (l.cantidad * l.precioUnitario), 0)}
+                    total={totalModal}
                     onConfirmar={procesarCobroConToken}
                     onCerrar={cerrarModal}
                 />
