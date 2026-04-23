@@ -66,6 +66,13 @@ export const tpvServicio = {
             .single();
 
         if (error) throw error;
+
+        // 4. Actualizar id_barra_actual en la tabla camareros
+        await supabase
+            .from('camareros')
+            .update({ id_barra_actual: idBarra })
+            .eq('id_camarero', idCamarero);
+
         return data;
     },
 
@@ -96,6 +103,12 @@ export const tpvServicio = {
                 })
                 .eq('id_asignacion', turno.id_asignacion);
         }
+
+        // Resetear id_barra_actual a null al cerrar el turno
+        await supabase
+            .from('camareros')
+            .update({ id_barra_actual: null })
+            .eq('id_camarero', idCamarero);
     },
 
     async obtenerProductosBarra(idBarra: number): Promise<Producto[]> {
