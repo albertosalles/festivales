@@ -69,14 +69,22 @@ function CamareroLoginContent() {
 
         setCargando(true);
         try {
-            // Simulación Auth guardando en localStorage para el TPV
+            const idBarraNum = Number(idBarra);
+            const idCamareroNum = Number(idCamarero);
+
+            // Inicia el turno en Supabase: cierra cualquier turno previo abierto
+            // y crea una nueva asignación con fecha_inicio = ahora
+            const asignacion = await tpvServicio.iniciarTurno(idCamareroNum, idBarraNum);
+
+            // Guardar en localStorage para el TPV y el cierre de turno posterior
             localStorage.setItem('tpv_barra', idBarra);
             localStorage.setItem('tpv_nombre_barra', nombreBarra);
             localStorage.setItem('tpv_camarero', idCamarero);
-            
+            localStorage.setItem('tpv_asignacion', String(asignacion.id_asignacion));
+
             router.push(RUTAS.CAMARERO_TPV);
-        } catch {
-            setError('Error de conexión.');
+        } catch (e: any) {
+            setError(e.message || 'Error al vincular con la barra.');
             setCargando(false);
         }
     };

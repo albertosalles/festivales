@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { NOMBRE_FESTIVAL, RUTAS } from '@/lib/constantes';
 import { useSesion } from '@/hooks/useSesion';
 import { BannerInstalacionPWA } from '@/components/layout/BannerInstalacionPWA';
+import { LectorQR } from '@/components/camareros/LectorQR';
 
 /**
  * Página de login — Identificación por código de pulsera o acceso admin.
@@ -16,6 +17,8 @@ export default function PaginaLogin() {
     const [error, setError] = useState('');
     const [cargando, setCargando] = useState(false);
     const [modoAdmin, setModoAdmin] = useState(false);
+    const [scannerQRAbierto, setScannerQRAbierto] = useState(false);
+    const [cargandoQR, setCargandoQR] = useState(false);
     const { iniciarSesion } = useSesion();
     const router = useRouter();
 
@@ -98,6 +101,34 @@ export default function PaginaLogin() {
         setError('');
         setCodigoPulsera('');
         setContrasenaAdmin('');
+    };
+
+    const manejarLoginQR = async (tokenEscaneado: string) => {
+        setScannerQRAbierto(false);
+        setCargandoQR(true);
+        setError('');
+        try {
+            const respuesta = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tokenPago: tokenEscaneado.trim() }),
+            });
+            const datos = await respuesta.json();
+            if (!respuesta.ok) {
+                setError(datos.error || 'Pulsera no encontrada o no válida');
+                return;
+            }
+            iniciarSesion(datos.sesion);
+            if (!datos.tienePreferencias) {
+                router.push(RUTAS.PREFERENCIAS);
+            } else {
+                router.push(RUTAS.MAPA);
+            }
+        } catch {
+            setError('Error de conexión. Inténtalo de nuevo.');
+        } finally {
+            setCargandoQR(false);
+        }
     };
 
     return (
@@ -252,16 +283,15 @@ export default function PaginaLogin() {
                     </div>
                     <button
                         type="button"
-                        className="bg-surface-container-low p-4 rounded-xl flex flex-col gap-3 border border-outline-variant/10 text-left hover:border-neon-orange/20 hover:bg-surface-container transition-all cursor-pointer active:scale-95"
-                        onClick={() => {
-                            /* NFC no implementado en MVP */
-                        }}
+                        className="bg-surface-container-low p-4 rounded-xl flex flex-col gap-3 border border-outline-variant/10 text-left hover:border-neon-orange/20 hover:bg-surface-container transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+                        onClick={() => setScannerQRAbierto(true)}
+                        disabled={cargandoQR}
                     >
                         <span className="material-symbols-outlined text-neon-orange text-xl">
-                            contactless
+                            {cargandoQR ? 'progress_activity' : 'qr_code'}
                         </span>
                         <p className="text-[10px] uppercase font-bold tracking-wider text-on-surface-variant leading-tight">
-                            Validación NFC Instantánea
+                            {cargandoQR ? 'Verificando...' : 'Acceso QR Pulsera'}
                         </p>
                     </button>
                 </div>
@@ -300,6 +330,53 @@ export default function PaginaLogin() {
             </div>
 
             <BannerInstalacionPWA />
+
+            {/* Modal Scanner QR Pulsera */}
+            {scannerQRAbierto && (
+                <div className="fixed inset-0 z-[100] flex items-end justify-center sm:items-center">
+                    <div
+                        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+                        onClick={() => setScannerQRAbierto(false)}
+                    />
+                    <div className="relative w-full max-w-md bg-[#0e0e11] border border-white/10 rounded-t-3xl sm:rounded-2xl p-6 flex flex-col gap-5 shadow-[0_-20px_60px_rgba(0,0,0,0.6)] z-10">
+                        {/* Glow line top */}
+                        <div className="absolute top-0 left-1/4 w-1/2 h-px bg-gradient-to-r from-transparent via-[#e9ffba]/40 to-transparent" />
+
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-xs text-[#aeacb0] uppercase tracking-widest font-bold">Acceso por Pulsera</p>
+                                <h2 className="font-headline font-black text-[#e9ffba] text-xl tracking-tight mt-0.5">Escanea tu QR</h2>
+                            </div>
+                            <button
+                                onClick={() => setScannerQRAbierto(false)}
+                                className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#aeacb0] hover:text-white border border-white/10 active:scale-95 transition-all"
+                            >
+                                <span className="material-symbols-outlined text-xl">close</span>
+                            </button>
+                        </div>
+
+                        <div className="flex flex-col items-center gap-2">
+                            <div className="w-10 h-10 rounded-full bg-neon-orange/10 flex items-center justify-center text-neon-orange">
+                                <span className="material-symbols-outlined text-xl">qr_code</span>
+                            </div>
+                            <p className="text-sm text-[#aeacb0] text-center">
+                                Apunta la cámara al <strong className="text-white">código QR de tu pulsera</strong> para entrar al festival
+                            </p>
+                        </div>
+
+                        <div className="rounded-xl overflow-hidden bg-black/60 border border-white/5">
+                            <LectorQR
+                                alEscanear={manejarLoginQR}
+                                alError={(err) => console.log('[Scanner login silencioso]', err)}
+                            />
+                        </div>
+
+                        {error && (
+                            <p className="text-center text-sm text-error font-medium bg-error/10 p-3 rounded-xl border border-error/20">{error}</p>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

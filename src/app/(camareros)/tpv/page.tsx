@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { RUTAS } from '@/lib/constantes';
 import { tpvServicio, Producto, LineaTransaccion } from '@/servicios/tpv.servicio';
 import { CarritoTPV } from '@/components/camareros/CarritoTPV';
+import { ModalCobroPulsera } from '@/components/camareros/ModalCobroPulsera';
 
 // Helper for randomizing card styles if needed, or mapping categories to colors
 function getColorPaletteForCategory(cat: string) {
@@ -24,6 +25,7 @@ export default function CamareroTPV() {
     const [productos, setProductos] = useState<Producto[]>([]);
     const [lineas, setLineas] = useState<LineaTransaccion[]>([]);
     const [procesandoCobro, setProcesandoCobro] = useState(false);
+    const [modalCobroAbierto, setModalCobroAbierto] = useState(false);
     
     // UI states
     const [categoriaFiltro, setCategoriaFiltro] = useState<string>('todos');
@@ -76,32 +78,39 @@ export default function CamareroTPV() {
         });
     };
 
-    const simularCobro = async () => {
+    const abrirModalCobro = () => {
+        if (lineas.length === 0) return;
+        setModalCobroAbierto(true);
+    };
+
+    const procesarCobroConToken = async (tokenPago: string) => {
         setProcesandoCobro(true);
-        const tokenPago = prompt("Simulación Cashless: Introduce el token de pago (ej. pulsera_alberto_123)");
-        
-        if (!tokenPago) {
-            setProcesandoCobro(false);
-            return;
-        }
-
         const total = lineas.reduce((acc, l) => acc + (l.cantidad * l.precioUnitario), 0);
-
         try {
             await tpvServicio.procesarCobro(tokenPago, idBarra, total, lineas);
-            alert("¡Cobro exitoso!");
             setLineas([]);
-        } catch (e: any) {
-            alert(`Error en el cobro: ${e.message}`);
         } finally {
             setProcesandoCobro(false);
         }
     };
 
-    const cerrarSesion = () => {
+    const cerrarModal = () => {
+        setModalCobroAbierto(false);
+    };
+
+    const cerrarSesion = async () => {
+         const idCamareroNum = Number(localStorage.getItem('tpv_camarero'));
+         if (idCamareroNum) {
+             try {
+                 await tpvServicio.cerrarTurno(idCamareroNum);
+             } catch (e) {
+                 console.error('Error al cerrar turno:', e);
+             }
+         }
          localStorage.removeItem('tpv_barra');
          localStorage.removeItem('tpv_nombre_barra');
          localStorage.removeItem('tpv_camarero');
+         localStorage.removeItem('tpv_asignacion');
          router.push(RUTAS.CAMARERO_LOGIN);
     };
 
@@ -233,9 +242,18 @@ export default function CamareroTPV() {
                 lineas={lineas} 
                 productosInfo={infoProductosMap}
                 onLimpiar={() => setLineas([])}
-                onCobrar={simularCobro}
+                onCobrar={abrirModalCobro}
                 cargando={procesandoCobro}
             />
+
+            {/* Modal de cobro con QR pulsera */}
+            {modalCobroAbierto && (
+                <ModalCobroPulsera
+                    total={lineas.reduce((acc, l) => acc + (l.cantidad * l.precioUnitario), 0)}
+                    onConfirmar={procesarCobroConToken}
+                    onCerrar={cerrarModal}
+                />
+            )}
         </div>
     );
 }

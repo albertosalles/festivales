@@ -29,10 +29,19 @@ export default function HistorialCamarero() {
             .finally(() => setCargando(false));
     }, [router]);
 
-    const cerrarSesion = () => {
+    const cerrarSesion = async () => {
+         const idCamareroNum = Number(localStorage.getItem('tpv_camarero'));
+         if (idCamareroNum) {
+             try {
+                 await tpvServicio.cerrarTurno(idCamareroNum);
+             } catch (e) {
+                 console.error('Error al cerrar turno:', e);
+             }
+         }
          localStorage.removeItem('tpv_barra');
          localStorage.removeItem('tpv_nombre_barra');
          localStorage.removeItem('tpv_camarero');
+         localStorage.removeItem('tpv_asignacion');
          router.push(RUTAS.CAMARERO_LOGIN);
     };
 

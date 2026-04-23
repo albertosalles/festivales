@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { TarjetaSaldo } from '@/components/billetera/TarjetaSaldo';
 import { SelectorRecarga } from '@/components/billetera/SelectorRecarga';
 import { useSesion } from '@/hooks/useSesion';
+import { TarjetaQR } from '@/components/billetera/TarjetaQR';
 
 /**
  * Contenedor principal de la billetera — Diseño Stitch "Electric Nocturne".
@@ -122,6 +123,7 @@ export function ContenedorBilletera() {
                 alRecargar={ejecutarRecarga}
                 deshabilitado={cargandoSaldo || idWallet === null}
             />
+            <TarjetaQR tokenPago={sesion.tokenPago} />
         </div>
     );
 }
