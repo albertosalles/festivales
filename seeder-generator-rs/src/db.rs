@@ -1,9 +1,11 @@
-use crate::input_structs::Config;
+use std::collections::HashMap;
+
+use crate::input_structs::{Config, FestivalDates};
 use crate::tables::*;
-use chrono::{NaiveDate, NaiveTime, Timelike};
-use rand::RngExt;
+use chrono::{Days, NaiveDate, NaiveDateTime, NaiveTime, Timelike};
 use rand::rngs::ThreadRng;
 use rand::seq::{IndexedRandom, IteratorRandom};
+use rand::{RngExt, random_bool};
 use rand_distr::Beta;
 use rand_distr::Distribution;
 
@@ -13,6 +15,24 @@ const MUSIC_GENRES: [&str; 8] = ["Techno", "Rock", "Indie", "Pop", "Urban", "Reg
 #[rustfmt::skip]
 const FOOD_OPTIONS: [&str; 8] = ["Hamburguesas", "Vegano", "Pizza", "Tacos", "Sushi", "Kebab", "Paella", "Hot Dogs"];
 
+#[allow(dead_code)]
+struct TimeInfo {
+    start_day: NaiveDate,
+    current_day: NaiveDate,
+    nth_day: i64,
+
+    opening_hour: NaiveTime,
+    closing_hour: NaiveTime,
+    full_personal_hour: NaiveTime,
+    current_hour: NaiveTime,
+
+    day_hours: i64,
+    last_day_hours: i64,
+    hours_until_full_personal: i64,
+
+    end_hour: i64,
+}
+
 pub struct DB {
     pub config: Config,
 
@@ -20,6 +40,8 @@ pub struct DB {
 
     bar_popularities: Vec<f32>,
     product_popularities: Vec<f32>,
+
+    time_info: TimeInfo,
 
     pub bars: Vec<Bar>,
     pub products: Vec<Product>,
@@ -31,8 +53,62 @@ pub struct DB {
     pub waiter_assignments: Vec<WaiterAssignment>,
 }
 
+macro_rules! parse_date {
+    ($type:tt, $source:expr, $format:expr) => {
+        chrono::$type::parse_from_str(&$source, $format).unwrap()
+    };
+}
+
+impl From<&FestivalDates> for TimeInfo {
+    fn from(festival: &FestivalDates) -> Self {
+        let start_day = parse_date!(NaiveDate, festival.start_day, "%Y-%m-%d");
+        let current_day = parse_date!(NaiveDate, festival.current_day, "%Y-%m-%d");
+        let mut nth_day = (current_day - start_day).num_days();
+
+        let opening_hour = parse_date!(NaiveTime, festival.opening_hour, "%H:%M:%S");
+        let closing_hour = parse_date!(NaiveTime, festival.closing_hour, "%H:%M:%S");
+        let full_personal_hour = parse_date!(NaiveTime, festival.full_personal_hour, "%H:%M:%S");
+        let current_hour = parse_date!(NaiveTime, festival.current_time, "%H:%M:%S");
+        let mut day_hours = (closing_hour - opening_hour).num_hours();
+        let mut last_day_hours = (current_hour - opening_hour).num_hours();
+        let mut hours_until_full_personal = (full_personal_hour - opening_hour).num_hours();
+
+        for h in [
+            &mut day_hours,
+            &mut last_day_hours,
+            &mut hours_until_full_personal,
+        ] {
+            if *h < 0 {
+                *h += 24;
+            }
+        }
+
+        if current_hour > closing_hour {
+            nth_day += 1;
+        }
+
+        let end_hour = day_hours * (nth_day - 1) + last_day_hours;
+
+        TimeInfo {
+            start_day,
+            current_day,
+            nth_day,
+            opening_hour,
+            closing_hour,
+            full_personal_hour,
+            current_hour,
+            day_hours,
+            last_day_hours,
+            hours_until_full_personal,
+            end_hour,
+        }
+    }
+}
+
 impl DB {
     pub fn new(config: Config) -> DB {
+        let time_info = TimeInfo::from(&config.festival);
+
         DB {
             config,
 
@@ -40,6 +116,8 @@ impl DB {
 
             bar_popularities: vec![],
             product_popularities: vec![],
+
+            time_info,
 
             bars: vec![],
             products: vec![],
@@ -57,6 +135,20 @@ impl DB {
         self.seed_users();
         self.seed_waiters();
         self.seed_transactions();
+
+        let mut map = HashMap::new();
+        for wa in &self.waiter_assignments {
+            if wa.finnish_date.unwrap()
+                == NaiveDateTime::new(self.time_info.current_day, self.time_info.current_hour)
+            {
+                *map.entry(wa.id_bar).or_insert(0) += 1;
+            }
+        }
+
+        for (k, v) in map {
+            let bar = self.bars.iter().find(|b| b.id == k).unwrap();
+            println!("{}: {v}", bar.location_name.as_ref().unwrap())
+        }
     }
 
     fn seed_bars(&mut self) {
@@ -245,104 +337,87 @@ impl DB {
         }
     }
 
-    // This is horrible. Clean it up if u have time
-    // Returns the id of the current bar
     fn seed_movements(&mut self, id_waiter: i32, id: &mut i32) -> Option<i32> {
-        let start_day =
-            chrono::NaiveDate::parse_from_str(&self.config.festival.start_day, "%Y-%m-%d").unwrap();
-        let current_day =
-            chrono::NaiveDate::parse_from_str(&self.config.festival.current_day, "%Y-%m-%d")
-                .unwrap();
-        let days_passed = (current_day - start_day).num_days();
-        let mut closing_hour =
-            chrono::NaiveTime::parse_from_str(&self.config.festival.closing_hour, "%H:%M:%S")
-                .unwrap();
-        let current_hour =
-            chrono::NaiveTime::parse_from_str(&self.config.festival.current_time, "%H:%M:%S")
-                .unwrap();
-        let mut id_bar = 0;
+        let hours = self.time_info.day_hours;
+        let start_hour = if random_bool(self.config.generation_params.starting_personal as f64) {
+            0
+        } else {
+            (1..self.time_info.hours_until_full_personal)
+                .choose(&mut self.rng)
+                .unwrap_or(0)
+        };
+        let end_hour = self.time_info.end_hour;
 
-        for i in 0..=days_passed {
-            let mut start_hour = self.get_random_starting_hour();
-            let start_day = start_day + chrono::Duration::days(i);
+        let mut breaks = vec![start_hour, end_hour];
 
-            if i == days_passed {
-                closing_hour = current_hour;
+        for i in 1..=self.time_info.nth_day - 1 {
+            breaks.push(hours * i);
+        }
+
+        while random_bool(self.config.generation_params.waiter_chance_to_move as f64) {
+            let mut break_hour = (start_hour..end_hour).choose(&mut self.rng).unwrap();
+
+            while breaks.contains(&break_hour) {
+                break_hour = (start_hour..end_hour).choose(&mut self.rng).unwrap();
             }
 
-            while rand::random_bool(self.config.generation_params.waiter_chance_to_move as f64) {
-                let finish_hour = self.get_random_hour_from_range(start_hour, closing_hour);
+            breaks.push(break_hour);
+        }
 
-                self.push_movement(start_hour, start_day, finish_hour, *id, id_waiter);
+        breaks.sort_unstable();
 
-                start_hour = finish_hour;
-                *id += 1;
-            }
+        let mut id_bar = -1;
 
-            if i == days_passed {
-                let start_date = chrono::NaiveDateTime::new(current_day, start_hour);
-                self.waiter_assignments.push(WaiterAssignment {
-                    id: *id,
-                    id_waiter,
-                    id_bar,
-                    start_date: Some(start_date),
-                    finnish_date: None,
-                    hours: None,
-                });
+        for i in 1..breaks.len() {
+            let start = breaks[i - 1];
+            let end = breaks[i];
+
+            let range_start_hour = NaiveTime::from_hms_opt(
+                ((start % hours) as u32 + self.time_info.opening_hour.hour()) % 24,
+                0,
+                0,
+            )
+            .unwrap();
+            let range_end_hour = if end % hours == 0 {
+                self.time_info.closing_hour
             } else {
-                id_bar = self.push_movement(start_hour, start_day, closing_hour, *id, id_waiter);
-            }
+                NaiveTime::from_hms_opt(
+                    ((end % hours) as u32 + self.time_info.opening_hour.hour()) % 24,
+                    0,
+                    0,
+                )
+                .unwrap()
+            };
+
+            let range_start_day = self
+                .time_info
+                .start_day
+                .checked_add_days(Days::new((start / hours) as u64))
+                .unwrap();
+
+            let range_end_day = if range_end_hour < range_start_hour {
+                range_start_day.checked_add_days(Days::new(1)).unwrap()
+            } else {
+                range_start_day
+            };
+
+            let range_start_time = NaiveDateTime::new(range_start_day, range_start_hour);
+            let range_end_time = NaiveDateTime::new(range_end_day, range_end_hour);
+
+            id_bar = self.get_random_bar().id;
+            self.waiter_assignments.push(WaiterAssignment {
+                id: *id,
+                id_waiter,
+                id_bar,
+                start_date: Some(range_start_time),
+                finnish_date: Some(range_end_time),
+                hours: Some((end - start) as f32),
+            });
 
             *id += 1;
         }
 
-        Some(id_bar)
-    }
-
-    fn push_movement(
-        &mut self,
-        start_hour: NaiveTime,
-        start_day: NaiveDate,
-        finish_hour: NaiveTime,
-        id: i32,
-        id_waiter: i32,
-    ) -> i32 {
-        let opening_hour =
-            chrono::NaiveTime::parse_from_str(&self.config.festival.opening_hour, "%H:%M:%S")
-                .unwrap();
-        let midnight_hour = chrono::NaiveTime::from_hms_opt(0, 0, 0).unwrap();
-
-        let start_date = if start_hour < opening_hour {
-            chrono::NaiveDateTime::new(start_day + chrono::Duration::days(1), start_hour)
-        } else {
-            chrono::NaiveDateTime::new(start_day, start_hour)
-        };
-
-        let hours = if start_hour > finish_hour {
-            (3600 * 24 - (start_hour - midnight_hour).num_seconds()) as f32 / 3600.
-                + (finish_hour - midnight_hour).num_seconds() as f32 / 3600.
-        } else {
-            (finish_hour - start_hour).num_seconds() as f32 / 3600.
-        };
-
-        let finish_date = if finish_hour < opening_hour {
-            chrono::NaiveDateTime::new(start_day + chrono::Duration::days(1), finish_hour)
-        } else {
-            chrono::NaiveDateTime::new(start_day, finish_hour)
-        };
-
-        let id_bar = self.get_random_bar().id;
-
-        self.waiter_assignments.push(WaiterAssignment {
-            id,
-            id_waiter,
-            id_bar,
-            start_date: Some(start_date),
-            finnish_date: Some(finish_date),
-            hours: Some(hours),
-        });
-
-        id_bar
+        if id_bar == -1 { None } else { Some(id_bar) }
     }
 
     // name, surname, email
@@ -399,73 +474,22 @@ impl DB {
         }
     }
 
-    fn get_random_starting_hour(&mut self) -> chrono::NaiveTime {
-        let opening_hour =
-            chrono::NaiveTime::parse_from_str(&self.config.festival.opening_hour, "%H:%M:%S")
-                .unwrap();
-        let full_personal_hour =
-            chrono::NaiveTime::parse_from_str(&self.config.festival.full_personal_hour, "%H:%M:%S")
-                .unwrap();
-
-        if rand::random_bool(self.config.generation_params.starting_personal as f64) {
-            opening_hour
-        } else {
-            self.get_random_hour_from_range(opening_hour, full_personal_hour)
-        }
-    }
-
     fn get_random_date(&mut self) -> chrono::NaiveDateTime {
-        let opening_hour =
-            chrono::NaiveTime::parse_from_str(&self.config.festival.opening_hour, "%H:%M:%S")
-                .unwrap();
-        let closing_hour =
-            chrono::NaiveTime::parse_from_str(&self.config.festival.closing_hour, "%H:%M:%S")
-                .unwrap();
-        let start_day =
-            chrono::NaiveDate::parse_from_str(&self.config.festival.start_day, "%Y-%m-%d").unwrap();
-        let current_day =
-            chrono::NaiveDate::parse_from_str(&self.config.festival.current_day, "%Y-%m-%d")
-                .unwrap();
-
-        let random_day = start_day
-            + chrono::Duration::days(
-                self.rng
-                    .random_range(0..=(current_day - start_day).num_days() as i64),
-            );
-
-        let random_time = if random_day == current_day {
-            self.get_random_hour_from_range(opening_hour, closing_hour)
-        } else {
-            self.get_random_hour_from_range(opening_hour, closing_hour)
-        };
+        let random_hour = (0..self.time_info.end_hour).choose(&mut self.rng).unwrap();
+        let random_time = NaiveTime::from_hms_opt(
+            ((random_hour % self.time_info.day_hours) as u32 + self.time_info.opening_hour.hour())
+                % 24,
+            0,
+            0,
+        )
+        .unwrap();
+        let random_day = self
+            .time_info
+            .start_day
+            .checked_add_days(Days::new((random_hour / self.time_info.day_hours) as u64))
+            .unwrap();
 
         chrono::NaiveDateTime::new(random_day, random_time)
-    }
-
-    fn get_random_hour_from_range(
-        &mut self,
-        start: chrono::NaiveTime,
-        end: chrono::NaiveTime,
-    ) -> chrono::NaiveTime {
-        let interval_secs = 1800; // Half an hour in seconds
-        let start_sec = start.num_seconds_from_midnight();
-        let end_sec = end.num_seconds_from_midnight();
-
-        // If it crosses midnight, add 24 hours (86,400 seconds) to the end time
-        let adjusted_end_sec = if end_sec < start_sec {
-            end_sec + 86_400
-        } else {
-            end_sec
-        };
-
-        let total_slots = (adjusted_end_sec - start_sec) / interval_secs;
-
-        let random_slots = self.rng.random_range(0..=total_slots);
-        let raw_random_sec = start_sec + (random_slots * interval_secs);
-
-        let final_sec = raw_random_sec % 86_400;
-
-        chrono::NaiveTime::from_num_seconds_from_midnight_opt(final_sec, 0).unwrap()
     }
 
     fn get_random_bar(&mut self) -> &Bar {

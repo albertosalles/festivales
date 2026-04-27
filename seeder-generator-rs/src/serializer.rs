@@ -74,8 +74,9 @@ impl Serializer {
     }
 
     pub fn serialize(&mut self, db: DB) -> Result<(), Box<dyn Error>> {
-        for table_name in &[
+        let tables = [
             "lineas_transaccion",
+            "incidencias_barra",
             "transacciones",
             "wallet",
             "usuario",
@@ -83,7 +84,21 @@ impl Serializer {
             "camareros",
             "productos",
             "barras",
-        ] {
+        ];
+
+        let ids = [
+            "id_linea",
+            "id_incidencia",
+            "id_transaccion",
+            "id_wallet",
+            "id_usuario",
+            "id_asignacion",
+            "id_camarero",
+            "id_producto",
+            "id_barra",
+        ];
+
+        for table_name in &tables {
             writeln!(self.file, "DELETE FROM \"public\".\"{}\";", table_name)?;
         }
 
@@ -246,6 +261,14 @@ impl Serializer {
                 ]
             },
         )?;
+
+        for i in 0..tables.len() {
+            writeln!(
+                self.file,
+                "SELECT setval(pg_get_serial_sequence('{0}', '{1}'), (SELECT MAX({1}) FROM {0}));",
+                tables[i], ids[i]
+            )?;
+        }
 
         Ok(())
     }

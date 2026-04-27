@@ -1,27 +1,33 @@
 {
   "festival": {
     "start_day": "2026-04-19",
-    "opening_hour": "04:00:00",
-    "closing_hour": "16:00:00",
+    "opening_hour": "16:00:00",
+    "closing_hour": "04:00:00",
     "current_day": "2026-04-21",
-    "current_time": "11:30:00",
-    "full_personal_hour": "08:00:00"
+    "current_time": "20:00:00",
+    "full_personal_hour": "22:00:00"
   },
   "generation_params": {
     "users_count": 75,
     "waiters_count": 20,
     "transactions_per_user_min": 1,
     "transactions_per_user_max": 8,
-    "transactions_skew": 0.75,
+    // For Beta distribution, between 0 and 1,
+    // How close the random numbers (number of transactions) will be to the min/max respectively
+    "transactions_skew": 0.75, 
     "chance_transaction_is_recharge": 0.10,
     "lines_per_transaction_min": 1,
     "lines_per_transaction_max": 3,
-    "chance_double_product": 0.20,
-    "chance_triple_product": 0.05,
+    "chance_double_product": 0.20, // Chance quantity in transaction_line is 2
+    "chance_triple_product": 0.05, // Chance quantity in transaction_line is 3
+    "wallet_zero_chance": 0.15,
     "wallet_balance_min": 20.00,
     "wallet_balance_max": 200.00,
-    "wallet_zero_chance": 0.15,
-    "waiter_chance_to_move": 0.30,
+    // Accumulative, it's gonna be used as:
+    // while rand(waiter_...) { add_movement }
+    // 1 would mean that the waiter has infinity movements
+    "waiter_chance_to_move": 0.60, 
+    // Roughly the proportion of the personal that's gonna be working at opening hour
     "starting_personal": 0.60
   },
   "dictionaries": {
