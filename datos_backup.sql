@@ -4,7 +4,7 @@ SET session_replication_role = replica;
 -- PostgreSQL database dump
 --
 
--- \restrict HIQRXaHDmHN0JG52eXNuBIqFefgZ8Yvzy7vHWozuEfWWEL4RFZPxOEdWBJspaGL
+-- \restrict d4vKkoJjpfLyffdbGX31Goc80ibBIBSILM3hYOnK1epd0PBBh2dyLQUKSxu2Zmf
 
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 17.6
@@ -170,8 +170,8 @@ INSERT INTO "public"."barras" ("id_barra", "nombre_localizacion", "estado_cola")
 --
 
 INSERT INTO "public"."camareros" ("id_camarero", "nombre", "apellidos", "activo", "id_barra_actual") VALUES
-	(2, 'Laura', NULL, true, NULL),
-	(1, 'Jorge', NULL, true, NULL);
+	(1, 'Jorge', NULL, true, NULL),
+	(2, 'Laura', NULL, true, NULL);
 
 
 --
@@ -179,6 +179,28 @@ INSERT INTO "public"."camareros" ("id_camarero", "nombre", "apellidos", "activo"
 --
 
 INSERT INTO "public"."asignaciones_camareros" ("id_asignacion", "id_camarero", "id_barra", "fecha_inicio", "fecha_fin", "horas_imputadas") VALUES
+	(21, 1, 2, '2026-04-21 17:49:16.769189+00', '2026-04-23 12:13:33.815+00', 42.4),
+	(22, 1, 4, '2026-04-23 12:13:34.094908+00', '2026-04-23 12:22:39.493+00', 0.15),
+	(23, 1, 4, '2026-04-23 12:22:39.662319+00', '2026-04-23 12:24:51.72+00', 0.04),
+	(25, 2, 4, '2026-04-23 13:39:28.257205+00', '2026-04-23 13:42:51.252+00', 0.06),
+	(27, 2, 3, '2026-04-23 13:42:51.486146+00', '2026-04-23 13:55:32.039+00', 0.21),
+	(28, 2, 4, '2026-04-23 13:55:32.252653+00', '2026-04-23 13:56:04.376+00', 0.01),
+	(26, 1, 3, '2026-04-23 13:42:08.974001+00', '2026-04-23 14:04:56.812+00', 0.38),
+	(29, 1, 3, '2026-04-23 14:04:57.008947+00', '2026-04-23 14:14:03.405+00', 0.15),
+	(30, 1, 4, '2026-04-23 14:14:03.587569+00', '2026-04-23 16:47:18.197+00', 2.55),
+	(32, 1, 2, '2026-04-23 16:47:18.417996+00', '2026-04-23 16:47:51.091+00', 0.01),
+	(31, 2, 3, '2026-04-23 14:19:58.853132+00', '2026-04-23 16:48:26.053+00', 2.47),
+	(33, 2, 3, '2026-04-23 16:48:26.210537+00', '2026-04-23 16:48:28.994+00', 0),
+	(34, 2, 2, '2026-04-24 07:34:25.893859+00', '2026-04-24 07:36:27.899+00', 0.03),
+	(35, 2, 5, '2026-04-24 07:53:12.9243+00', '2026-04-24 07:54:00.141+00', 0.01),
+	(38, 2, 3, '2026-04-24 07:58:45.685573+00', '2026-04-24 07:59:32.925+00', 0),
+	(37, 1, 3, '2026-04-24 07:58:29.918636+00', '2026-04-24 07:59:34.134+00', 0),
+	(40, 2, 4, '2026-04-25 19:29:25.634734+00', '2026-04-25 19:31:36.618+00', 0),
+	(39, 1, 3, '2026-04-25 16:33:31.19771+00', '2026-04-25 19:31:38.38+00', 0),
+	(41, 1, 1, '2026-04-27 07:17:17.14111+00', '2026-04-27 07:28:25.066+00', 0.19),
+	(42, 1, 3, '2026-04-27 07:28:25.300599+00', '2026-04-27 07:34:27.891+00', 0.1),
+	(43, 1, 1, '2026-04-27 07:34:28.170194+00', '2026-04-27 07:35:12.479+00', 0.01),
+	(44, 2, 3, '2026-04-27 17:17:00.255657+00', '2026-04-27 18:37:55.551+00', 0),
 	(1, 1, 1, '2026-03-31 20:06:24.192998+00', '2026-03-31 20:11:13.916+00', 0),
 	(3, 1, 2, '2026-03-31 20:23:56.521909+00', '2026-03-31 20:29:09.795+00', 0),
 	(2, 2, 1, '2026-03-31 20:07:46.164835+00', '2026-04-01 06:55:44.356+00', 0),
@@ -200,24 +222,38 @@ INSERT INTO "public"."configuracion_festival" ("clave", "valor") VALUES
 
 
 --
+-- Data for Name: incidencias_barra; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO "public"."incidencias_barra" ("id_incidencia", "id_barra", "id_camarero", "tipo_incidencia", "descripcion", "fecha_reporte", "estado") VALUES
+	(1, 4, 1, 'stock', '', '2026-04-21 19:13:28.12944+00', 'pendiente'),
+	(5, 4, 1, 'stock', '', '2026-04-23 12:13:41.474722+00', 'pendiente'),
+	(6, 3, 2, 'limpieza', '', '2026-04-23 14:21:25.969918+00', 'pendiente'),
+	(8, 5, 2, 'soporte', '', '2026-04-24 07:53:22.59604+00', 'pendiente'),
+	(9, 4, 2, 'seguridad', '', '2026-04-25 19:31:12.919846+00', 'pendiente'),
+	(7, 3, 2, 'seguridad', 'Dos chavales se están liando a palos', '2026-04-23 14:21:54.185413+00', 'pendiente'),
+	(10, 1, 1, 'soporte', 'Aiuda (por favor)', '2026-04-27 07:35:06.666171+00', 'pendiente');
+
+
+--
 -- Data for Name: productos; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 INSERT INTO "public"."productos" ("id_producto", "id_barra", "nombre", "precio", "categoria") VALUES
-	(1, 1, 'Agua', 2.50, 'bebida'),
-	(2, 1, 'Coca-Cola', 3.50, 'bebida'),
-	(3, 1, 'Cerveza', 5.00, 'bebida'),
-	(4, 2, 'Agua', 2.50, 'bebida'),
-	(5, 2, 'Coca-Cola', 3.50, 'bebida'),
-	(6, 2, 'Cerveza', 5.00, 'bebida'),
-	(7, 5, 'Agua', 2.50, 'bebida'),
-	(8, 5, 'Coca-Cola', 3.50, 'bebida'),
-	(9, 5, 'Cerveza', 5.00, 'bebida'),
-	(10, 3, 'Doble', 9.50, 'comida'),
-	(11, 3, 'Triple', 12.50, 'comida'),
-	(12, 3, 'Patatas', 4.00, 'comida'),
-	(13, 4, 'Poke de frutas', 8.50, 'comida'),
-	(14, 4, 'Poke de verduras', 8.50, 'comida');
+	(1, 1, 'Agua', 2.50, 'Bebida'),
+	(2, 1, 'Coca-Cola', 3.50, 'Bebida'),
+	(3, 1, 'Cerveza', 5.00, 'Bebida'),
+	(4, 2, 'Agua', 2.50, 'Bebida'),
+	(5, 2, 'Coca-Cola', 3.50, 'Bebida'),
+	(6, 2, 'Cerveza', 5.00, 'Bebida'),
+	(7, 5, 'Agua', 2.50, 'Bebida'),
+	(8, 5, 'Coca-Cola', 3.50, 'Bebida'),
+	(9, 5, 'Cerveza', 5.00, 'Bebida'),
+	(10, 3, 'Doble', 9.50, 'Comida'),
+	(11, 3, 'Triple', 12.50, 'Comida'),
+	(12, 3, 'Patatas', 4.00, 'Comida'),
+	(13, 4, 'Poke de frutas', 8.50, 'Comida'),
+	(14, 4, 'Poke de verduras', 8.50, 'Comida');
 
 
 --
@@ -242,6 +278,7 @@ INSERT INTO "public"."usuario" ("id_usuario", "nombre", "apellidos", "edad", "co
 --
 
 INSERT INTO "public"."wallet" ("id_wallet", "id_usuario", "saldo") VALUES
+	(1, 1, 468.50),
 	(2, 2, 5.00),
 	(3, 3, 120.00),
 	(4, 4, 0.00),
@@ -250,8 +287,7 @@ INSERT INTO "public"."wallet" ("id_wallet", "id_usuario", "saldo") VALUES
 	(7, 7, 2.50),
 	(8, 8, 30.00),
 	(9, 9, 8.00),
-	(10, 10, 55.00),
-	(1, 1, 680.50);
+	(10, 10, 55.00);
 
 
 --
@@ -259,6 +295,21 @@ INSERT INTO "public"."wallet" ("id_wallet", "id_usuario", "saldo") VALUES
 --
 
 INSERT INTO "public"."transacciones" ("id_transaccion", "id_wallet", "id_barra", "tipo_movimiento", "monto", "fecha") VALUES
+	(27, 1, 2, 'compra', 5.00, '2026-04-21 09:34:39.418876+00'),
+	(33, 1, 3, 'compra', 16.50, '2026-04-23 13:36:08.003922+00'),
+	(39, 1, 5, 'compra', 11.00, '2026-04-24 07:53:40.245365+00'),
+	(28, 1, 2, 'compra', 7.50, '2026-04-21 09:36:39.114625+00'),
+	(34, 1, 4, 'compra', 17.00, '2026-04-23 13:39:43.49744+00'),
+	(40, 1, 5, 'compra', 7.50, '2026-04-25 16:32:52.582409+00'),
+	(29, 1, 1, 'compra', 3.50, '2026-04-21 18:03:06.809249+00'),
+	(35, 1, 3, 'compra', 22.00, '2026-04-23 13:42:59.546613+00'),
+	(41, 1, 3, 'compra', 13.50, '2026-04-25 16:33:43.359146+00'),
+	(30, 1, 4, 'compra', 17.00, '2026-04-21 19:13:16.411326+00'),
+	(36, 1, 4, 'compra', 8.50, '2026-04-23 13:55:56.907803+00'),
+	(42, 1, 3, 'compra', 13.50, '2026-04-25 19:14:33.564155+00'),
+	(31, 1, 3, 'compra', 22.00, '2026-04-21 19:33:37.576056+00'),
+	(37, 1, 4, 'compra', 8.50, '2026-04-23 14:04:10.862404+00'),
+	(43, 1, 4, 'compra', 8.50, '2026-04-25 19:30:08.393377+00'),
 	(1, 1, 1, 'pago_bebida', 8.50, '2026-02-28 16:30:36.729264+00'),
 	(2, 1, 3, 'pago_comida', 12.00, '2026-02-28 16:30:36.729264+00'),
 	(3, 3, 1, 'pago_bebida', 17.00, '2026-02-28 16:30:36.729264+00'),
@@ -281,7 +332,10 @@ INSERT INTO "public"."transacciones" ("id_transaccion", "id_wallet", "id_barra",
 	(20, 1, 3, 'compra', 16.50, '2026-03-31 20:10:41.182701+00'),
 	(21, 1, 4, 'compra', 8.50, '2026-03-31 20:41:21.282218+00'),
 	(22, 1, 3, 'compra', 16.50, '2026-04-02 06:57:15.434726+00'),
-	(23, 1, 3, 'compra', 13.50, '2026-04-16 17:45:35.533513+00');
+	(23, 1, 3, 'compra', 13.50, '2026-04-16 17:45:35.533513+00'),
+	(32, 1, 4, 'compra', 8.50, '2026-04-23 12:22:57.464992+00'),
+	(38, 1, 2, 'compra', 8.50, '2026-04-24 07:35:15.870172+00'),
+	(44, 1, 3, 'compra', 13.50, '2026-04-27 17:17:18.130381+00');
 
 
 --
@@ -289,6 +343,37 @@ INSERT INTO "public"."transacciones" ("id_transaccion", "id_wallet", "id_barra",
 --
 
 INSERT INTO "public"."lineas_transaccion" ("id_linea", "id_transaccion", "id_producto", "cantidad", "precio_unitario") VALUES
+	(12, 27, 6, 1, 5),
+	(21, 33, 12, 1, 4),
+	(22, 33, 11, 1, 12.5),
+	(31, 39, 7, 1, 2.5),
+	(32, 39, 9, 1, 5),
+	(33, 39, 8, 1, 3.5),
+	(13, 28, 4, 1, 2.5),
+	(14, 28, 6, 1, 5),
+	(23, 34, 13, 1, 8.5),
+	(24, 34, 14, 1, 8.5),
+	(34, 40, 7, 1, 2.5),
+	(35, 40, 9, 1, 5),
+	(15, 29, 2, 1, 3.5),
+	(25, 35, 10, 1, 9.5),
+	(26, 35, 11, 1, 12.5),
+	(36, 41, 10, 1, 9.5),
+	(37, 41, 12, 1, 4),
+	(16, 30, 13, 1, 8.5),
+	(17, 30, 14, 1, 8.5),
+	(27, 36, 14, 1, 8.5),
+	(38, 42, 10, 1, 9.5),
+	(39, 42, 12, 1, 4),
+	(18, 31, 10, 1, 9.5),
+	(19, 31, 11, 1, 12.5),
+	(28, 37, 14, 1, 8.5),
+	(40, 43, 13, 1, 8.5),
+	(20, 32, 13, 1, 8.5),
+	(29, 38, 6, 1, 5),
+	(30, 38, 5, 1, 3.5),
+	(41, 44, 10, 1, 9.5),
+	(42, 44, 12, 1, 4),
 	(1, 16, 4, 1, 2.5),
 	(2, 17, 3, 2, 5),
 	(3, 18, 14, 1, 8.5),
@@ -355,7 +440,7 @@ SELECT pg_catalog.setval('"auth"."refresh_tokens_id_seq"', 1, false);
 -- Name: asignaciones_camareros_id_asignacion_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('"public"."asignaciones_camareros_id_asignacion_seq"', 10, true);
+SELECT pg_catalog.setval('"public"."asignaciones_camareros_id_asignacion_seq"', 44, true);
 
 
 --
@@ -373,10 +458,17 @@ SELECT pg_catalog.setval('"public"."camareros_id_camarero_seq"', 2, true);
 
 
 --
+-- Name: incidencias_barra_id_incidencia_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"public"."incidencias_barra_id_incidencia_seq"', 10, true);
+
+
+--
 -- Name: lineas_transaccion_id_linea_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('"public"."lineas_transaccion_id_linea_seq"', 11, true);
+SELECT pg_catalog.setval('"public"."lineas_transaccion_id_linea_seq"', 42, true);
 
 
 --
@@ -390,7 +482,7 @@ SELECT pg_catalog.setval('"public"."productos_id_producto_seq"', 14, true);
 -- Name: transacciones_id_transaccion_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('"public"."transacciones_id_transaccion_seq"', 23, true);
+SELECT pg_catalog.setval('"public"."transacciones_id_transaccion_seq"', 44, true);
 
 
 --
@@ -411,6 +503,6 @@ SELECT pg_catalog.setval('"public"."wallet_id_wallet_seq"', 10, true);
 -- PostgreSQL database dump complete
 --
 
--- \unrestrict HIQRXaHDmHN0JG52eXNuBIqFefgZ8Yvzy7vHWozuEfWWEL4RFZPxOEdWBJspaGL
+-- \unrestrict d4vKkoJjpfLyffdbGX31Goc80ibBIBSILM3hYOnK1epd0PBBh2dyLQUKSxu2Zmf
 
 RESET ALL;

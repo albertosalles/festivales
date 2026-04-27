@@ -1,11 +1,11 @@
 {
   "festival": {
-    "start_day": "2026-04-18",
-    "opening_hour": "16:00:00",
-    "closing_hour": "04:00:00",
-    "current_day": "2026-04-20",
-    "current_time": "22:00:00",
-    "full_personal_hour": "20:00:00"
+    "start_day": "2026-04-19",
+    "opening_hour": "04:00:00",
+    "closing_hour": "16:00:00",
+    "current_day": "2026-04-21",
+    "current_time": "11:30:00",
+    "full_personal_hour": "08:00:00"
   },
   "generation_params": {
     "users_count": 75,
