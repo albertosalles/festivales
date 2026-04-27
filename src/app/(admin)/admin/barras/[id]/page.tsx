@@ -88,7 +88,7 @@ export default async function PaginaDetalleBarra({
                             Ingresos Totales
                         </span>
                     </div>
-                    <h3 className="font-headline text-3xl font-bold text-on-surface">
+                    <h3 className="font-headline text-[1.7rem] font-bold text-on-surface">
                         {formatearMoneda(metricas.ingresosTotales)}
                     </h3>
                 </div>
@@ -100,7 +100,7 @@ export default async function PaginaDetalleBarra({
                             Transacciones
                         </span>
                     </div>
-                    <h3 className="font-headline text-3xl font-bold text-on-surface">
+                    <h3 className="font-headline text-[1.7rem] font-bold text-on-surface">
                         {metricas.totalTransacciones}
                     </h3>
                 </div>
@@ -112,7 +112,7 @@ export default async function PaginaDetalleBarra({
                             Ticket Medio
                         </span>
                     </div>
-                    <h3 className="font-headline text-3xl font-bold text-on-surface">
+                    <h3 className="font-headline text-[1.7rem] font-bold text-on-surface">
                         {formatearMoneda(metricas.ticketMedio)}
                     </h3>
                 </div>
@@ -124,7 +124,7 @@ export default async function PaginaDetalleBarra({
                             Uds. Vendidas
                         </span>
                     </div>
-                    <h3 className="font-headline text-3xl font-bold text-on-surface">
+                    <h3 className="font-headline text-[1.7rem] font-bold text-on-surface">
                         {metricas.unidadesTotalesVendidas}
                     </h3>
                 </div>
@@ -136,7 +136,7 @@ export default async function PaginaDetalleBarra({
                             Hora Pico
                         </span>
                     </div>
-                    <h3 className="font-headline text-3xl font-bold text-on-surface">
+                    <h3 className="font-headline text-[1.7rem] font-bold text-on-surface">
                         {metricas.horaPico ?? '—'}
                     </h3>
                     {metricas.horaPico && (
@@ -153,7 +153,7 @@ export default async function PaginaDetalleBarra({
                             Camareros
                         </span>
                     </div>
-                    <h3 className="font-headline text-3xl font-bold text-on-surface">
+                    <h3 className="font-headline text-[1.7rem] font-bold text-on-surface">
                         {camarerosActivos.length}
                     </h3>
                 </div>
@@ -172,7 +172,7 @@ export default async function PaginaDetalleBarra({
                             <p className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold mb-1">
                                 Rendimiento personal
                             </p>
-                            <h3 className="font-headline text-2xl font-bold text-on-surface">
+                            <h3 className="font-headline text-[1.7rem] font-bold text-on-surface">
                                 {metricas.ingresosPorHoraCamarero ? formatearMoneda(metricas.ingresosPorHoraCamarero) : formatearMoneda(0)}
                                 <span className="text-sm text-on-surface-variant font-normal"> /hora/persona</span>
                             </h3>
@@ -195,7 +195,7 @@ export default async function PaginaDetalleBarra({
                             <p className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold mb-1">
                                 Ritmo servicio
                             </p>
-                            <h3 className="font-headline text-2xl font-bold text-on-surface">
+                            <h3 className="font-headline text-[1.7rem] font-bold text-on-surface">
                                 {metricas.tiempoMedioEntrePedidosMin !== null
                                     ? (metricas.tiempoMedioEntrePedidosMin < 60
                                         ? `${metricas.tiempoMedioEntrePedidosMin.toFixed(1)} min`
@@ -222,46 +222,60 @@ export default async function PaginaDetalleBarra({
                         )}
 
                         {/* Camareros asignados */}
-                        <div className="space-y-3">
-                            <p className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold">
-                                Personal asignado
-                            </p>
-                            {camarerosActivos.length === 0 ? (
-                                <p className="text-on-surface-variant text-sm italic">
-                                    No hay camareros asignados a esta barra
+                        <details open className="group">
+                            <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden flex items-center justify-between outline-none mb-3">
+                                <p className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold">
+                                    Personal asignado
                                 </p>
-                            ) : (
-                                camarerosActivos.map((c) => (
-                                    <div
-                                        key={c.idCamarero}
-                                        className="flex items-center gap-3 p-3 bg-surface-container-low rounded-lg"
-                                    >
-                                        <div className="w-8 h-8 rounded-full bg-neon-green/10 flex items-center justify-center">
-                                            <span className="text-xs font-bold text-neon-green">
-                                                {c.nombre.charAt(0)}
+                                <span className="material-symbols-outlined text-on-surface-variant group-open:rotate-180 transition-transform text-sm">
+                                    expand_more
+                                </span>
+                            </summary>
+                            <div className="space-y-3">
+                                {camarerosActivos.length === 0 ? (
+                                    <p className="text-on-surface-variant text-sm italic">
+                                        No hay camareros asignados a esta barra
+                                    </p>
+                                ) : (
+                                    camarerosActivos.map((c) => (
+                                        <div
+                                            key={c.idCamarero}
+                                            className="flex items-center gap-3 p-3 bg-surface-container-low rounded-lg"
+                                        >
+                                            <div className="w-8 h-8 rounded-full bg-neon-green/10 flex items-center justify-center">
+                                                <span className="text-xs font-bold text-neon-green">
+                                                    {c.nombre.charAt(0)}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-bold text-on-surface">{c.nombre}</p>
+                                                {c.apellidos && (
+                                                    <p className="text-[10px] text-on-surface-variant">{c.apellidos}</p>
+                                                )}
+                                            </div>
+                                            <span className={cn(
+                                                'ml-auto px-2 py-0.5 text-[10px] font-bold rounded-full uppercase tracking-wider',
+                                                c.activo ? 'bg-neon-green/10 text-neon-green' : 'bg-error/10 text-error'
+                                            )}>
+                                                {c.activo ? 'Activo' : 'Inactivo'}
                                             </span>
                                         </div>
-                                        <div>
-                                            <p className="text-sm font-bold text-on-surface">{c.nombre}</p>
-                                            {c.apellidos && (
-                                                <p className="text-[10px] text-on-surface-variant">{c.apellidos}</p>
-                                            )}
-                                        </div>
-                                        <span className={cn(
-                                            'ml-auto px-2 py-0.5 text-[10px] font-bold rounded-full uppercase tracking-wider',
-                                            c.activo ? 'bg-neon-green/10 text-neon-green' : 'bg-error/10 text-error'
-                                        )}>
-                                            {c.activo ? 'Activo' : 'Inactivo'}
-                                        </span>
-                                    </div>
-                                ))
-                            )}
+                                    ))
+                                )}
+                            </div>
+                        </details>
 
-                            {/* Historial de Personal */}
-                            <div className="space-y-3 pt-6 border-t border-white/5">
+                        {/* Historial de Personal */}
+                        <details className="pt-6 border-t border-white/5 group">
+                            <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden flex items-center justify-between outline-none">
                                 <p className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold">
                                     Historial de Personal
                                 </p>
+                                <span className="material-symbols-outlined text-on-surface-variant group-open:rotate-180 transition-transform text-sm">
+                                    expand_more
+                                </span>
+                            </summary>
+                            <div className="space-y-3 mt-3">
                                 {historialCamareros.length === 0 ? (
                                     <p className="text-on-surface-variant text-sm italic">
                                         Ningún camarero ha trabajado aquí aún
@@ -287,11 +301,16 @@ export default async function PaginaDetalleBarra({
                                                         <p className="text-[10px] text-on-surface-variant">{c.apellidos}</p>
                                                     )}
                                                 </div>
-                                                <div className="flex items-center gap-1.5 bg-neon-blue/10 px-2 py-1 rounded">
+                                                <div className="flex items-center justify-between bg-neon-blue/10 px-2 py-1 rounded w-20 shrink-0">
                                                     <span className="material-symbols-outlined text-[12px] text-neon-blue">schedule</span>
-                                                    <span className="text-xs font-bold font-headline text-neon-blue">{horasEnEstaBarra.toFixed(1)}h</span>
+                                                    <span className="text-xs font-bold font-headline text-neon-blue">
+                                                        {new Intl.NumberFormat('es-ES', {
+                                                            minimumFractionDigits: 1,
+                                                            minimumIntegerDigits: 1,
+                                                        }).format(horasEnEstaBarra)} h
+                                                    </span>
                                                 </div>
-                                                <div className="flex items-center gap-1.5 bg-green-300/10 px-2 py-1 rounded">
+                                                <div className="flex items-center justify-between bg-green-300/10 px-2 py-1 rounded w-26 shrink-0">
                                                     <span className="material-symbols-outlined text-[12px] text-green-300">trending_up</span>
                                                     <span className="text-xs font-bold font-headline text-green-300">{formatearMoneda(ingresoPorHora)}/h</span>
                                                 </div>
@@ -300,7 +319,7 @@ export default async function PaginaDetalleBarra({
                                     })
                                 )}
                             </div>
-                        </div>
+                        </details>
                     </div>
                 </div>
 

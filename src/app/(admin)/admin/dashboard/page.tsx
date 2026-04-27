@@ -93,7 +93,7 @@ export default async function PaginaDashboard() {
                     <p className="text-on-surface-variant text-xs font-medium uppercase tracking-widest mb-1">
                         Recaudación Total
                     </p>
-                    <h3 className="font-headline text-2xl font-bold text-on-surface">
+                    <h3 className="font-headline text-[1.7rem] font-bold text-on-surface">
                         {formatearMoneda(metricas.ingresosTotales)}
                     </h3>
                     <div className="mt-4 h-1 w-full bg-surface-container-high rounded-full overflow-hidden">
@@ -111,7 +111,7 @@ export default async function PaginaDashboard() {
                     <p className="text-on-surface-variant text-xs font-medium uppercase tracking-widest mb-1">
                         Saldo Retenido
                     </p>
-                    <h3 className="font-headline text-2xl font-bold text-on-surface">
+                    <h3 className="font-headline text-[1.7rem] font-bold text-on-surface">
                         {formatearMoneda(saldoRetenido)}
                     </h3>
                 </div>
@@ -129,7 +129,7 @@ export default async function PaginaDashboard() {
                     <p className="text-on-surface-variant text-xs font-medium uppercase tracking-widest mb-1">
                         Transacciones
                     </p>
-                    <h3 className="font-headline text-2xl font-bold text-on-surface">
+                    <h3 className="font-headline text-[1.7rem] font-bold text-on-surface">
                         {metricas.totalTransacciones}
                     </h3>
                 </div>
@@ -144,7 +144,7 @@ export default async function PaginaDashboard() {
                     <p className="text-on-surface-variant text-xs font-medium uppercase tracking-widest mb-1">
                         Ticket Medio
                     </p>
-                    <h3 className="font-headline text-2xl font-bold text-on-surface">
+                    <h3 className="font-headline text-[1.7rem] font-bold text-on-surface">
                         {formatearMoneda(metricas.ticketMedio)}
                     </h3>
                 </div>
@@ -159,7 +159,7 @@ export default async function PaginaDashboard() {
                     <p className="text-on-surface-variant text-xs font-medium uppercase tracking-widest mb-1">
                         Recarga Media
                     </p>
-                    <h3 className="font-headline text-2xl font-bold text-on-surface">
+                    <h3 className="font-headline text-[1.7rem] font-bold text-on-surface">
                         {formatearMoneda(recargaMedia)}
                     </h3>
                 </div>
