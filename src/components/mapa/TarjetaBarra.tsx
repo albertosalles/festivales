@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { cn } from '@/lib/utils';
+import { cn, formatearMoneda } from '@/lib/utils';
 import {
     COLOR_BORDE_POR_ESTADO,
     COLOR_TEXTO_POR_ESTADO,
@@ -149,7 +149,7 @@ export function TarjetaBarra({ barra }: TarjetaBarraProps) {
 
             // Notificación: pedido en preparación
             agregarNotificacion(
-                `🍳 Tu pedido en ${barra.nombreLocalizacion} está siendo preparado (${totalItems} artículo${totalItems > 1 ? 's' : ''} — ${totalCarrito.toFixed(2)}€)`,
+                `🍳 Tu pedido en ${barra.nombreLocalizacion} está siendo preparado (${totalItems} artículo${totalItems > 1 ? 's' : ''} — ${formatearMoneda(totalCarrito)})`,
                 `Pedido en preparación`,
                 'skillet'
             );
@@ -298,7 +298,7 @@ export function TarjetaBarra({ barra }: TarjetaBarraProps) {
                                             </span>
                                             <div className="flex items-center gap-3">
                                                 <span className="text-xs font-bold text-neon-blue">
-                                                    {producto.precio.toFixed(2)}€
+                                                    {formatearMoneda(producto.precio)}
                                                 </span>
                                                 {cantidad > 0 ? (
                                                     <div className="flex items-center gap-1">
@@ -355,7 +355,7 @@ export function TarjetaBarra({ barra }: TarjetaBarraProps) {
                                 </>
                             ) : (
                                 <>
-                                    Pedir — {totalCarrito.toFixed(2)}€
+                                    Pedir — {formatearMoneda(totalCarrito)}
                                 </>
                             )}
                         </button>

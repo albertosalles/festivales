@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { RUTAS } from '@/lib/constantes';
 import { tpvServicio } from '@/servicios/tpv.servicio';
+import { formatearMoneda } from '@/lib/utils';
 
 export default function HistorialCamarero() {
     const router = useRouter();
@@ -135,7 +136,7 @@ export default function HistorialCamarero() {
                                         </div>
 
                                         <div className="font-headline font-black text-xl text-primary z-10 flex-shrink-0 text-right">
-                                            €{Number(tx.monto).toFixed(2)}
+                                            {formatearMoneda(Number(tx.monto))}
                                         </div>
                                     </div>
                                 );

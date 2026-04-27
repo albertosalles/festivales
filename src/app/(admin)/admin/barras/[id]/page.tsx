@@ -4,7 +4,7 @@ import { obtenerMetricasBarra } from '@/servicios/metricas.servicio';
 import { obtenerCamarerosPorBarra, obtenerHistorialCamarerosPorBarra } from '@/servicios/camareros.servicio';
 import { obtenerProductosPorBarra } from '@/servicios/productos.servicio';
 import { RUTAS } from '@/lib/constantes';
-import { cn } from '@/lib/utils';
+import { cn, formatearMoneda } from '@/lib/utils';
 import {
     COLOR_TEXTO_POR_ESTADO,
     COLOR_FONDO_ICONO_POR_ESTADO,
@@ -89,7 +89,7 @@ export default async function PaginaDetalleBarra({
                         </span>
                     </div>
                     <h3 className="font-headline text-3xl font-bold text-on-surface">
-                        €{metricas.ingresosTotales.toFixed(2)}
+                        {formatearMoneda(metricas.ingresosTotales)}
                     </h3>
                 </div>
 
@@ -113,7 +113,7 @@ export default async function PaginaDetalleBarra({
                         </span>
                     </div>
                     <h3 className="font-headline text-3xl font-bold text-on-surface">
-                        €{metricas.ticketMedio.toFixed(2)}
+                        {formatearMoneda(metricas.ticketMedio)}
                     </h3>
                 </div>
 
@@ -170,11 +170,11 @@ export default async function PaginaDetalleBarra({
                     <div className="space-y-6">
                         <div className="bg-surface-container-low rounded-xl p-5 border-l-4 border-neon-green">
                             <p className="text-on-surface-variant text-[10px] uppercase tracking-widest font-bold mb-1">
-                                Ingresos por camarero
+                                Rendimiento personal
                             </p>
                             <h3 className="font-headline text-2xl font-bold text-on-surface">
-                                €{metricas.ingresosPorCamareroPonderado ? metricas.ingresosPorCamareroPonderado.toFixed(2) : '0.00'}
-                                <span className="text-sm text-on-surface-variant font-normal"> /persona</span>
+                                {metricas.ingresosPorHoraCamarero ? formatearMoneda(metricas.ingresosPorHoraCamarero) : formatearMoneda(0)}
+                                <span className="text-sm text-on-surface-variant font-normal"> /hora/persona</span>
                             </h3>
                         </div>
 
@@ -185,7 +185,7 @@ export default async function PaginaDetalleBarra({
                             </p>
                             <h3 className="font-headline text-lg font-bold text-on-surface">
                                 {metricas.ultimaTransaccion
-                                    ? new Date(metricas.ultimaTransaccion).toLocaleString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+                                    ? new Date(metricas.ultimaTransaccion).toLocaleString('es-ES', { timeZone: 'Europe/Madrid', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
                                     : 'Sin actividad'}
                             </h3>
                         </div>
@@ -293,7 +293,7 @@ export default async function PaginaDetalleBarra({
                                                 </div>
                                                 <div className="flex items-center gap-1.5 bg-green-300/10 px-2 py-1 rounded">
                                                     <span className="material-symbols-outlined text-[12px] text-green-300">trending_up</span>
-                                                    <span className="text-xs font-bold font-headline text-green-300">{ingresoPorHora.toFixed(2)}€/h</span>
+                                                    <span className="text-xs font-bold font-headline text-green-300">{formatearMoneda(ingresoPorHora)}/h</span>
                                                 </div>
                                             </div>
                                         )
@@ -368,7 +368,7 @@ export default async function PaginaDetalleBarra({
                                                 {p.categoria}
                                             </span>
                                             <span className="text-sm font-bold text-neon-blue">
-                                                {p.precio.toFixed(2)}€
+                                                {formatearMoneda(p.precio)}
                                             </span>
                                         </div>
                                     </div>
@@ -416,7 +416,7 @@ export default async function PaginaDetalleBarra({
                                 >
                                     {/* Tooltip on hover */}
                                     <span className="text-[10px] text-green-300 font-bold mb-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        €{m.ingresos.toFixed(2)}
+                                        {formatearMoneda(m.ingresos)}
                                     </span>
                                     {/* Bar */}
                                     <div

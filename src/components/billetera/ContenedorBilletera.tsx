@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { TarjetaSaldo } from '@/components/billetera/TarjetaSaldo';
 import { SelectorRecarga } from '@/components/billetera/SelectorRecarga';
+import { formatearMoneda } from '@/lib/utils';
 import { useSesion } from '@/hooks/useSesion';
 import { TarjetaQR } from '@/components/billetera/TarjetaQR';
 
@@ -69,7 +70,7 @@ export function ContenedorBilletera() {
             }
 
             setSaldo(datos.nuevoSaldo);
-            toast.success(`¡Recarga exitosa! Se han añadido ${monto}€ a tu billetera.`);
+            toast.success(`¡Recarga exitosa! Se han añadido ${formatearMoneda(monto)} a tu billetera.`);
         } catch {
             toast.error('Error de conexión. Inténtalo de nuevo.');
         }

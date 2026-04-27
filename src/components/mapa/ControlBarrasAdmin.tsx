@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useBarrasEnTiempoReal } from '@/hooks/useBarrasEnTiempoReal';
-import { cn } from '@/lib/utils';
+import { cn, formatearMoneda } from '@/lib/utils';
 import {
     COLOR_BORDE_POR_ESTADO,
     COLOR_TEXTO_POR_ESTADO,
@@ -237,7 +237,7 @@ export function ControlBarrasAdmin({
                                     Recaudación
                                 </p>
                                 <p className="font-headline text-xl font-bold text-neon-green">
-                                    €{ingresos.toFixed(2)}
+                                    {formatearMoneda(ingresos)}
                                 </p>
                             </div>
                         </div>

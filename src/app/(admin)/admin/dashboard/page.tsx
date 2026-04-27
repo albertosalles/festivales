@@ -10,6 +10,7 @@ import { obtenerBarras } from '@/servicios/barras.servicio';
 import { obtenerCamareros } from '@/servicios/camareros.servicio';
 import { obtenerMusicaSonando, obtenerGenerosDisponibles } from '@/servicios/conciertos.servicio';
 import { ControlConcierto } from '@/components/admin/ControlConcierto';
+import { formatearMoneda } from '@/lib/utils';
 
 /**
  * Dashboard Global — Panel Admin.
@@ -92,8 +93,8 @@ export default async function PaginaDashboard() {
                     <p className="text-on-surface-variant text-xs font-medium uppercase tracking-widest mb-1">
                         Recaudación Total
                     </p>
-                    <h3 className="font-headline text-3xl font-bold text-on-surface">
-                        €{metricas.ingresosTotales.toFixed(2)}
+                    <h3 className="font-headline text-2xl font-bold text-on-surface">
+                        {formatearMoneda(metricas.ingresosTotales)}
                     </h3>
                     <div className="mt-4 h-1 w-full bg-surface-container-high rounded-full overflow-hidden">
                         <div className="h-full bg-neon-green w-[75%] rounded-full" />
@@ -110,8 +111,8 @@ export default async function PaginaDashboard() {
                     <p className="text-on-surface-variant text-xs font-medium uppercase tracking-widest mb-1">
                         Saldo Retenido
                     </p>
-                    <h3 className="font-headline text-3xl font-bold text-on-surface">
-                        €{saldoRetenido.toFixed(2)}
+                    <h3 className="font-headline text-2xl font-bold text-on-surface">
+                        {formatearMoneda(saldoRetenido)}
                     </h3>
                 </div>
 
@@ -128,7 +129,7 @@ export default async function PaginaDashboard() {
                     <p className="text-on-surface-variant text-xs font-medium uppercase tracking-widest mb-1">
                         Transacciones
                     </p>
-                    <h3 className="font-headline text-3xl font-bold text-on-surface">
+                    <h3 className="font-headline text-2xl font-bold text-on-surface">
                         {metricas.totalTransacciones}
                     </h3>
                 </div>
@@ -143,8 +144,8 @@ export default async function PaginaDashboard() {
                     <p className="text-on-surface-variant text-xs font-medium uppercase tracking-widest mb-1">
                         Ticket Medio
                     </p>
-                    <h3 className="font-headline text-3xl font-bold text-on-surface">
-                        €{metricas.ticketMedio.toFixed(2)}
+                    <h3 className="font-headline text-2xl font-bold text-on-surface">
+                        {formatearMoneda(metricas.ticketMedio)}
                     </h3>
                 </div>
 
@@ -158,8 +159,8 @@ export default async function PaginaDashboard() {
                     <p className="text-on-surface-variant text-xs font-medium uppercase tracking-widest mb-1">
                         Recarga Media
                     </p>
-                    <h3 className="font-headline text-3xl font-bold text-on-surface">
-                        €{recargaMedia.toFixed(2)}
+                    <h3 className="font-headline text-2xl font-bold text-on-surface">
+                        {formatearMoneda(recargaMedia)}
                     </h3>
                 </div>
 
@@ -205,7 +206,7 @@ export default async function PaginaDashboard() {
                                 <div key={barra.idBarra} className="relative">
                                     <div className="flex justify-between text-xs mb-2 px-1">
                                         <span className="font-bold">{barra.nombreBarra}</span>
-                                        <span className="text-neon-green">€{barra.ingresos.toFixed(2)}</span>
+                                        <span className="text-neon-green">{formatearMoneda(barra.ingresos)}</span>
                                     </div>
                                     <div className="h-4 w-full bg-surface-container-high rounded-full relative">
                                         <div
@@ -283,7 +284,7 @@ export default async function PaginaDashboard() {
                         <span className="material-symbols-outlined text-neon-orange">bolt</span>
                         Eficiencia Operativa
                         <span className="text-[10px] font-normal tracking-widest uppercase bg-surface-container-high px-2 py-1 rounded ml-auto">
-                            Pedidos/H
+                            Pedidos/H Activa
                         </span>
                     </h4>
                     <div className="space-y-3">

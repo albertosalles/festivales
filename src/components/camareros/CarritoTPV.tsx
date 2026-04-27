@@ -1,6 +1,7 @@
 'use client';
 
 import { LineaTransaccion } from "@/servicios/tpv.servicio";
+import { formatearMoneda } from "@/lib/utils";
 
 interface CarritoTPVProps {
     lineas: LineaTransaccion[];
@@ -29,7 +30,7 @@ export function CarritoTPV({ lineas, productosInfo, onLimpiar, onCobrar, cargand
                                         {productosInfo[l.idProducto]?.nombre || 'Producto'}
                                     </span>
                                     <span className="text-on-surface-variant font-bold">
-                                        {(l.cantidad * l.precioUnitario).toFixed(2)}€
+                                        {formatearMoneda(l.cantidad * l.precioUnitario)}
                                     </span>
                                 </div>
                             ))}
@@ -43,7 +44,7 @@ export function CarritoTPV({ lineas, productosInfo, onLimpiar, onCobrar, cargand
                             Comanda actual ({cantidadTotal})
                         </span>
                         <span className="font-headline font-bold text-3xl text-on-surface tracking-tight">
-                            {total.toFixed(2)}€
+                            {formatearMoneda(total)}
                         </span>
                     </div>
                     <button 

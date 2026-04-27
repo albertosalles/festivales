@@ -23,7 +23,7 @@ export interface MetricasBarra {
     tiempoMedioEntrePedidosMin: number | null;
     ingresosHorarios: { hora: string; ingresos: number }[];
     rendimientoPorCamarero: Map<number, number>;
-    ingresosPorCamareroPonderado: number;
+    ingresosPorHoraCamarero: number;
 }
 
 /**
@@ -89,7 +89,7 @@ export async function obtenerMetricasBarra(idBarra: number): Promise<MetricasBar
         for (const r of registros) {
             const fecha = new Date(r.fecha);
             timestamps.push(fecha.getTime());
-            const h = fecha.getHours().toString().padStart(2, '0') + ':00';
+            const h = fecha.toLocaleString('es-ES', { timeZone: 'Europe/Madrid', hour: '2-digit', hourCycle: 'h23' }).padStart(2, '0') + ':00';
             conteoPorHora.set(h, (conteoPorHora.get(h) ?? 0) + 1);
             dineroPorHora.set(h, (dineroPorHora.get(h) ?? 0) + Number(r.monto));
         }
@@ -110,11 +110,25 @@ export async function obtenerMetricasBarra(idBarra: number): Promise<MetricasBar
         // Última transacción
         timestamps.sort((a, b) => a - b);
         ultimaTransaccion = new Date(timestamps[timestamps.length - 1]).toISOString();
-
         // Tiempo medio entre pedidos
+        // 60000 es el número de milisegundos en 1 minuto. Se usa para la conversión.
         if (timestamps.length >= 2) {
-            const rangoTotal = timestamps[timestamps.length - 1] - timestamps[0];
-            tiempoMedioEntrePedidosMin = (rangoTotal / (timestamps.length - 1)) / 60000;
+            let sumaDiferenciasMinutos = 0;
+            let conteoValidos = 0;
+            // Descartamos tiempos inactivos mayores a 60 minutos (ej: barra cerrada)
+            const UMBRAL_INACTIVIDAD_MIN = 60;
+
+            for (let i = 1; i < timestamps.length; i++) {
+                const difMinutos = (timestamps[i] - timestamps[i - 1]) / 60000;
+                if (difMinutos <= UMBRAL_INACTIVIDAD_MIN) {
+                    sumaDiferenciasMinutos += difMinutos;
+                    conteoValidos++;
+                }
+            }
+
+            if (conteoValidos > 0) {
+                tiempoMedioEntrePedidosMin = sumaDiferenciasMinutos / conteoValidos;
+            }
         }
     }
 
@@ -202,10 +216,8 @@ export async function obtenerMetricasBarra(idBarra: number): Promise<MetricasBar
         if (fin > finBarra) finBarra = fin;
     });
 
-    const duracionOperativaBarra = (finBarra - inicioBarra) / 3600000;
-    // Camareros promedio (FTE) = Horas hombre totales / Horas reales de apertura
-    const camarerosPromedioFTE = duracionOperativaBarra > 0 ? totalManHours / duracionOperativaBarra : 0;
-    const ingresosPorCamareroPonderado = camarerosPromedioFTE > 0 ? ingresosTotales / camarerosPromedioFTE : 0;
+    // Rendimiento global: Ingresos generados por cada hora trabajada de un camarero individual
+    const ingresosPorHoraCamarero = totalManHours > 0 ? ingresosTotales / totalManHours : 0;
 
     const rendimientoPorCamarero = new Map<number, number>();
 
@@ -241,7 +253,7 @@ export async function obtenerMetricasBarra(idBarra: number): Promise<MetricasBar
         tiempoMedioEntrePedidosMin,
         ingresosHorarios,
         rendimientoPorCamarero,
-        ingresosPorCamareroPonderado,
+        ingresosPorHoraCamarero,
     };
 }
 
@@ -318,7 +330,7 @@ export async function obtenerMapaCalorHorario(): Promise<{ hora: string; total: 
 
     const conteo = new Map<string, number>();
     for (const d of data) {
-        const h = new Date(d.fecha).getHours().toString().padStart(2, '0') + ':00';
+        const h = new Date(d.fecha).toLocaleString('es-ES', { timeZone: 'Europe/Madrid', hour: '2-digit', hourCycle: 'h23' }).padStart(2, '0') + ':00';
         conteo.set(h, (conteo.get(h) ?? 0) + 1);
     }
 
@@ -360,11 +372,19 @@ export async function obtenerEficienciaBarras(): Promise<{ idBarra: number; nomb
             resultados.push({ idBarra, nombre, pedidosPorHora: 0 });
             continue;
         }
-        const min = Math.min(...timestamps);
-        const max = Math.max(...timestamps);
-        let horas = (max - min) / (1000 * 60 * 60);
-        if (horas < 1) horas = 1; // mínimo 1 hora para evitar ratios inflados
-        resultados.push({ idBarra, nombre, pedidosPorHora: timestamps.length / horas });
+
+        // Para calcular una eficiencia realista y comparable, contamos el número
+        // de horas únicas (año-mes-día-hora) en las que la barra registró actividad,
+        // evitando diluir el promedio con las horas en las que el festival estuvo cerrado.
+        const horasActivas = new Set<string>();
+        for (const ts of timestamps) {
+            const d = new Date(ts);
+            const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}-${d.getHours()}`;
+            horasActivas.add(key);
+        }
+
+        const numHorasActivas = horasActivas.size > 0 ? horasActivas.size : 1;
+        resultados.push({ idBarra, nombre, pedidosPorHora: timestamps.length / numHorasActivas });
     }
 
     return resultados.sort((a, b) => b.pedidosPorHora - a.pedidosPorHora);

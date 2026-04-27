@@ -5,6 +5,8 @@ interface TarjetaSaldoProps {
     cargando: boolean;
 }
 
+import { formatearMoneda } from '@/lib/utils';
+
 /**
  * Tarjeta de saldo estilo Stitch "Electric Nocturne".
  * Gradiente oscuro neón con el saldo como protagonista.

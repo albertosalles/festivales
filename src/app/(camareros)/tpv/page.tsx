@@ -6,6 +6,7 @@ import { RUTAS } from '@/lib/constantes';
 import { tpvServicio, Producto, LineaTransaccion } from '@/servicios/tpv.servicio';
 import { CarritoTPV } from '@/components/camareros/CarritoTPV';
 import { ModalCobroPulsera } from '@/components/camareros/ModalCobroPulsera';
+import { formatearMoneda } from '@/lib/utils';
 
 // Helper for randomizing card styles if needed, or mapping categories to colors
 function getColorPaletteForCategory(cat: string) {
@@ -230,7 +231,7 @@ export default function CamareroTPV() {
                                         {styleConfig.icon}
                                     </span>
                                     <span className={`${textClass} font-headline font-bold text-lg`}>
-                                        {prod.precio.toFixed(2)}€
+                                        {formatearMoneda(prod.precio)}
                                     </span>
                                 </div>
                                 <div className="relative z-10">

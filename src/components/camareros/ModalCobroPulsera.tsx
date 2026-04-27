@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { LectorQR } from './LectorQR';
+import { formatearMoneda } from '@/lib/utils';
 
 type EstadoModal = 'escaneando' | 'confirmando' | 'procesando' | 'exito' | 'error';
 
@@ -56,7 +57,7 @@ export function ModalCobroPulsera({ total, onConfirmar, onCerrar }: ModalCobroPu
                             <div>
                                 <p className="text-xs text-[#aeacb0] uppercase tracking-widest font-bold">Cobro Cashless</p>
                                 <p className="font-headline font-black text-[#e9ffba] text-2xl tracking-tight mt-0.5">
-                                    {total.toFixed(2)} €
+                                    {formatearMoneda(total)}
                                 </p>
                             </div>
                             <button onClick={onCerrar} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#aeacb0] hover:text-white border border-white/10 active:scale-95 transition-all">
@@ -95,7 +96,7 @@ export function ModalCobroPulsera({ total, onConfirmar, onCerrar }: ModalCobroPu
 
                         <div className="bg-white/5 rounded-xl p-4 border border-white/10 flex justify-between items-center">
                             <span className="text-sm font-bold text-[#aeacb0] uppercase tracking-widest">Total a cobrar</span>
-                            <span className="font-headline font-black text-[#e9ffba] text-2xl">{total.toFixed(2)} €</span>
+                            <span className="font-headline font-black text-[#e9ffba] text-2xl">{formatearMoneda(total)}</span>
                         </div>
 
                         <div className="flex gap-3">
@@ -127,7 +128,7 @@ export function ModalCobroPulsera({ total, onConfirmar, onCerrar }: ModalCobroPu
                         </div>
                         <div className="text-center">
                             <p className="font-headline font-black text-[#e9ffba] text-2xl">¡Cobro Realizado!</p>
-                            <p className="text-sm text-[#aeacb0] mt-1">{total.toFixed(2)} € descontados correctamente</p>
+                            <p className="text-sm text-[#aeacb0] mt-1">{formatearMoneda(total)} descontados correctamente</p>
                         </div>
                         <button onClick={onCerrar} className="w-full py-3.5 rounded-xl bg-[#e9ffba] text-[#496600] font-headline font-black text-lg active:scale-95 transition-all mt-2">
                             Siguiente Venta

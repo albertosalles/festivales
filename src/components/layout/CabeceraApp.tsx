@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { NOMBRE_FESTIVAL } from '@/lib/constantes';
 import { useSesion } from '@/hooks/useSesion';
+import { formatearMoneda } from '@/lib/utils';
 
 /**
  * Cabecera glassmórfica de la aplicación estilo Stitch "Electric Nocturne".
@@ -56,7 +57,7 @@ export function CabeceraApp() {
                             Balance
                         </span>
                         <span className="text-neon-green font-headline font-black text-lg leading-none">
-                            {saldo !== null ? `${saldo.toFixed(2)}€` : '--€'}
+                            {saldo !== null ? formatearMoneda(saldo) : '-- €'}
                         </span>
                     </div>
 

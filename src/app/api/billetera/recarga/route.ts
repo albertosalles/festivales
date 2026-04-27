@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { obtenerBilletera, recargarSaldo } from '@/servicios/billetera.servicio';
 import { MONTO_MINIMO_RECARGA, MONTO_MAXIMO_RECARGA } from '@/lib/constantes';
+import { formatearMoneda } from '@/lib/utils';
 
 /**
  * API Route para recargar saldo en la billetera.
@@ -47,7 +48,7 @@ export async function POST(request: Request) {
         if (monto < MONTO_MINIMO_RECARGA) {
             return NextResponse.json(
                 {
-                    error: `El monto mínimo de recarga es ${MONTO_MINIMO_RECARGA}€`,
+                    error: `El monto mínimo de recarga es ${formatearMoneda(MONTO_MINIMO_RECARGA)}`,
                 },
                 { status: 400 }
             );
@@ -56,7 +57,7 @@ export async function POST(request: Request) {
         if (monto > MONTO_MAXIMO_RECARGA) {
             return NextResponse.json(
                 {
-                    error: `El monto máximo de recarga es ${MONTO_MAXIMO_RECARGA}€`,
+                    error: `El monto máximo de recarga es ${formatearMoneda(MONTO_MAXIMO_RECARGA)}`,
                 },
                 { status: 400 }
             );

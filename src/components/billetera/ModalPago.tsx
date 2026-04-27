@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { cn } from '@/lib/utils';
+import { cn, formatearMoneda } from '@/lib/utils';
 
 /** Métodos de pago disponibles */
 const METODOS_PAGO = [
@@ -261,7 +261,7 @@ export function ModalPago({ monto, alConfirmar, alCerrar }: ModalPagoProps) {
                                     </span>
                                 </div>
                                 <p className="text-4xl font-headline font-black text-on-surface tracking-tight">
-                                    {monto}€
+                                    {formatearMoneda(monto)}
                                 </p>
                                 <p className="text-sm text-on-surface-variant">
                                     Selecciona tu método de pago
@@ -376,7 +376,7 @@ export function ModalPago({ monto, alConfirmar, alCerrar }: ModalPagoProps) {
                                     Datos de pago
                                 </p>
                                 <p className="text-sm text-on-surface-variant">
-                                    Importe: <span className="text-neon-green font-bold">{monto}€</span>
+                                    Importe: <span className="text-neon-green font-bold">{formatearMoneda(monto)}</span>
                                 </p>
                             </div>
 
@@ -496,7 +496,7 @@ export function ModalPago({ monto, alConfirmar, alCerrar }: ModalPagoProps) {
                                     className="w-full h-14 rounded-xl flex items-center justify-center gap-2 font-headline font-black text-base uppercase tracking-tight bg-neon-green text-[#496600] shadow-[0_10px_30px_rgba(233,255,186,0.2)] transition-all active:scale-95"
                                 >
                                     <span className="material-symbols-outlined text-lg">lock</span>
-                                    Pagar {monto}€
+                                    Pagar {formatearMoneda(monto)}
                                 </button>
                                 <button
                                     onClick={() => {
@@ -532,7 +532,7 @@ export function ModalPago({ monto, alConfirmar, alCerrar }: ModalPagoProps) {
                                     Tu cuenta PayPal
                                 </p>
                                 <p className="text-sm text-on-surface-variant">
-                                    Importe: <span className="text-neon-green font-bold">{monto}€</span>
+                                    Importe: <span className="text-neon-green font-bold">{formatearMoneda(monto)}</span>
                                 </p>
                             </div>
 
@@ -576,7 +576,7 @@ export function ModalPago({ monto, alConfirmar, alCerrar }: ModalPagoProps) {
                                     className="w-full h-14 rounded-xl flex items-center justify-center gap-2 font-headline font-black text-base uppercase tracking-tight bg-neon-green text-[#496600] shadow-[0_10px_30px_rgba(233,255,186,0.2)] transition-all active:scale-95"
                                 >
                                     <span className="material-symbols-outlined text-lg">lock</span>
-                                    Pagar {monto}€
+                                    Pagar {formatearMoneda(monto)}
                                 </button>
                                 <button
                                     onClick={() => {
@@ -610,7 +610,7 @@ export function ModalPago({ monto, alConfirmar, alCerrar }: ModalPagoProps) {
                                     Tu número Bizum
                                 </p>
                                 <p className="text-sm text-on-surface-variant">
-                                    Importe: <span className="text-neon-green font-bold">{monto}€</span>
+                                    Importe: <span className="text-neon-green font-bold">{formatearMoneda(monto)}</span>
                                 </p>
                             </div>
 
@@ -656,7 +656,7 @@ export function ModalPago({ monto, alConfirmar, alCerrar }: ModalPagoProps) {
                                     className="w-full h-14 rounded-xl flex items-center justify-center gap-2 font-headline font-black text-base uppercase tracking-tight bg-neon-green text-[#496600] shadow-[0_10px_30px_rgba(233,255,186,0.2)] transition-all active:scale-95"
                                 >
                                     <span className="material-symbols-outlined text-lg">lock</span>
-                                    Pagar {monto}€
+                                    Pagar {formatearMoneda(monto)}
                                 </button>
                                 <button
                                     onClick={() => {
@@ -722,7 +722,7 @@ export function ModalPago({ monto, alConfirmar, alCerrar }: ModalPagoProps) {
                                     </div>
                                     <div className="flex justify-between items-center px-4 py-4">
                                         <span className="text-sm font-bold text-on-surface-variant uppercase">Total</span>
-                                        <span className="text-2xl font-headline font-black text-neon-green">{monto},00 €</span>
+                                        <span className="text-2xl font-headline font-black text-neon-green">{formatearMoneda(monto)}</span>
                                     </div>
                                 </div>
 
@@ -769,7 +769,7 @@ export function ModalPago({ monto, alConfirmar, alCerrar }: ModalPagoProps) {
                                     Verificando tu método de pago...
                                 </p>
                                 <p className="text-3xl font-headline font-black text-neon-blue mt-4">
-                                    {monto}€
+                                    {formatearMoneda(monto)}
                                 </p>
                             </div>
                         </div>
@@ -792,7 +792,7 @@ export function ModalPago({ monto, alConfirmar, alCerrar }: ModalPagoProps) {
                                     ¡Pago exitoso!
                                 </p>
                                 <p className="text-sm text-on-surface-variant">
-                                    Se han añadido <span className="text-neon-green font-bold">{monto}€</span> a tu billetera
+                                    Se han añadido <span className="text-neon-green font-bold">{formatearMoneda(monto)}</span> a tu billetera
                                 </p>
                             </div>
                         </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { cn } from '@/lib/utils';
+import { cn, formatearMoneda } from '@/lib/utils';
 import { ModalPago } from '@/components/billetera/ModalPago';
 
 /** Importes de recarga disponibles */
@@ -85,7 +85,7 @@ export function SelectorRecarga({ alRecargar, deshabilitado }: SelectorRecargaPr
                             )}
                         >
                             <span className="text-2xl font-headline font-black text-on-surface">
-                                {importe}€
+                                {formatearMoneda(importe)}
                             </span>
                             <span className="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest mt-1">
                                 Añadir
