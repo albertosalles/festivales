@@ -76,7 +76,10 @@ export default function IncidenciasCamarero() {
 
     return (
         <div className="flex flex-col h-full relative p-4">
-             <header className="flex items-center gap-4 mb-6">
+             <header
+                className="flex items-center gap-4 mb-6"
+                style={{ paddingTop: 'env(safe-area-inset-top)' }}
+            >
                 <button 
                     onClick={() => router.push(RUTAS.CAMARERO_TPV)}
                     className="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container border border-outline-variant/20 text-on-surface hover:text-error transition-colors"

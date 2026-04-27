@@ -131,7 +131,10 @@ export default function CamareroTPV() {
     return (
         <div className="flex flex-col antialiased pb-32">
             {/* TopAppBar */}
-            <header className="bg-[#0e0e11]/80 backdrop-blur-lg flex items-center justify-between px-5 py-4 w-full sticky top-0 z-50 border-b border-outline-variant/10 shadow-[0_10px_30px_rgba(233,255,186,0.02)]">
+            <header
+                className="bg-[#0e0e11]/80 backdrop-blur-lg flex items-center justify-between px-5 pb-4 w-full sticky top-0 z-50 border-b border-outline-variant/10 shadow-[0_10px_30px_rgba(233,255,186,0.02)]"
+                style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}
+            >
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden">
                         <span className="material-symbols-outlined text-primary text-xl">person</span>

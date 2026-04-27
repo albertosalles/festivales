@@ -9,12 +9,14 @@ export default function HistorialCamarero() {
     const router = useRouter();
     const [idBarra, setIdBarra] = useState<number>(0);
     const [nombreBarra, setNombreBarra] = useState<string>('');
+    const [nombreCamarero, setNombreCamarero] = useState<string>('Staff Member');
     const [cargando, setCargando] = useState(true);
     const [transacciones, setTransacciones] = useState<any[]>([]);
 
     useEffect(() => {
         const _idBarra = Number(localStorage.getItem('tpv_barra'));
         const _nombreBarra = localStorage.getItem('tpv_nombre_barra') || `Barra #${_idBarra}`;
+        const _nombreCamarero = localStorage.getItem('tpv_nombre_camarero') || 'Staff Member';
         
         if (!_idBarra) {
             router.push(RUTAS.CAMARERO_LOGIN);
@@ -22,6 +24,7 @@ export default function HistorialCamarero() {
         }
         setIdBarra(_idBarra);
         setNombreBarra(_nombreBarra);
+        setNombreCamarero(_nombreCamarero);
 
         tpvServicio.obtenerHistorial(_idBarra)
             .then(data => setTransacciones(data || []))
@@ -41,36 +44,40 @@ export default function HistorialCamarero() {
          localStorage.removeItem('tpv_barra');
          localStorage.removeItem('tpv_nombre_barra');
          localStorage.removeItem('tpv_camarero');
+         localStorage.removeItem('tpv_nombre_camarero');
          localStorage.removeItem('tpv_asignacion');
          router.push(RUTAS.CAMARERO_LOGIN);
     };
 
     return (
         <div className="font-body antialiased bg-background text-on-surface pb-6 md:pb-0 min-h-screen flex flex-col">
-            {/* TopAppBar */}
-            <header className="bg-[#0e0e11]/80 backdrop-blur-lg flex items-center justify-between px-5 py-4 w-full sticky top-0 z-50 border-b border-outline-variant/10 shadow-[0_10px_30px_rgba(233,255,186,0.05)]">
+            {/* TopAppBar — idéntico al del TPV, con safe-area para el notch del iPhone */}
+            <header
+                className="bg-[#0e0e11]/80 backdrop-blur-lg flex items-center justify-between px-5 pb-4 w-full sticky top-0 z-50 border-b border-outline-variant/10 shadow-[0_10px_30px_rgba(233,255,186,0.02)]"
+                style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}
+            >
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden">
                         <span className="material-symbols-outlined text-primary text-xl">person</span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-body text-on-surface-variant tracking-widest uppercase">Staff Member</span>
+                        <span className="text-[10px] font-body text-on-surface-variant tracking-widest uppercase">{nombreCamarero}</span>
                         <h1 className="font-headline font-black text-[#e9ffba] tracking-tighter text-lg leading-none">{nombreBarra}</h1>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <button 
+                    <button
+                        onClick={cerrarSesion}
+                        className="w-10 h-10 rounded-xl bg-surface-container-high/50 hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-all flex items-center justify-center border border-outline-variant/30 active:scale-95"
+                    >
+                        <span className="material-symbols-outlined text-xl">logout</span>
+                    </button>
+                    <button
                         onClick={() => router.push(RUTAS.CAMARERO_INCIDENCIAS)}
                         className="bg-error/10 hover:bg-error/20 active:scale-95 duration-200 transition-colors border border-error/30 rounded-xl px-4 py-2 flex items-center gap-2"
                     >
                         <span className="material-symbols-outlined text-error text-sm filled">report</span>
-                        <span className="text-error font-body text-xs font-bold tracking-wider uppercase">Incident</span>
-                    </button>
-                    <button 
-                        onClick={cerrarSesion}
-                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-variant hover:bg-surface-bright border border-outline-variant/30 text-on-surface-variant hover:text-on-surface active:scale-95 transition-all duration-200"
-                    >
-                        <span className="material-symbols-outlined text-[20px]">logout</span>
+                        <span className="text-error font-body text-xs font-bold tracking-wider uppercase">Aviso</span>
                     </button>
                 </div>
             </header>
