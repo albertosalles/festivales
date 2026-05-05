@@ -10,6 +10,7 @@ import { obtenerBarras } from '@/servicios/barras.servicio';
 import { obtenerCamareros } from '@/servicios/camareros.servicio';
 import { obtenerMusicaSonando, obtenerGenerosDisponibles } from '@/servicios/conciertos.servicio';
 import { ControlConcierto } from '@/components/admin/ControlConcierto';
+import { WidgetComparativaDiaria } from '@/components/admin/dashboard/WidgetComparativaDiaria';
 import { formatearMoneda } from '@/lib/utils';
 
 /**
@@ -357,6 +358,9 @@ export default async function PaginaDashboard() {
                     <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-neon-blue/5 rounded-full blur-[60px]" />
                 </div>
             </div>
+
+            {/* Comparativa diaria con ediciones anteriores (sprint 5) */}
+            <WidgetComparativaDiaria />
         </div>
     );
 }
