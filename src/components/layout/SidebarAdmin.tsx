@@ -9,6 +9,8 @@ const ENLACES_ADMIN = [
     { href: RUTAS.ADMIN_DASHBOARD, etiqueta: 'Dashboard', icono: 'dashboard' },
     { href: RUTAS.ADMIN_BARRAS, etiqueta: 'Control de Barras', icono: 'local_bar' },
     { href: RUTAS.ADMIN_CAMAREROS, etiqueta: 'Gestión de Camareros', icono: 'group' },
+    { href: RUTAS.ADMIN_FESTIVALES, etiqueta: 'Festivales', icono: 'event' },
+    { href: RUTAS.ADMIN_MANTENIMIENTO, etiqueta: 'Panel de Mantenimiento', icono: 'database' },
 ];
 
 /**

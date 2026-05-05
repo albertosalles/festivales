@@ -97,6 +97,8 @@ export const RUTAS = {
     ADMIN_BARRAS: '/admin/barras',
     ADMIN_DASHBOARD: '/admin/dashboard',
     ADMIN_CAMAREROS: '/admin/camareros',
+    ADMIN_FESTIVALES: '/admin/festivales',
+    ADMIN_MANTENIMIENTO: '/admin/mantenimiento',
     ADMIN_CONCIERTOS: '/admin/conciertos',
     // Rutas de camareros
     CAMARERO_LOGIN: '/login-camarero', // O '/camarero/ingreso' si vamos a usar otra. Mejor '/camarero' directo pero las rutas son con grupo (camareros)

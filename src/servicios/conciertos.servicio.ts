@@ -1,4 +1,5 @@
 import { crearClienteServidor } from '@/lib/supabase/servidor';
+import { obtenerIdFestivalActivo } from '@/servicios/festivales.servicio';
 
 /** Géneros musicales disponibles en el festival */
 export const GENEROS_MUSICA = [
@@ -16,20 +17,20 @@ export const GENEROS_MUSICA = [
 const CLAVE_MUSICA_SONANDO = 'musica_sonando_actualmente';
 
 /**
- * Obtiene el género musical que está sonando actualmente en el festival.
- * Lee de la tabla configuracion_festival con clave 'musica_sonando_actualmente'.
+ * Obtiene el género musical que está sonando actualmente en el festival activo.
  */
 export async function obtenerMusicaSonando(): Promise<string | null> {
     const supabase = await crearClienteServidor();
+    const idFestival = await obtenerIdFestivalActivo();
 
     const { data, error } = await supabase
         .from('configuracion_festival')
         .select('valor')
+        .eq('id_festival', idFestival)
         .eq('clave', CLAVE_MUSICA_SONANDO)
         .single();
 
     if (error) {
-        // Si no existe la fila aún, devolver null
         if (error.code === 'PGRST116') return null;
         throw new Error(`Error al obtener música sonando: ${error.message}`);
     }
@@ -39,16 +40,21 @@ export async function obtenerMusicaSonando(): Promise<string | null> {
 
 /**
  * Actualiza el género musical que está sonando actualmente.
- * Usa upsert para crear la fila si no existe o actualizarla si ya existe.
+ * onConflict usa la PK compuesta (id_festival, clave) introducida en sprint4.
  */
 export async function actualizarMusicaSonando(genero: string): Promise<void> {
     const supabase = await crearClienteServidor();
+    const idFestival = await obtenerIdFestivalActivo();
 
     const { error } = await supabase
         .from('configuracion_festival')
         .upsert(
-            { clave: CLAVE_MUSICA_SONANDO, valor: genero },
-            { onConflict: 'clave' }
+            {
+                id_festival: idFestival,
+                clave: CLAVE_MUSICA_SONANDO,
+                valor: genero,
+            },
+            { onConflict: 'id_festival,clave' }
         );
 
     if (error) {
