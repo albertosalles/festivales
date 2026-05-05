@@ -1,4 +1,5 @@
 import { crearClienteServidor } from '@/lib/supabase/servidor';
+import { obtenerIdFestivalActivo } from '@/servicios/festivales.servicio';
 import type { Usuario, FilaUsuario } from '@/lib/tipos';
 
 /**
@@ -7,6 +8,7 @@ import type { Usuario, FilaUsuario } from '@/lib/tipos';
 function transformarFila(fila: FilaUsuario): Usuario {
     return {
         idUsuario: fila.id_usuario,
+        idFestival: fila.id_festival,
         nombre: fila.nombre,
         apellidos: fila.apellidos,
         edad: fila.edad,
@@ -19,18 +21,21 @@ function transformarFila(fila: FilaUsuario): Usuario {
 }
 
 /**
- * Busca un usuario por su código de pulsera (token_pago).
- * Este es el método de autenticación del MVP.
+ * Busca un usuario por su código de pulsera (token_pago) dentro del festival activo.
+ * El filtro por festival es importante porque el mismo token podría reutilizarse
+ * en ediciones distintas.
  */
 export async function obtenerPorPulsera(
     tokenPago: string
 ): Promise<Usuario | null> {
     const supabase = await crearClienteServidor();
+    const idFestival = await obtenerIdFestivalActivo();
 
     const { data, error } = await supabase
         .from('usuario')
         .select('*')
         .eq('token_pago', tokenPago)
+        .eq('id_festival', idFestival)
         .single();
 
     if (error) {
@@ -42,7 +47,7 @@ export async function obtenerPorPulsera(
 }
 
 /**
- * Obtiene un usuario por su ID.
+ * Obtiene un usuario por su ID. No filtra por festival activo: el id es global.
  */
 export async function obtenerUsuarioPorId(
     idUsuario: number

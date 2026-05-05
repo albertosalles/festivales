@@ -1,4 +1,5 @@
 import { crearClienteServidor } from '@/lib/supabase/servidor';
+import { obtenerIdFestivalActivo } from '@/servicios/festivales.servicio';
 import type { Barra, EstadoCola, FilaBarra } from '@/lib/tipos';
 
 /**
@@ -7,20 +8,23 @@ import type { Barra, EstadoCola, FilaBarra } from '@/lib/tipos';
 function transformarFila(fila: FilaBarra): Barra {
     return {
         idBarra: fila.id_barra,
+        idFestival: fila.id_festival,
         nombreLocalizacion: fila.nombre_localizacion,
         estadoCola: fila.estado_cola as EstadoCola,
     };
 }
 
 /**
- * Obtiene todas las barras del recinto ordenadas por nombre.
+ * Obtiene todas las barras del festival activo, ordenadas por nombre.
  */
 export async function obtenerBarras(): Promise<Barra[]> {
     const supabase = await crearClienteServidor();
+    const idFestival = await obtenerIdFestivalActivo();
 
     const { data, error } = await supabase
         .from('barras')
-        .select('id_barra, nombre_localizacion, estado_cola')
+        .select('id_barra, id_festival, nombre_localizacion, estado_cola')
+        .eq('id_festival', idFestival)
         .order('nombre_localizacion');
 
     if (error) {
@@ -31,14 +35,15 @@ export async function obtenerBarras(): Promise<Barra[]> {
 }
 
 /**
- * Obtiene una barra por su ID.
+ * Obtiene una barra por su ID. No filtra por festival activo (las barras
+ * históricas siguen siendo accesibles por id si existen).
  */
 export async function obtenerBarraPorId(idBarra: number): Promise<Barra | null> {
     const supabase = await crearClienteServidor();
 
     const { data, error } = await supabase
         .from('barras')
-        .select('id_barra, nombre_localizacion, estado_cola')
+        .select('id_barra, id_festival, nombre_localizacion, estado_cola')
         .eq('id_barra', idBarra)
         .single();
 

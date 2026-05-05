@@ -147,11 +147,21 @@ export const tpvServicio = {
 
     async procesarCobro(tokenPagoCliente: string, idBarra: number, total: number, lineas: LineaTransaccion[]) {
          const supabase = crearClienteNavegador();
-         
+
+         // 1. Identificar el festival al que pertenece la barra (single source of truth)
+         const { data: barraData, error: barraError } = await supabase
+            .from('barras')
+            .select('id_festival')
+            .eq('id_barra', idBarra)
+            .single();
+         if (barraError || !barraData) throw new Error("Barra no encontrada");
+
+         // 2. Buscar usuario por pulsera dentro del mismo festival
          const { data: usuarioData, error: usuarioError } = await supabase
             .from('usuario')
             .select('id_usuario')
             .eq('token_pago', tokenPagoCliente)
+            .eq('id_festival', barraData.id_festival)
             .single();
          if (usuarioError || !usuarioData) throw new Error("Pulsera no válida o no encontrada");
 

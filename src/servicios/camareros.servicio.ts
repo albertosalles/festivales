@@ -1,4 +1,5 @@
 import { crearClienteServidor } from '@/lib/supabase/servidor';
+import { obtenerIdFestivalActivo } from '@/servicios/festivales.servicio';
 import type { Camarero, FilaCamarero, AsignacionCamarero, FilaAsignacionCamarero } from '@/lib/tipos';
 
 /* ── Transformadores ── */
@@ -6,6 +7,7 @@ import type { Camarero, FilaCamarero, AsignacionCamarero, FilaAsignacionCamarero
 function transformarFilaCamarero(fila: FilaCamarero): Camarero {
     return {
         idCamarero: fila.id_camarero,
+        idFestival: fila.id_festival,
         nombre: fila.nombre,
         apellidos: fila.apellidos,
         activo: fila.activo,
@@ -26,13 +28,15 @@ function transformarFilaAsignacion(fila: FilaAsignacionCamarero): AsignacionCama
 
 /* ── Consultas ── */
 
-/** Obtener todos los camareros */
+/** Obtener todos los camareros del festival activo */
 export async function obtenerCamareros(): Promise<Camarero[]> {
     const supabase = await crearClienteServidor();
+    const idFestival = await obtenerIdFestivalActivo();
 
     const { data, error } = await supabase
         .from('camareros')
         .select('*')
+        .eq('id_festival', idFestival)
         .order('nombre');
 
     if (error) throw new Error(`Error al obtener camareros: ${error.message}`);
@@ -56,16 +60,21 @@ export async function obtenerCamareroPorId(id: number): Promise<Camarero | null>
     return transformarFilaCamarero(data as FilaCamarero);
 }
 
-/** Crear un camarero nuevo */
+/** Crear un camarero nuevo, asociado al festival activo */
 export async function crearCamarero(datos: {
     nombre: string;
     apellidos?: string;
 }): Promise<Camarero> {
     const supabase = await crearClienteServidor();
+    const idFestival = await obtenerIdFestivalActivo();
 
     const { data, error } = await supabase
         .from('camareros')
-        .insert({ nombre: datos.nombre, apellidos: datos.apellidos ?? null })
+        .insert({
+            nombre: datos.nombre,
+            apellidos: datos.apellidos ?? null,
+            id_festival: idFestival,
+        })
         .select('*')
         .single();
 

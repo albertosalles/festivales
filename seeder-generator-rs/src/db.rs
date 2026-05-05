@@ -246,7 +246,7 @@ impl DB {
                         id: transaction_id,
                         id_wallet: user.id,
                         id_bar,
-                        activity_type: Some("recharge".to_string()),
+                        activity_type: Some("recarga".to_string()),
                         amount: self.rng.random_range(5.0..=50.0),
                         date: Some(date),
                     });
