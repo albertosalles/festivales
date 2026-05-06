@@ -1,10 +1,12 @@
 import { cache } from 'react';
 import { crearClienteServidor } from '@/lib/supabase/servidor';
 import type {
+    DatosDiaFestival,
     EstadoFestival,
     Festival,
     FilaFestival,
     FilaResumenFestival,
+    IngresosBarraDia,
     ResumenFestival,
 } from '@/lib/tipos';
 
@@ -39,6 +41,7 @@ function transformarFilaResumen(fila: FilaResumenFestival): ResumenFestival {
         eficienciaEurosHora: Number(fila.eficiencia_euros_hora),
         productoEstrella: fila.producto_estrella ?? undefined,
         datosPorBarra: fila.datos_por_barra ?? [],
+        datosPorDia: fila.datos_por_dia ?? [],
         createdAt: fila.created_at,
     };
 }
@@ -258,3 +261,194 @@ export async function obtenerResumenesFestivales(): Promise<ResumenFestival[]> {
     if (error) throw new Error(`Error al listar resúmenes: ${error.message}`);
     return (data as FilaResumenFestival[]).map(transformarFilaResumen);
 }
+
+/* ── Desglose diario (sprint 5) ── */
+
+/**
+ * Calcula el desglose por día del festival indicado en vivo (sin escribir en
+ * resumen_festival). Útil para mostrar el progreso del festival mientras está
+ * en curso. Comparte la lógica con `generar_resumen_festival`.
+ */
+export async function calcularDatosPorDia(idFestival: number): Promise<DatosDiaFestival[]> {
+    const supabase = await crearClienteServidor();
+    const { data, error } = await supabase.rpc('calcular_datos_por_dia', {
+        p_id_festival: idFestival,
+    });
+
+    if (error) throw new Error(`Error al calcular datos diarios: ${error.message}`);
+    return (data as DatosDiaFestival[] | null) ?? [];
+}
+
+/** Resumen de una edición pasada con su desglose diario, listo para comparar. */
+export interface EdicionConDatosDia {
+    idFestival: number;
+    nombre: string;
+    datosPorDia: DatosDiaFestival[];
+}
+
+/**
+ * Obtiene el desglose diario del festival activo (calculado en vivo) junto con
+ * los desgloses de todas las ediciones pasadas que ya tienen resumen generado.
+ *
+ * Devuelve `{ actual, ediciones }`:
+ *  - `actual`: edición activa con datos en vivo. `null` si no hay festival activo.
+ *  - `ediciones`: ediciones cerradas con `datos_por_dia` no vacío, ordenadas de
+ *    más reciente a más antigua.
+ */
+export async function obtenerComparativaDiaria(): Promise<{
+    actual: EdicionConDatosDia | null;
+    ediciones: EdicionConDatosDia[];
+}> {
+    const supabase = await crearClienteServidor();
+
+    // 1. Festival activo (puede no existir → no lanzar)
+    const { data: festivalActivo } = await supabase
+        .from('festivales')
+        .select('id_festival, nombre')
+        .eq('activo', true)
+        .maybeSingle();
+
+    let actual: EdicionConDatosDia | null = null;
+    if (festivalActivo) {
+        const datosPorDia = await calcularDatosPorDia(festivalActivo.id_festival);
+        actual = {
+            idFestival: festivalActivo.id_festival,
+            nombre: festivalActivo.nombre,
+            datosPorDia,
+        };
+    }
+
+    // 2. Ediciones pasadas: las que ya tienen resumen y son distintas del activo
+    const { data: resumenes, error } = await supabase
+        .from('resumen_festival')
+        .select('id_festival, datos_por_dia, festivales(nombre)')
+        .order('id_festival', { ascending: false });
+
+    if (error) throw new Error(`Error al listar comparativa diaria: ${error.message}`);
+
+    type ResumenComparativa = {
+        id_festival: number;
+        datos_por_dia: DatosDiaFestival[] | null;
+        festivales: { nombre: string } | { nombre: string }[] | null;
+    };
+
+    const ediciones: EdicionConDatosDia[] = (resumenes as ResumenComparativa[] ?? [])
+        .filter((r) => r.id_festival !== actual?.idFestival)
+        .map((r) => {
+            // Supabase puede devolver el embed como objeto u array según versiones
+            const festival = Array.isArray(r.festivales) ? r.festivales[0] : r.festivales;
+            return {
+                idFestival: r.id_festival,
+                nombre: festival?.nombre ?? `Festival #${r.id_festival}`,
+                datosPorDia: r.datos_por_dia ?? [],
+            };
+        })
+        .filter((e) => e.datosPorDia.length > 0);
+
+    return { actual, ediciones };
+}
+
+/**
+ * Devuelve todas las ediciones con desglose diario excepto la indicada.
+ *
+ * Pensado para la página de detalle de un festival: queremos comparar la
+ * edición que estamos viendo con todas las demás (en vivo si están activas,
+ * snapshot si están cerradas).
+ *
+ * - Festival activo: lee datos en vivo via `calcular_datos_por_dia` RPC.
+ * - Festivales cerrados: lee `datos_por_dia` del snapshot guardado.
+ *
+ * Solo incluye ediciones con al menos una entrada en `datosPorDia`.
+ */
+export async function obtenerEdicionesParaComparar(
+    idExcluir: number,
+): Promise<EdicionConDatosDia[]> {
+    const supabase = await crearClienteServidor();
+
+    // 1. Festival activo (puede o no coincidir con el excluido)
+    const { data: festivalActivo } = await supabase
+        .from('festivales')
+        .select('id_festival, nombre')
+        .eq('activo', true)
+        .maybeSingle();
+
+    const resultado: EdicionConDatosDia[] = [];
+
+    if (festivalActivo && festivalActivo.id_festival !== idExcluir) {
+        const datosPorDia = await calcularDatosPorDia(festivalActivo.id_festival);
+        if (datosPorDia.length > 0) {
+            resultado.push({
+                idFestival: festivalActivo.id_festival,
+                nombre: festivalActivo.nombre,
+                datosPorDia,
+            });
+        }
+    }
+
+    // 2. Resumenes de cerrados (excluyendo la edición y la activa, ya tratada)
+    const { data: resumenes, error } = await supabase
+        .from('resumen_festival')
+        .select('id_festival, datos_por_dia, festivales(nombre)')
+        .neq('id_festival', idExcluir)
+        .order('id_festival', { ascending: false });
+
+    if (error) throw new Error(`Error al listar ediciones a comparar: ${error.message}`);
+
+    type Fila = {
+        id_festival: number;
+        datos_por_dia: DatosDiaFestival[] | null;
+        festivales: { nombre: string } | { nombre: string }[] | null;
+    };
+
+    for (const fila of (resumenes as Fila[] ?? [])) {
+        // Saltar el activo si ya lo añadimos arriba
+        if (festivalActivo && fila.id_festival === festivalActivo.id_festival) continue;
+        const datos = fila.datos_por_dia ?? [];
+        if (datos.length === 0) continue;
+        const fest = Array.isArray(fila.festivales) ? fila.festivales[0] : fila.festivales;
+        resultado.push({
+            idFestival: fila.id_festival,
+            nombre: fest?.nombre ?? `Festival #${fila.id_festival}`,
+            datosPorDia: datos,
+        });
+    }
+
+    return resultado;
+}
+
+/**
+ * Helper: agrupa entradas de varias ediciones por `dia_relativo` (1=vie, 2=sáb,
+ * 3=dom). Devuelve un objeto por día con la entrada de cada edición.
+ *
+ * Uso: alimentar gráficos comparativos día-a-día sin lidiar con desalineación
+ * de fechas absolutas entre ediciones.
+ *
+ * Días con `dia_relativo = null` se ignoran (datos fuera de vie/sáb/dom).
+ */
+export function agruparPorDiaRelativo(
+    ediciones: EdicionConDatosDia[],
+): Array<{
+    diaRelativo: 1 | 2 | 3;
+    diaSemana: 'viernes' | 'sábado' | 'domingo';
+    entradas: Array<{ idFestival: number; nombre: string; datos: DatosDiaFestival }>;
+}> {
+    const diasSemana = ['viernes', 'sábado', 'domingo'] as const;
+    return ([1, 2, 3] as const).map((diaRelativo) => ({
+        diaRelativo,
+        diaSemana: diasSemana[diaRelativo - 1],
+        entradas: ediciones
+            .map((ed) => {
+                const dia = ed.datosPorDia.find((d) => d.dia_relativo === diaRelativo);
+                if (!dia) return null;
+                return { idFestival: ed.idFestival, nombre: ed.nombre, datos: dia };
+            })
+            .filter(
+                (e): e is { idFestival: number; nombre: string; datos: DatosDiaFestival } =>
+                    e !== null,
+            ),
+    }));
+}
+
+// Marcadores para evitar warning de "imported but unused" si TS Build pasa por aquí
+// antes de que la UI consuma estos tipos.
+export type { DatosDiaFestival, IngresosBarraDia };

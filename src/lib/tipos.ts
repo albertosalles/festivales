@@ -47,10 +47,12 @@ export interface ResumenFestival {
   eficienciaEurosHora: number;
   productoEstrella?: string;
   datosPorBarra: ResumenBarra[];
+  /** Desglose por día: 1 entrada por día con ventas. */
+  datosPorDia: DatosDiaFestival[];
   createdAt: string;
 }
 
-/** Datos agregados por barra dentro del resumen */
+/** Datos agregados por barra dentro del resumen (totales de toda la edición) */
 export interface ResumenBarra {
   id_barra: number;
   nombre: string;
@@ -58,6 +60,32 @@ export interface ResumenBarra {
   num_transacciones: number;
   horas_servicio: number;
   eficiencia_euros_hora: number;
+}
+
+/**
+ * Métricas de un día del festival.
+ *
+ * `dia_relativo`: 1=viernes, 2=sábado, 3=domingo (calculado por offset desde
+ * `fecha_inicio` si existe, o por heurística ISO-DOW si el festival no tiene
+ * fechas definidas). Es `null` para días que no caen en vie/sáb/dom cuando se
+ * usa la heurística — útil para detectar datos fuera del rango esperado.
+ */
+export interface DatosDiaFestival {
+  dia_relativo: number | null;
+  fecha: string;             // 'YYYY-MM-DD'
+  dia_semana: string;        // 'viernes' | 'sábado' | 'domingo' | …
+  ingresos: number;
+  transacciones: number;
+  ticket_medio: number;
+  barras: IngresosBarraDia[];
+}
+
+/** Ingresos de una barra durante un día concreto. */
+export interface IngresosBarraDia {
+  id_barra: number;
+  nombre: string;
+  ingresos: number;
+  num_transacciones: number;
 }
 
 /** Barra/bar del recinto del festival */
@@ -162,6 +190,7 @@ export interface FilaResumenFestival {
   eficiencia_euros_hora: number;
   producto_estrella?: string;
   datos_por_barra: ResumenBarra[];
+  datos_por_dia: DatosDiaFestival[];
   created_at: string;
 }
 
