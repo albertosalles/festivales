@@ -349,6 +349,74 @@ export async function obtenerComparativaDiaria(): Promise<{
 }
 
 /**
+ * Devuelve todas las ediciones con desglose diario excepto la indicada.
+ *
+ * Pensado para la página de detalle de un festival: queremos comparar la
+ * edición que estamos viendo con todas las demás (en vivo si están activas,
+ * snapshot si están cerradas).
+ *
+ * - Festival activo: lee datos en vivo via `calcular_datos_por_dia` RPC.
+ * - Festivales cerrados: lee `datos_por_dia` del snapshot guardado.
+ *
+ * Solo incluye ediciones con al menos una entrada en `datosPorDia`.
+ */
+export async function obtenerEdicionesParaComparar(
+    idExcluir: number,
+): Promise<EdicionConDatosDia[]> {
+    const supabase = await crearClienteServidor();
+
+    // 1. Festival activo (puede o no coincidir con el excluido)
+    const { data: festivalActivo } = await supabase
+        .from('festivales')
+        .select('id_festival, nombre')
+        .eq('activo', true)
+        .maybeSingle();
+
+    const resultado: EdicionConDatosDia[] = [];
+
+    if (festivalActivo && festivalActivo.id_festival !== idExcluir) {
+        const datosPorDia = await calcularDatosPorDia(festivalActivo.id_festival);
+        if (datosPorDia.length > 0) {
+            resultado.push({
+                idFestival: festivalActivo.id_festival,
+                nombre: festivalActivo.nombre,
+                datosPorDia,
+            });
+        }
+    }
+
+    // 2. Resumenes de cerrados (excluyendo la edición y la activa, ya tratada)
+    const { data: resumenes, error } = await supabase
+        .from('resumen_festival')
+        .select('id_festival, datos_por_dia, festivales(nombre)')
+        .neq('id_festival', idExcluir)
+        .order('id_festival', { ascending: false });
+
+    if (error) throw new Error(`Error al listar ediciones a comparar: ${error.message}`);
+
+    type Fila = {
+        id_festival: number;
+        datos_por_dia: DatosDiaFestival[] | null;
+        festivales: { nombre: string } | { nombre: string }[] | null;
+    };
+
+    for (const fila of (resumenes as Fila[] ?? [])) {
+        // Saltar el activo si ya lo añadimos arriba
+        if (festivalActivo && fila.id_festival === festivalActivo.id_festival) continue;
+        const datos = fila.datos_por_dia ?? [];
+        if (datos.length === 0) continue;
+        const fest = Array.isArray(fila.festivales) ? fila.festivales[0] : fila.festivales;
+        resultado.push({
+            idFestival: fila.id_festival,
+            nombre: fest?.nombre ?? `Festival #${fila.id_festival}`,
+            datosPorDia: datos,
+        });
+    }
+
+    return resultado;
+}
+
+/**
  * Helper: agrupa entradas de varias ediciones por `dia_relativo` (1=vie, 2=sáb,
  * 3=dom). Devuelve un objeto por día con la entrada de cada edición.
  *

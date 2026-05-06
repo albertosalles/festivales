@@ -1,10 +1,13 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import {
+    calcularDatosPorDia,
+    obtenerEdicionesParaComparar,
     obtenerFestivalPorId,
     obtenerResumenFestival,
 } from '@/servicios/festivales.servicio';
 import { PanelPurgado } from '@/components/admin/festivales/PanelPurgado';
+import { DesgloseDiarioFestival } from '@/components/admin/festivales/DesgloseDiarioFestival';
 import { RUTAS } from '@/lib/constantes';
 import { formatearMoneda } from '@/lib/utils';
 
@@ -20,12 +23,20 @@ export default async function PaginaDetalleFestival({ params }: PageProps) {
     const idFestival = Number(id);
     if (Number.isNaN(idFestival)) notFound();
 
-    const [festival, resumen] = await Promise.all([
+    const [festival, resumen, otrasEdiciones] = await Promise.all([
         obtenerFestivalPorId(idFestival),
         obtenerResumenFestival(idFestival),
+        obtenerEdicionesParaComparar(idFestival),
     ]);
 
     if (!festival) notFound();
+
+    // Para el desglose diario: si el festival está activo usamos cálculo en
+    // vivo (refleja transacciones de hoy mismo). Si no, usamos el snapshot
+    // del resumen (puede no existir si aún no se generó).
+    const datosPorDiaActual = festival.activo
+        ? await calcularDatosPorDia(idFestival)
+        : (resumen?.datosPorDia ?? []);
 
     return (
         <div>
@@ -142,6 +153,13 @@ export default async function PaginaDetalleFestival({ params }: PageProps) {
                     )}
                 </section>
             )}
+
+            {/* Desglose diario + comparativa con otras ediciones (sprint 5) */}
+            <DesgloseDiarioFestival
+                nombreEdicion={festival.nombre}
+                datosPorDia={datosPorDiaActual}
+                otrasEdiciones={otrasEdiciones}
+            />
 
             {/* Panel de purgado (siempre visible) */}
             <PanelPurgado festival={festival} resumen={resumen} />
