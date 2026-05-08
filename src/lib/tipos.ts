@@ -247,6 +247,26 @@ export interface AsignacionCamarero {
   horasImputadas: number;
 }
 
+export interface Incidencia {
+  idIncidencia: number;
+  idBarra: number;
+  idCamarero: number;
+  tipoIncidencia: string;
+  descripcion?: string;
+  fechaReporte: string;
+  estado: 'pendiente' | 'resuelta';
+}
+
+export interface FilaIncidencia {
+  id_incidencia: number;
+  id_barra: number;
+  id_camarero: number;
+  tipo_incidencia: string;
+  descripcion?: string;
+  fecha_reporte: string;
+  estado: string;
+}
+
 export interface ConfiguracionFestival {
   clave: string;
   valor: string;

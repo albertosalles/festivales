@@ -7,6 +7,7 @@ import { SelectorRecarga } from '@/components/billetera/SelectorRecarga';
 import { formatearMoneda } from '@/lib/utils';
 import { useSesion } from '@/hooks/useSesion';
 import { TarjetaQR } from '@/components/billetera/TarjetaQR';
+import { HistorialTransacciones, type EntradaHistorial } from '@/components/billetera/HistorialTransacciones';
 
 /**
  * Contenedor principal de la billetera — Diseño Stitch "Electric Nocturne".
@@ -18,6 +19,21 @@ export function ContenedorBilletera() {
     const [idWallet, setIdWallet] = useState<number | null>(null);
     const [cargandoSaldo, setCargandoSaldo] = useState(true);
     const [error, setError] = useState('');
+    const [historial, setHistorial] = useState<EntradaHistorial[]>([]);
+    const [cargandoHistorial, setCargandoHistorial] = useState(false);
+
+    const cargarHistorial = useCallback(async (walletId: number) => {
+        setCargandoHistorial(true);
+        try {
+            const res = await fetch(`/api/billetera/historial?idWallet=${walletId}`);
+            const datos = await res.json();
+            if (res.ok) setHistorial(datos.transacciones ?? []);
+        } catch {
+            // Silent — el historial es secundario
+        } finally {
+            setCargandoHistorial(false);
+        }
+    }, []);
 
     /** Carga el saldo de la billetera del usuario */
     const cargarSaldo = useCallback(async (idUsuario: number) => {
@@ -37,12 +53,13 @@ export function ContenedorBilletera() {
 
             setSaldo(datos.saldo);
             setIdWallet(datos.idWallet);
+            cargarHistorial(datos.idWallet);
         } catch {
             setError('Error de conexión al obtener saldo');
         } finally {
             setCargandoSaldo(false);
         }
-    }, []);
+    }, [cargarHistorial]);
 
     // Cargar saldo al obtener la sesión
     useEffect(() => {
@@ -71,6 +88,7 @@ export function ContenedorBilletera() {
 
             setSaldo(datos.nuevoSaldo);
             toast.success(`¡Recarga exitosa! Se han añadido ${formatearMoneda(monto)} a tu billetera.`);
+            if (idWallet) cargarHistorial(idWallet);
         } catch {
             toast.error('Error de conexión. Inténtalo de nuevo.');
         }
@@ -125,6 +143,10 @@ export function ContenedorBilletera() {
                 deshabilitado={cargandoSaldo || idWallet === null}
             />
             <TarjetaQR tokenPago={sesion.tokenPago} />
+            <HistorialTransacciones
+                transacciones={historial}
+                cargando={cargandoHistorial}
+            />
         </div>
     );
 }

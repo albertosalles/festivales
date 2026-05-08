@@ -8,9 +8,11 @@ import {
 } from '@/servicios/metricas.servicio';
 import { obtenerBarras } from '@/servicios/barras.servicio';
 import { obtenerCamareros } from '@/servicios/camareros.servicio';
+import { obtenerFestivalActivo } from '@/servicios/festivales.servicio';
 import { obtenerMusicaSonando, obtenerGenerosDisponibles } from '@/servicios/conciertos.servicio';
 import { ControlConcierto } from '@/components/admin/ControlConcierto';
 import { WidgetComparativaDiaria } from '@/components/admin/dashboard/WidgetComparativaDiaria';
+import { BotonRecargar } from '@/components/admin/BotonRecargar';
 import { formatearMoneda } from '@/lib/utils';
 
 /**
@@ -28,6 +30,7 @@ export default async function PaginaDashboard() {
         mapaCalor,
         eficiencia,
         musicaSonando,
+        festivalActivo,
     ] = await Promise.all([
         obtenerMetricasGlobales(),
         obtenerIngresosPorBarra(),
@@ -38,6 +41,7 @@ export default async function PaginaDashboard() {
         obtenerMapaCalorHorario(),
         obtenerEficienciaBarras(),
         obtenerMusicaSonando(),
+        obtenerFestivalActivo(),
     ]);
 
     const generosDisponibles = obtenerGenerosDisponibles();
@@ -46,7 +50,7 @@ export default async function PaginaDashboard() {
     const barrasMedia = barras.filter((b) => b.estadoCola === 'media').length;
     const barrasBaja = barras.filter((b) => b.estadoCola === 'baja').length;
     const maxIngreso = Math.max(...ingresosPorBarra.map((b) => b.ingresos), 1);
-    const camarerosActivos = camareros.filter((c) => c.activo).length;
+    const camarerosEnBarra = camareros.filter((c) => c.idBarraActual != null).length;
     const maxVolumen = Math.max(...mapaCalor.map((m) => m.total), 1);
     const maxEficiencia = Math.max(...eficiencia.map((e) => e.pedidosPorHora), 1);
 
@@ -60,15 +64,18 @@ export default async function PaginaDashboard() {
                             Live Status
                         </span>
                         <h1 className="font-headline text-6xl font-black tracking-tighter text-on-surface">
-                            Pulse <span className="text-neon-green italic">Live</span>.
+                            {festivalActivo.nombre} <span className="text-neon-green italic">Live</span>.
                         </h1>
                     </div>
-                    <div className="text-right">
-                        <div className="flex items-center gap-2 justify-end mt-1">
-                            <span className="w-2 h-2 bg-neon-green rounded-full animate-pulse shadow-[0_0_8px_#e9ffba]" />
-                            <span className="text-[10px] font-bold uppercase tracking-tighter text-neon-green">
-                                System Online
-                            </span>
+                    <div className="flex items-center gap-4">
+                        <BotonRecargar />
+                        <div className="text-right">
+                            <div className="flex items-center gap-2 justify-end mt-1">
+                                <span className="w-2 h-2 bg-neon-green rounded-full animate-pulse shadow-[0_0_8px_#e9ffba]" />
+                                <span className="text-[10px] font-bold uppercase tracking-tighter text-neon-green">
+                                    System Online
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -244,10 +251,10 @@ export default async function PaginaDashboard() {
                         <div className="flex justify-between items-end">
                             <div>
                                 <p className="text-on-surface-variant text-xs uppercase tracking-widest mb-1">
-                                    Camareros Activos
+                                    En Barra
                                 </p>
                                 <h3 className="font-headline text-4xl font-bold text-on-surface">
-                                    {camarerosActivos}
+                                    {camarerosEnBarra}
                                     <span className="text-sm text-on-surface-variant font-normal">
                                         /{camareros.length}
                                     </span>
@@ -256,12 +263,12 @@ export default async function PaginaDashboard() {
                             <div
                                 className="w-16 h-16 rounded-full border-4 border-neon-green flex items-center justify-center"
                                 style={{
-                                    background: `conic-gradient(#bafd00 ${camareros.length > 0 ? (camarerosActivos / camareros.length) * 100 : 0}%, #19191d 0)`
+                                    background: `conic-gradient(#bafd00 ${camareros.length > 0 ? (camarerosEnBarra / camareros.length) * 100 : 0}%, #19191d 0)`
                                 }}
                             >
                                 <div className="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center">
                                     <span className="text-xs font-bold text-neon-green">
-                                        {camareros.length > 0 ? Math.round((camarerosActivos / camareros.length) * 100) : 0}%
+                                        {camareros.length > 0 ? Math.round((camarerosEnBarra / camareros.length) * 100) : 0}%
                                     </span>
                                 </div>
                             </div>
