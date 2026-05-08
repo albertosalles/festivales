@@ -27,50 +27,148 @@ export interface MetricasBarra {
     ingresosPorHoraCamarero: number;
 }
 
-/**
- * Helper: devuelve los IDs de barras del festival activo.
- * Se usa para filtrar transacciones (que no tienen id_festival propio).
- */
-async function idsBarrasFestivalActivo(): Promise<number[]> {
-    const supabase = await crearClienteServidor();
-    const idFestival = await obtenerIdFestivalActivo();
-    const { data } = await supabase
-        .from('barras')
-        .select('id_barra')
-        .eq('id_festival', idFestival);
-    return (data ?? []).map((b: { id_barra: number }) => b.id_barra);
-}
+/* ══════════════════════════════════════════════
+   Métricas globales del dashboard
+   ──────────────────────────────────────────────
+   Todas estas funciones delegan la agregación al
+   servidor PostgreSQL mediante RPCs (sprint5).
+   Importante: agregar en JS sumando filas crudas
+   de Supabase es incorrecto cuando se superan las
+   1000 filas (límite por defecto del cliente JS).
+   ══════════════════════════════════════════════ */
 
 /**
- * Obtiene métricas globales del festival activo.
+ * Obtiene métricas globales del festival activo (recaudación, transacciones,
+ * ticket medio).
  */
 export async function obtenerMetricasGlobales(): Promise<MetricasGlobales> {
     const supabase = await crearClienteServidor();
-    const idsBarras = await idsBarrasFestivalActivo();
+    const idFestival = await obtenerIdFestivalActivo();
 
-    if (idsBarras.length === 0) {
+    const { data, error } = await supabase
+        .rpc('obtener_metricas_globales', { p_id_festival: idFestival })
+        .single<{
+            total_transacciones: number;
+            ingresos_totales: number;
+            ticket_medio: number;
+        }>();
+
+    if (error || !data) {
         return { totalTransacciones: 0, ingresosTotales: 0, ticketMedio: 0 };
     }
 
-    const { data, error } = await supabase
-        .from('transacciones')
-        .select('monto')
-        .in('id_barra', idsBarras)
-        .neq('tipo_movimiento', 'recarga');
-
-    if (error) throw new Error(`Error al obtener métricas: ${error.message}`);
-
-    const registros = data ?? [];
-    const totalTransacciones = registros.length;
-    const ingresosTotales = registros.reduce((acc, r) => acc + Number(r.monto), 0);
-    const ticketMedio = totalTransacciones > 0 ? ingresosTotales / totalTransacciones : 0;
-
-    return { totalTransacciones, ingresosTotales, ticketMedio };
+    return {
+        totalTransacciones: Number(data.total_transacciones),
+        ingresosTotales: Number(data.ingresos_totales),
+        ticketMedio: Number(data.ticket_medio),
+    };
 }
+
+/** Obtener ingresos por barra del festival activo (gráfico de rendimiento) */
+export async function obtenerIngresosPorBarra(): Promise<{
+    idBarra: number;
+    nombreBarra: string;
+    ingresos: number;
+    numTransacciones: number;
+}[]> {
+    const supabase = await crearClienteServidor();
+    const idFestival = await obtenerIdFestivalActivo();
+
+    const { data, error } = await supabase
+        .rpc('obtener_ingresos_por_barra', { p_id_festival: idFestival });
+
+    if (error || !data) return [];
+
+    return (data as Array<{
+        id_barra: number;
+        nombre_barra: string;
+        ingresos: number;
+        num_transacciones: number;
+    }>).map((r) => ({
+        idBarra: r.id_barra,
+        nombreBarra: r.nombre_barra,
+        ingresos: Number(r.ingresos),
+        numTransacciones: Number(r.num_transacciones),
+    }));
+}
+
+/** Suma total de saldo en wallets del festival activo */
+export async function obtenerSaldoRetenido(): Promise<number> {
+    const supabase = await crearClienteServidor();
+    const idFestival = await obtenerIdFestivalActivo();
+
+    const { data, error } = await supabase
+        .rpc('obtener_saldo_retenido', { p_id_festival: idFestival });
+
+    if (error || data === null) return 0;
+    return Number(data);
+}
+
+/** Media aritmética de las recargas realizadas en el festival activo */
+export async function obtenerRecargaMedia(): Promise<number> {
+    const supabase = await crearClienteServidor();
+    const idFestival = await obtenerIdFestivalActivo();
+
+    const { data, error } = await supabase
+        .rpc('obtener_recarga_media', { p_id_festival: idFestival });
+
+    if (error || data === null) return 0;
+    return Number(data);
+}
+
+/** Volumen de compras agrupadas por franja horaria (mapa de calor) */
+export async function obtenerMapaCalorHorario(): Promise<{ hora: string; total: number }[]> {
+    const supabase = await crearClienteServidor();
+    const idFestival = await obtenerIdFestivalActivo();
+
+    const { data, error } = await supabase
+        .rpc('obtener_mapa_calor_horario', { p_id_festival: idFestival });
+
+    if (error || !data) return [];
+
+    return (data as Array<{ hora: string; total: number }>).map((r) => ({
+        hora: r.hora,
+        total: Number(r.total),
+    }));
+}
+
+/** Ratio de pedidos por hora operativa de cada barra del festival activo */
+export async function obtenerEficienciaBarras(): Promise<{
+    idBarra: number;
+    nombre: string;
+    pedidosPorHora: number;
+}[]> {
+    const supabase = await crearClienteServidor();
+    const idFestival = await obtenerIdFestivalActivo();
+
+    const { data, error } = await supabase
+        .rpc('obtener_eficiencia_barras', { p_id_festival: idFestival });
+
+    if (error || !data) return [];
+
+    return (data as Array<{
+        id_barra: number;
+        nombre: string;
+        pedidos_por_hora: number;
+    }>).map((r) => ({
+        idBarra: r.id_barra,
+        nombre: r.nombre,
+        pedidosPorHora: Number(r.pedidos_por_hora),
+    }));
+}
+
+/* ══════════════════════════════════════════════
+   Métricas de detalle por barra
+   ══════════════════════════════════════════════ */
 
 /**
  * Obtiene métricas de una barra específica.
  * No filtra por festival (la barra ya está identificada por su id global).
+ *
+ * Esta función mantiene el cálculo en JS porque necesita procesar las
+ * transacciones para extraer múltiples métricas derivadas (hora pico,
+ * tiempo medio entre pedidos, rendimiento por camarero, etc.). Para
+ * evitar el límite de 1000 filas, paginamos explícitamente.
  */
 export async function obtenerMetricasBarra(idBarra: number): Promise<MetricasBarra> {
     const supabase = await crearClienteServidor();
@@ -80,16 +178,26 @@ export async function obtenerMetricasBarra(idBarra: number): Promise<MetricasBar
         .select('id_camarero, fecha_inicio, fecha_fin')
         .eq('id_barra', idBarra);
 
-    // Transacciones de esta barra (ahora incluimos fecha para métricas temporales)
-    const { data: txs, error: errorTx } = await supabase
-        .from('transacciones')
-        .select('id_transaccion, monto, fecha')
-        .eq('id_barra', idBarra)
-        .neq('tipo_movimiento', 'recarga');
+    // Transacciones de esta barra. Paginamos para superar el límite de 1000.
+    const TAMANO_PAGINA = 1000;
+    const registros: Array<{ id_transaccion: number; monto: number; fecha: string }> = [];
+    let desde = 0;
+    while (true) {
+        const { data, error } = await supabase
+            .from('transacciones')
+            .select('id_transaccion, monto, fecha')
+            .eq('id_barra', idBarra)
+            .neq('tipo_movimiento', 'recarga')
+            .order('id_transaccion', { ascending: true })
+            .range(desde, desde + TAMANO_PAGINA - 1);
 
-    if (errorTx) throw new Error(`Error métricas barra: ${errorTx.message}`);
+        if (error) throw new Error(`Error métricas barra: ${error.message}`);
+        if (!data || data.length === 0) break;
+        registros.push(...data);
+        if (data.length < TAMANO_PAGINA) break;
+        desde += TAMANO_PAGINA;
+    }
 
-    const registros = txs ?? [];
     const totalTransacciones = registros.length;
     const ingresosTotales = registros.reduce((acc, r) => acc + Number(r.monto), 0);
     const ticketMedio = totalTransacciones > 0 ? ingresosTotales / totalTransacciones : 0;
@@ -158,12 +266,18 @@ export async function obtenerMetricasBarra(idBarra: number): Promise<MetricasBar
     if (registros.length > 0) {
         const idsTx = registros.map((r) => r.id_transaccion);
 
-        const { data: lineas } = await supabase
-            .from('lineas_transaccion')
-            .select('id_producto, cantidad')
-            .in('id_transaccion', idsTx);
+        // También paginamos las líneas de transacción para evitar el límite.
+        const lineas: Array<{ id_producto: number; cantidad: number }> = [];
+        for (let i = 0; i < idsTx.length; i += TAMANO_PAGINA) {
+            const trozo = idsTx.slice(i, i + TAMANO_PAGINA);
+            const { data } = await supabase
+                .from('lineas_transaccion')
+                .select('id_producto, cantidad')
+                .in('id_transaccion', trozo);
+            if (data) lineas.push(...data);
+        }
 
-        if (lineas && lineas.length > 0) {
+        if (lineas.length > 0) {
             const conteo = new Map<number, number>();
             for (const l of lineas) {
                 conteo.set(l.id_producto, (conteo.get(l.id_producto) ?? 0) + l.cantidad);
@@ -264,156 +378,4 @@ export async function obtenerMetricasBarra(idBarra: number): Promise<MetricasBar
         rendimientoPorCamarero,
         ingresosPorHoraCamarero,
     };
-}
-
-/** Obtener ingresos por barra del festival activo (gráfico de rendimiento) */
-export async function obtenerIngresosPorBarra(): Promise<{ idBarra: number; nombreBarra: string; ingresos: number }[]> {
-    const supabase = await crearClienteServidor();
-    const idFestival = await obtenerIdFestivalActivo();
-
-    const { data: barras } = await supabase
-        .from('barras')
-        .select('id_barra, nombre_localizacion')
-        .eq('id_festival', idFestival)
-        .order('nombre_localizacion');
-
-    if (!barras || barras.length === 0) return [];
-
-    const idsBarras = barras.map((b: { id_barra: number }) => b.id_barra);
-    const { data: txs } = await supabase
-        .from('transacciones')
-        .select('id_barra, monto')
-        .in('id_barra', idsBarras)
-        .neq('tipo_movimiento', 'recarga');
-
-    const ingresosPorBarra = new Map<number, number>();
-    for (const tx of txs ?? []) {
-        ingresosPorBarra.set(tx.id_barra, (ingresosPorBarra.get(tx.id_barra) ?? 0) + Number(tx.monto));
-    }
-
-    return barras.map((b: { id_barra: number; nombre_localizacion: string }) => ({
-        idBarra: b.id_barra,
-        nombreBarra: b.nombre_localizacion,
-        ingresos: ingresosPorBarra.get(b.id_barra) ?? 0,
-    })).sort((a, b) => b.ingresos - a.ingresos);
-}
-
-/* ══════════════════════════════════════════════
-   Métricas Avanzadas — Dashboard Global
-   ══════════════════════════════════════════════ */
-
-/** Suma total de saldo en wallets del festival activo */
-export async function obtenerSaldoRetenido(): Promise<number> {
-    const supabase = await crearClienteServidor();
-    const idFestival = await obtenerIdFestivalActivo();
-
-    const { data: usuarios } = await supabase
-        .from('usuario')
-        .select('id_usuario')
-        .eq('id_festival', idFestival);
-
-    if (!usuarios || usuarios.length === 0) return 0;
-    const idsUsuarios = usuarios.map((u: { id_usuario: number }) => u.id_usuario);
-
-    const { data, error } = await supabase
-        .from('wallet')
-        .select('saldo')
-        .in('id_usuario', idsUsuarios);
-
-    if (error) return 0;
-    return (data ?? []).reduce((acc, r) => acc + Number(r.saldo), 0);
-}
-
-/** Media aritmética de las recargas realizadas en el festival activo */
-export async function obtenerRecargaMedia(): Promise<number> {
-    const supabase = await crearClienteServidor();
-    const idsBarras = await idsBarrasFestivalActivo();
-    if (idsBarras.length === 0) return 0;
-
-    const { data, error } = await supabase
-        .from('transacciones')
-        .select('monto')
-        .in('id_barra', idsBarras)
-        .eq('tipo_movimiento', 'recarga');
-
-    if (error) return 0;
-    const recargas = data ?? [];
-    if (recargas.length === 0) return 0;
-    const total = recargas.reduce((acc, r) => acc + Number(r.monto), 0);
-    return total / recargas.length;
-}
-
-/** Volumen de compras agrupadas por franja horaria (mapa de calor) */
-export async function obtenerMapaCalorHorario(): Promise<{ hora: string; total: number }[]> {
-    const supabase = await crearClienteServidor();
-    const idsBarras = await idsBarrasFestivalActivo();
-    if (idsBarras.length === 0) return [];
-
-    const { data, error } = await supabase
-        .from('transacciones')
-        .select('fecha')
-        .in('id_barra', idsBarras)
-        .neq('tipo_movimiento', 'recarga');
-
-    if (error || !data) return [];
-
-    const conteo = new Map<string, number>();
-    for (const d of data) {
-        const h = new Date(d.fecha).toLocaleString('es-ES', { timeZone: 'Europe/Madrid', hour: '2-digit', hourCycle: 'h23' }).padStart(2, '0') + ':00';
-        conteo.set(h, (conteo.get(h) ?? 0) + 1);
-    }
-
-    return Array.from(conteo.entries())
-        .map(([hora, total]) => ({ hora, total }))
-        .sort((a, b) => a.hora.localeCompare(b.hora));
-}
-
-/** Ratio de pedidos por hora operativa de cada barra del festival activo */
-export async function obtenerEficienciaBarras(): Promise<{ idBarra: number; nombre: string; pedidosPorHora: number }[]> {
-    const supabase = await crearClienteServidor();
-    const idFestival = await obtenerIdFestivalActivo();
-
-    const { data: barras, error: errBarras } = await supabase
-        .from('barras')
-        .select('id_barra, nombre_localizacion')
-        .eq('id_festival', idFestival);
-    if (errBarras || !barras || barras.length === 0) return [];
-
-    const idsBarras = barras.map((b: { id_barra: number }) => b.id_barra);
-    const { data: txs, error: errTxs } = await supabase
-        .from('transacciones')
-        .select('id_barra, fecha')
-        .in('id_barra', idsBarras)
-        .neq('tipo_movimiento', 'recarga');
-    if (errTxs || !txs) return [];
-
-    const nombresMap = new Map<number, string>();
-    for (const b of barras) nombresMap.set(b.id_barra, b.nombre_localizacion);
-
-    const fechasPorBarra = new Map<number, number[]>();
-    for (const tx of txs) {
-        if (!fechasPorBarra.has(tx.id_barra)) fechasPorBarra.set(tx.id_barra, []);
-        fechasPorBarra.get(tx.id_barra)!.push(new Date(tx.fecha).getTime());
-    }
-
-    const resultados: { idBarra: number; nombre: string; pedidosPorHora: number }[] = [];
-    for (const [idBarra, nombre] of nombresMap.entries()) {
-        const timestamps = fechasPorBarra.get(idBarra);
-        if (!timestamps || timestamps.length === 0) {
-            resultados.push({ idBarra, nombre, pedidosPorHora: 0 });
-            continue;
-        }
-
-        const horasActivas = new Set<string>();
-        for (const ts of timestamps) {
-            const d = new Date(ts);
-            const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}-${d.getHours()}`;
-            horasActivas.add(key);
-        }
-
-        const numHorasActivas = horasActivas.size > 0 ? horasActivas.size : 1;
-        resultados.push({ idBarra, nombre, pedidosPorHora: timestamps.length / numHorasActivas });
-    }
-
-    return resultados.sort((a, b) => b.pedidosPorHora - a.pedidosPorHora);
 }
