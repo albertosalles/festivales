@@ -106,7 +106,7 @@ export function GestionCamarerosAdmin({ camarerosIniciales, barras }: GestionCam
         finally { setCreando(false); }
     };
 
-    const activos = camareros.filter((c) => c.activo).length;
+    const activos = camareros.filter((c) => c.idBarraActual != null).length;
 
     return (
         <div>

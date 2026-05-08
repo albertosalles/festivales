@@ -253,6 +253,16 @@ export const tpvServicio = {
 
         if (error || !data) return null;
         return { nombre: data.nombre, apellidos: data.apellidos ?? undefined };
-    }
+    },
+
+    async resolverIncidencia(idIncidencia: number) {
+        const supabase = crearClienteNavegador();
+        const { error } = await supabase
+            .from('incidencias_barra')
+            .update({ estado: 'resuelta' })
+            .eq('id_incidencia', idIncidencia);
+
+        if (error) throw error;
+    },
 }
 

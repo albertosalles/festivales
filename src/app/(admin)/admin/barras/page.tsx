@@ -1,6 +1,7 @@
 import { obtenerBarras } from '@/servicios/barras.servicio';
 import { obtenerCamareros } from '@/servicios/camareros.servicio';
 import { obtenerIngresosPorBarra } from '@/servicios/metricas.servicio';
+import { obtenerIncidenciasPendientes } from '@/servicios/incidencias.servicio';
 import { ControlBarrasAdmin } from '@/components/mapa/ControlBarrasAdmin';
 
 /**
@@ -8,10 +9,11 @@ import { ControlBarrasAdmin } from '@/components/mapa/ControlBarrasAdmin';
  * Vista de todas las barras con estado de cola, camareros, ingresos y acceso a detalle.
  */
 export default async function PaginaControlBarras() {
-    const [barras, camareros, ingresosPorBarra] = await Promise.all([
+    const [barras, camareros, ingresosPorBarra, incidencias] = await Promise.all([
         obtenerBarras(),
         obtenerCamareros(),
         obtenerIngresosPorBarra(),
+        obtenerIncidenciasPendientes(),
     ]);
 
     const totalCamareros = camareros.length;
@@ -53,6 +55,7 @@ export default async function PaginaControlBarras() {
                 barrasIniciales={barras}
                 camarerosIniciales={camareros}
                 ingresosPorBarra={mapaIngresos}
+                incidenciasIniciales={incidencias}
             />
         </div>
     );
